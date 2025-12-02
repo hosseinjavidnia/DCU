@@ -254,10 +254,11 @@ footer {
   line-height: 1.4;
 }
 
-/* Mobile Responsive */
+/* Mobile Responsive (only applies on playground page) */
 @media (max-width: 768px) {
-    body { padding: 10px; height: auto; display: block; }
-    .playground { grid-template-columns: 1fr; grid-template-rows: 400px 300px; }
-    .card { height: auto; min-height: 0; }
-    .output-pane { border-left: none; border-top: 1px solid var(--border); }
+    body.playground { padding: 10px; height: auto; display: block; }
+    body.playground .wrap.wide { height: auto; flex: initial; }
+    body.playground .playground { grid-template-columns: 1fr; grid-template-rows: 400px 300px; }
+    body.playground .card { height: auto; min-height: 0; }
+    body.playground .output-pane { border-left: none; border-top: 1px solid var(--border); }
 }
