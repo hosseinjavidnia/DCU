@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Playground | CSC1014</title>
+  
+  <script src="https://skulpt.org/js/skulpt.min.js"></script>
+  <script src="https://skulpt.org/js/skulpt-stdlib.js"></script>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/eclipse.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/python/python.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/matchbrackets.min.js"></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="theme/theme.css">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+</head>
+<body class="playground">
+  <div class="wrap wide">
+    
+    <nav>
+      <div class="nav-left">
+        <a href="index.html" class="back-link">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 12H5m7-7l-7 7 7 7"></path></svg>
+          Back to Course
+        </a>
+        <span style="color:var(--border)">|</span>
+        <h1>CSC1014 Python Playground</h1>
+      </div>
+      <span class="badge-top">Live Compiler</span>
+    </nav>
+
+    <section class="card" id="sandbox">
+      <div class="card-head">
+        <div class="file-name">main.py</div>
+        <div class="toolbar">
+          <button class="btn btn-primary run">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+            Run
+          </button>
+          <button class="btn clear">Clear</button>
+          <button class="btn reset">Reset</button>
+        </div>
+      </div>
+      
+      <div class="card-body">
+        <div class="playground">
+          <div class="editor-pane">
+            <textarea class="code" spellcheck="false"></textarea>
+          </div>
+          
+          <div class="output-pane">
+            <div class="output-label">Terminal Output</div>
+            <pre class="output-box" aria-live="polite"></pre>
+          </div>
+        </div>
+      </div>
+      
+      <div class="status">
+        <span class="dot" aria-hidden="true"></span>
+        <span class="status-text">Ready to code</span>
+      </div>
+    </section>
+
+    <footer>
+      <p class="copyright">&copy; 2025 Hossein Javidnia. All rights reserved.</p>
+      <div class="legal-notice">
+        <strong>Warning:</strong> Unauthorized copying, reproduction, or distribution of these materials 
+        is strictly prohibited. Duplication of this page or its contents for public use is illegal.
+      </div>
+    </footer>
+
+  </div>
+
+  <script src="engine/engine.js"></script>
+  <script>
+    initPlayground('sandbox');
+  </script>
+</body>
+</html>
