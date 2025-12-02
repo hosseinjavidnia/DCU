@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Course Page — Python Practice</title>
+
+  <!-- Skulpt -->
+  <script src="https://skulpt.org/js/skulpt.min.js"></script>
+  <script src="https://skulpt.org/js/skulpt-stdlib.js"></script>
+
+  <!-- CodeMirror 5 (Light theme: Eclipse) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/eclipse.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/python/python.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/matchbrackets.min.js"></script>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root{
+      --bg: #f6f7fb;
+      --card: #ffffff;
+      --text: #111827;
+      --muted: #6b7280;
+      --border: #e5e7eb;
+      --brand: #2563eb;
+      --brand-600: #1d4ed8;
+      --success: #16a34a;
+      --danger: #dc2626;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+
+      /* global sizing for ALL playgrounds */
+      --pane-h: 360px;
+      --editor-offset: 15px;
+
+      /* output palette (dark box) */
+      --out-bg: #0d0f14;
+      --out-fg: #e5e7eb;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body{
+      margin: 0;
+      padding: 32px 20px 56px;
+      background: var(--bg);
+      color: var(--text);
+      font: 16px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    .wrap{ max-width: 1100px; margin: 0 auto; }
+
+    header{ margin-bottom: 28px; }
+    .eyebrow{
+      display: inline-block; font-size: 12px; letter-spacing: .12em; text-transform: uppercase;
+      color: var(--muted); font-weight: 700; margin-bottom: 8px;
+    }
+    h1{ margin: 0 0 8px; font-weight: 800; letter-spacing: -0.02em; font-size: clamp(24px, 3.2vw, 36px); }
+    .lead{ color: #4b5563; max-width: 75ch; margin: 0; }
+
+    section.text-block{
+      background: #fff; border: 1px solid var(--border); border-radius: 16px;
+      box-shadow: 0 8px 24px rgba(0,0,0,.05);
+      padding: 20px 22px;
+      margin: 22px 0;
+    }
+    section.text-block h2{ margin: 0 0 8px; font-size: 20px; }
+    section.text-block p{ margin: 0 0 10px; color: #374151; }
+
+    /* Playground card */
+    .card{
+      background: var(--card); border: 1px solid var(--border); border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0,0,0,.06); overflow: hidden; margin: 22px 0;
+    }
+    .card-head{
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 18px; border-bottom: 1px solid var(--border);
+      background: linear-gradient(180deg, #fff, #fafafa);
+    }
+    .card-title{ font-size: 14px; font-weight: 700; color: var(--muted); letter-spacing: .08em; text-transform: uppercase; }
+    .toolbar{ display: flex; gap: 8px; }
+    .btn{
+      appearance: none; border: 1px solid var(--border); background: #fff; color: var(--text);
+      padding: 8px 12px; font: inherit; border-radius: 10px; cursor: pointer;
+      transition: transform .02s ease, background .15s ease, border-color .15s ease;
+    }
+    .btn:hover{ background: #f8fafc; }
+    .btn:active{ transform: translateY(1px); }
+    .btn-primary{ background: var(--brand); color: #fff; border-color: transparent; }
+    .btn-primary:hover{ background: var(--brand-600); }
+
+    .card-body{ padding: 16px; }
+
+    /* Two equal columns; no horizontal scroll */
+    .playground{
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 16px;
+      align-items: start;
+    }
+    .pane{ min-width: 0; }
+    .pane label{
+      display: block;
+      font-size: 12px; font-weight: 700; color: var(--muted);
+      margin: 0 0 8px; letter-spacing: .06em; text-transform: uppercase;
+      line-height: 1; height: 16px;
+    }
+
+    /* Editor + output share EXACT height */
+    .editor-shell,
+    .output-box{
+      height: var(--pane-h);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      background: #ffffff;
+    }
+
+    /* Nudge editor lower without breaking alignment */
+    .editor-shell{ margin-top: var(--editor-offset); }
+
+    /* CodeMirror (light) */
+    .CodeMirror{
+      height: var(--pane-h);
+      width: 100%;
+      font: 14px/1.5 var(--mono);
+    }
+
+    /* Output: DARK box */
+    .output-box{
+      padding: 12px;
+      font: 14px/1.5 var(--mono);
+      color: var(--out-fg);
+      background: var(--out-bg);
+      white-space: pre-wrap;
+      overflow: auto;
+    }
+    .stderr{ color: #f87171; }
+
+    .status{
+      display: flex; align-items: center; gap: 10px; padding: 12px 16px;
+      border-top: 1px solid var(--border); color: var(--muted); font-size: 13px; background: #fbfbfc;
+    }
+    .dot{ width: 9px; height: 9px; border-radius: 99px; background: var(--muted); }
+    .dot.ok{ background: var(--success); }
+    .dot.err{ background: var(--danger); }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <span class="eyebrow">Course</span>
+      <h1>Intro to Pythonic Thinking</h1>
+      <p class="lead">
+        In this module we’ll weave tiny code experiments into the narrative. Skim the notes,
+        try the exercises inline, and use the output box to verify your intuitions.
+      </p>
+    </header>
+
+    <!-- Opening text -->
+    <section class="text-block">
+      <h2>Foundations & Mindset</h2>
+      <p>
+        Python encourages readability and composition. We’ll start with expressions and functions,
+        then layer in iteration, data structures, and small utilities that make programs feel elegant.
+      </p>
+      <p>
+        Keep an eye on error messages — they are guides, not punishments. We highlight the line for you
+        to speed up debugging.
+      </p>
+    </section>
+
+    <!-- Python Section A -->
+    <section class="card" id="py-a" aria-label="Python Section A">
+      <div class="card-head">
+        <div class="card-title">Python Section A — Expressions & Functions</div>
+        <div class="toolbar" role="group" aria-label="Controls">
+          <button class="btn btn-primary run">Run ▸</button>
+          <button class="btn clear">Clear Output</button>
+          <button class="btn reset">Reset Code</button>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="playground">
+          <div class="pane">
+            <label>Python Code</label>
+            <div class="editor-shell">
+              <textarea class="code" spellcheck="false"></textarea>
+            </div>
+          </div>
+          <div class="pane">
+            <label>Output</label>
+            <pre class="output-box" aria-live="polite"></pre>
+          </div>
+        </div>
+      </div>
+      <div class="status">
+        <span class="dot" aria-hidden="true"></span>
+        <span class="status-text">Idle</span>
+      </div>
+    </section>
+
+    <!-- Mid text -->
+    <section class="text-block">
+      <h2>Iteration & Composition</h2>
+      <p>
+        Loops and comprehensions help transform sequences succinctly. Prefer clarity over cleverness:
+        a short helper function can be more readable than a dense one-liner.
+      </p>
+      <p>
+        The next section builds small pipelines: generate data, transform it, and summarize.
+      </p>
+    </section>
+
+    <!-- Python Section B -->
+    <section class="card" id="py-b" aria-label="Python Section B">
+      <div class="card-head">
+        <div class="card-title">Python Section B — Loops & Sequences</div>
+        <div class="toolbar" role="group" aria-label="Controls">
+          <button class="btn btn-primary run">Run ▸</button>
+          <button class="btn clear">Clear Output</button>
+          <button class="btn reset">Reset Code</button>
+        </div>
+      </div>
+      <div class="card-body">
+        <div class="playground">
+          <div class="pane">
+            <label>Python Code</label>
+            <div class="editor-shell">
+              <textarea class="code" spellcheck="false"></textarea>
+            </div>
+          </div>
+          <div class="pane">
+            <label>Output</label>
+            <pre class="output-box" aria-live="polite"></pre>
+          </div>
+        </div>
+      </div>
+      <div class="status">
+        <span class="dot" aria-hidden="true"></span>
+        <span class="status-text">Idle</span>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    // Shared helpers
+    function sanitizeCode(src){
+      return src
+        .replace(/\r\n?/g, '\n')
+        .replace(/\u00A0/g, ' ')
+        .replace(/[“”]/g, '"')
+        .replace(/[‘’]/g, "'")
+        .replace(/\t/g, '    ');
+    }
+    function builtinRead(filename){
+      if (Sk.builtinFiles === undefined || Sk.builtinFiles['files'][filename] === undefined) {
+        throw "File not found: '" + filename + "'";
+      }
+      return Sk.builtinFiles['files'][filename];
+    }
+    function prettyError(err){
+      try{
+        if (typeof err === 'string') return err;
+        if (err && err.toString) return err.toString();
+        return JSON.stringify(err);
+      }catch(_){
+        return 'Unknown error';
+      }
+    }
+
+    // Create one playground inside a given section element
+    function createPlayground(sectionEl, defaultCode){
+      const codeTA   = sectionEl.querySelector('textarea.code');
+      const outputEl = sectionEl.querySelector('.output-box');
+      const statusEl = sectionEl.querySelector('.status-text');
+      const dotEl    = sectionEl.querySelector('.status .dot');
+
+      // buttons
+      const btnRun   = sectionEl.querySelector('.btn.run');
+      const btnClear = sectionEl.querySelector('.btn.clear');
+      const btnReset = sectionEl.querySelector('.btn.reset');
+
+      // CodeMirror (light theme)
+      const editor = CodeMirror.fromTextArea(codeTA, {
+        mode: 'python',
+        theme: 'eclipse',
+        lineNumbers: true,
+        matchBrackets: true,
+        indentUnit: 4,
+        tabSize: 4,
+        indentWithTabs: false,
+      });
+      const paneH = getComputedStyle(document.documentElement).getPropertyValue('--pane-h').trim();
+      editor.setSize('100%', paneH);
+      editor.setValue(defaultCode);
+      window.addEventListener('load', () => editor.refresh());
+
+      function setStatus(text, kind='idle'){
+        statusEl.textContent = text;
+        dotEl.classList.remove('ok','err');
+        if (kind === 'ok') dotEl.classList.add('ok');
+        else if (kind === 'err') dotEl.classList.add('err');
+      }
+
+      async function run(){
+        const code = sanitizeCode(editor.getValue());
+        outputEl.textContent = '';
+        setStatus('Running…');
+        Sk.pre = outputEl; // allow DOM element as pre target
+        Sk.configure({
+          __future__: Sk.python3,
+          output: (t) => { outputEl.textContent += t; },
+          read: builtinRead
+        });
+
+        try{
+          await Sk.misceval.asyncToPromise(() =>
+            Sk.importMainWithBody("<stdin>", false, code, true)
+          );
+          setStatus('Completed successfully','ok');
+        }catch(err){
+          const msg = prettyError(err);
+          // Extract and highlight offending line if present
+          const m = msg.match(/line\s+(\d+)/i);
+          if (m) {
+            const n = Number(m[1]) - 1;
+            if (!isNaN(n)) {
+              editor.addLineClass(n, 'background', 'cm-error-line');
+              setTimeout(() => editor.removeLineClass(n, 'background', 'cm-error-line'), 2500);
+            }
+          }
+          outputEl.innerHTML += (outputEl.textContent ? '\n' : '') +
+            '<span class="stderr">' + msg + '</span>';
+          setStatus('Execution error','err');
+        }
+      }
+
+      function clearOut(){
+        outputEl.textContent = '';
+        setStatus('Output cleared');
+      }
+      function reset(){
+        editor.setValue(defaultCode);
+        setStatus('Code reset to default');
+      }
+
+      btnRun.addEventListener('click', run);
+      btnClear.addEventListener('click', clearOut);
+      btnReset.addEventListener('click', reset);
+
+      return { run, clearOut, reset, editor };
+    }
+
+    // Temporary line highlight style (shared)
+    const style = document.createElement('style');
+    style.textContent = `.cm-error-line { background: rgba(220, 38, 38, .10); }`;
+    document.head.appendChild(style);
+
+    // Default snippets per section
+    const codeA = `# Section A — Expressions & Functions
+def greet(name):
+    return f"Hello, {name}!"
+
+print(greet("world"))
+
+x, y = 5, 7
+print(f"{x} + {y} = {x + y}")
+
+def squares(n):
+    return [i*i for i in range(n)]
+
+print("Squares up to 9:", squares(10))`;
+
+    const codeB = `# Section B — Loops & Sequences
+def running_sum(seq):
+    out = []
+    total = 0
+    for v in seq:
+        total += v
+        out.append(total)
+    return out
+
+data = list(range(1, 11))
+print("Data:", data)
+print("Running sum:", running_sum(data))
+
+# Summaries
+print("Min:", min(data), "Max:", max(data), "Mean:", sum(data)/len(data))`;
+
+    // Initialize both playgrounds
+    createPlayground(document.getElementById('py-a'), codeA);
+    createPlayground(document.getElementById('py-b'), codeB);
+  </script>
+</body>
+</html>
