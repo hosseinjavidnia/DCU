@@ -50,27 +50,25 @@
         
         <!-- INTRO -->
         <header id="intro">
-        <h1>Week 1 – What Is Programming?</h1>
+          <h1>Week 1 – What Is Programming?</h1>
 
-        <div class="intro-goals">
-            <p>Over the next two hours, you will:</p>
+          <div class="callout callout-goal">
+            <span class="callout-title">Lecture goals</span>
             <ul>
-            <li>Describe what a computer does at a high level.</li>
-            <li>Explain what a program is and why it must be precise.</li>
-            <li>Recognise everyday activities as <strong>algorithms</strong>.</li>
-            <li>Understand how algorithms are translated into programming languages.</li>
-            <li>Briefly meet Python, the language we’ll use in this module.</li>
+              <li>Describe what a computer does at a high level.</li>
+              <li>Explain what a program is and why precision matters.</li>
+              <li>Recognise everyday activities as algorithms.</li>
+              <li>Understand how algorithms are translated into programming languages.</li>
+              <li>Briefly meet Python, the language we’ll use in this module.</li>
             </ul>
-        </div>
-        </header>
-
-          <div class="box box-info">
-            <span class="box-title">Big Picture</span>
-            Today is about <strong>concepts</strong>, not details. If you leave this lecture
-            seeing recipes, instructions, and checklists as algorithms, you&#8217;re in exactly
-            the right place.
           </div>
         </header>
+
+        <div class="callout callout-idea">
+          <span class="callout-title">Big picture</span>
+          Today is about concepts, not details. If you leave this lecture
+          seeing recipes, instructions, and checklists as algorithms, you’re in the right place.
+        </div>
 
         <!-- 1. WHAT IS A COMPUTER? -->
         <h2 id="computers">1. What Is a Computer?</h2>
@@ -92,27 +90,36 @@
         </figure>
 
         <p>At a high level, we can think of a computer as having:</p>
-        <ul>
-          <li><strong>Input devices</strong> – keyboard, mouse, touchscreen, microphone, camera.</li>
-          <li><strong>Output devices</strong> – screen, speakers, printer, vibration motor.</li>
-          <li><strong>Memory</strong> – where data and instructions are stored.</li>
-          <li>
-            <strong>CPU (Central Processing Unit)</strong> – the &#8220;brain&#8221; of the computer:
-            <ul>
-              <li>Performs calculations and comparisons.</li>
-              <li>Decides which instruction to run next.</li>
-            </ul>
-          </li>
-        </ul>
+        <div class="feature-grid">
+          <div class="feature-card">
+            <strong>Input devices</strong>
+            <p>Keyboard, mouse, touchscreen, microphone, camera.</p>
+          </div>
+          <div class="feature-card">
+            <strong>Output devices</strong>
+            <p>Screen, speakers, printer, vibration motor.</p>
+          </div>
+          <div class="feature-card">
+            <strong>Memory</strong>
+            <p>Where data and instructions are stored.</p>
+          </div>
+          <div class="feature-card">
+            <strong>CPU</strong>
+            <p>Performs calculations and decides which instruction to run next.</p>
+          </div>
+        </div>
 
         <p>
           The CPU repeatedly performs a simple cycle:
         </p>
-        <ol>
-          <li><strong>Fetch</strong> the next instruction from memory.</li>
-          <li><strong>Decode</strong> it (figure out what it means).</li>
-          <li><strong>Execute</strong> it (do the operation: add, compare, jump, etc.).</li>
-        </ol>
+
+        <div class="pill-steps">
+          <div class="pill-step">Fetch</div>
+          <div class="pill-sep">→</div>
+          <div class="pill-step">Decode</div>
+          <div class="pill-sep">→</div>
+          <div class="pill-step">Execute</div>
+        </div>
 
         <div class="box box-info">
           <span class="box-title">Key Idea</span>
@@ -197,30 +204,56 @@
         </figure>
 
         <h3>3.1 Properties of a Good Algorithm</h3>
-        <ul>
-          <li><strong>Input</strong> – what information does it start with?</li>
-          <li><strong>Output</strong> – what result does it produce?</li>
-          <li><strong>Definiteness</strong> – each step is clear and unambiguous.</li>
-          <li><strong>Finiteness</strong> – it eventually finishes, rather than looping forever.</li>
-          <li><strong>Effectiveness</strong> – each step is simple enough to be carried out mechanically.</li>
-        </ul>
+        <div class="feature-grid">
+          <div class="feature-card">
+            <strong>Input</strong>
+            <p>What information does it start with?</p>
+          </div>
+          <div class="feature-card">
+            <strong>Output</strong>
+            <p>What result does it produce?</p>
+          </div>
+          <div class="feature-card">
+            <strong>Definiteness</strong>
+            <p>Each step is clear and unambiguous.</p>
+          </div>
+          <div class="feature-card">
+            <strong>Finiteness</strong>
+            <p>It eventually finishes, rather than looping forever.</p>
+          </div>
+          <div class="feature-card">
+            <strong>Effectiveness</strong>
+            <p>Steps are simple enough to be carried out mechanically.</p>
+          </div>
+        </div>
 
         <h3>3.2 Everyday Example: Making a Cup of Tea</h3>
-        <p>Informal version:</p>
-        <ol>
-          <li>Boil water.</li>
-          <li>Put a teabag in a cup.</li>
-          <li>Pour boiling water into the cup.</li>
-          <li>Wait a few minutes.</li>
-          <li>Remove the teabag.</li>
-          <li>Add milk/sugar if desired.</li>
-          <li>Drink.</li>
-        </ol>
-
-        <p>
-          For a computer (or a very literal robot), we would need to be much more precise:
-          how much water? how hot? how long is &#8220;a few minutes&#8221;? what if there is no teabag?
-        </p>
+        <div class="split-row">
+          <div class="split-card">
+            <strong>Informal (Human):</strong>
+            <ol>
+              <li>Boil water.</li>
+              <li>Put a teabag in a cup.</li>
+              <li>Pour boiling water into the cup.</li>
+              <li>Wait a few minutes.</li>
+              <li>Remove the teabag.</li>
+              <li>Add milk/sugar if desired.</li>
+              <li>Drink.</li>
+            </ol>
+          </div>
+          <div class="split-card issue">
+            <strong>Computer issues:</strong>
+            <ul>
+              <li>How much water?</li>
+              <li>How hot?</li>
+              <li>What if there are no cups?</li>
+              <li>What if there is no teabag?</li>
+              <li>Infinite loop if water never boils?</li>
+              <li>How much milk/sugar? (or none?)</li>
+              <li>When exactly is it ready to drink?</li>
+            </ul>
+          </div>
+        </div>
 
         <div class="box box-info">
           <span class="box-title">Programming Mindset</span>
@@ -229,20 +262,23 @@
         </div>
 
         <h3>3.3 Activity: Write an Everyday Algorithm</h3>
-        <p><strong>(10–15 minutes, discussion in class or self-reflection)</strong></p>
-        <p>Pick one of these tasks (or invent your own):</p>
-        <ul>
-          <li>Brushing your teeth.</li>
-          <li>Locking up your house when you leave.</li>
-          <li>Making a sandwich.</li>
-        </ul>
-        <p>Write down the steps as if explaining to a very literal robot:</p>
-        <ul>
-          <li>Put <strong>one action per line</strong>.</li>
-          <li>Avoid vague words like “some”, “a bit”, “properly”.</li>
-          <li>Look for decision points: <em>If there is no bread, then…</em></li>
-          <li>Look for repetition: <em>Stir until no lumps remain.</em></li>
-        </ul>
+        <div class="activity-box">
+          <span class="box-title">Activity</span>
+          <p><strong>(10–15 minutes, discussion in class or self-reflection)</strong></p>
+          <p>Pick one of these tasks (or invent your own):</p>
+          <ul>
+            <li>Brushing your teeth.</li>
+            <li>Locking up your house when you leave.</li>
+            <li>Making a sandwich.</li>
+          </ul>
+          <p>Write down the steps as if explaining to a very literal robot:</p>
+          <ul>
+            <li>Put <strong>one action per line</strong>.</li>
+            <li>Avoid vague words like “some”, “a bit”, “properly”.</li>
+            <li>Look for decision points: <em>If there is no bread, then…</em></li>
+            <li>Look for repetition: <em>Stir until no lumps remain.</em></li>
+          </ul>
+        </div>
 
         <!-- 4. FROM ALGORITHMS TO CODE -->
         <h2 id="algorithms-code">4. From Algorithms to Code</h2>
@@ -271,12 +307,12 @@
           not machines. There is no single “correct” syntax; the goal is clarity.
         </p>
         <p>Example: find the largest of three numbers <code>a</code>, <code>b</code>, <code>c</code>:</p>
-        <pre>Set largest to a
+        <div class="pseudo-block">Set largest to a
 If b is greater than largest:
     Set largest to b
 If c is greater than largest:
     Set largest to c
-Output largest</pre>
+Output largest</div>
 
         <p>
           Different people might write this slightly differently, and that&#8217;s fine. Once
@@ -285,23 +321,26 @@ Output largest</pre>
 
         <h3>4.3 Activity: Pseudocode for a Simple Problem</h3>
         <p><strong>(10 minutes)</strong></p>
-        <p>Write pseudocode for one of these tasks:</p>
-        <ul>
-          <li>
-            Given three test scores, compute the average and say whether it is a
-            <em>pass</em> or <em>fail</em>.
-          </li>
-          <li>
-            Given a person’s age, decide whether they are a <em>child</em>,
-            <em>teenager</em>, <em>adult</em>, or <em>senior</em>.
-          </li>
-        </ul>
-        <p>Focus on the logic, not on Python syntax. Ask yourself:</p>
-        <ul>
-          <li>What are the inputs?</li>
-          <li>What is the output?</li>
-          <li>What decisions (if any) are needed?</li>
-        </ul>
+        <div class="activity-box">
+          <span class="box-title">Activity: Pseudocode</span>
+          <p>Write pseudocode for one of these tasks:</p>
+          <ul>
+            <li>
+              Given three test scores, compute the average and say whether it is a
+              <em>pass</em> or <em>fail</em>.
+            </li>
+            <li>
+              Given a person’s age, decide whether they are a <em>child</em>,
+              <em>teenager</em>, <em>adult</em>, or <em>senior</em>.
+            </li>
+          </ul>
+          <p>Focus on the logic, not on Python syntax. Ask yourself:</p>
+          <ul>
+            <li>What are the inputs?</li>
+            <li>What is the output?</li>
+            <li>What decisions (if any) are needed?</li>
+          </ul>
+        </div>
 
         <!-- 5. MEET PYTHON (OPTIONAL DEMO WITH CODE CARD) -->
         <h2 id="python-preview">5. Meet Python</h2>
@@ -385,30 +424,46 @@ print("This is my first Python lecture.")
           </li>
         </ul>
 
-        <h3>6.2 Quick Concept Quiz (for yourself)</h3>
-        <ol>
-          <li>
-            Which of these is <strong>not</strong> an algorithm?
-            <ol type="a">
-              <li>A recipe for baking a cake.</li>
-              <li>Directions from your house to campus.</li>
-              <li>A random list of unconnected words.</li>
-              <li>Instructions for assembling a bookshelf.</li>
-            </ol>
-          </li>
-          <li>
-            Why do computers need precise instructions?
-            <ol type="a">
-              <li>They cannot guess what you meant.</li>
-              <li>They execute instructions very literally.</li>
-              <li>They get bored easily.</li>
-              <li>They cannot fill in missing steps like humans can.</li>
-            </ol>
-          </li>
-          <li>
-            True or False: An algorithm must involve a computer to be an algorithm.
-          </li>
-        </ol>
+        <h3>6.2 Quick Concept Quiz (click to check)</h3>
+        <div class="quiz">
+          <ol>
+            <li>
+              Which of these is <strong>not</strong> an algorithm?
+              <ol type="a">
+                <li>A recipe for baking a cake.</li>
+                <li>Directions from your house to campus.</li>
+                <li>A random list of unconnected words.</li>
+                <li>Instructions for assembling a bookshelf.</li>
+              </ol>
+              <details>
+                <summary>Show answer</summary>
+                <div class="callout callout-idea">Correct: A random list of unconnected words.</div>
+              </details>
+            </li>
+            <li>
+              Why do computers need precise instructions?
+              <ol type="a">
+                <li>They cannot guess what you meant.</li>
+                <li>They execute instructions very literally.</li>
+                <li>They get bored easily.</li>
+                <li>They cannot fill in missing steps like humans can.</li>
+              </ol>
+              <details>
+                <summary>Show answer</summary>
+                <div class="callout callout-idea">
+                  Correct: (a), (b), and (d). Computers follow instructions literally and cannot guess or fill in missing steps.
+                </div>
+              </details>
+            </li>
+            <li>
+              True or False: An algorithm must involve a computer to be an algorithm.
+              <details>
+                <summary>Show answer</summary>
+                <div class="callout callout-idea">False — algorithms are step-by-step methods, with or without machines.</div>
+              </details>
+            </li>
+          </ol>
+        </div>
 
         <h3>6.3 Reflection</h3>
         <p>In 2–3 sentences, answer for yourself:</p>
