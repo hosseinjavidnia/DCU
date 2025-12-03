@@ -44,12 +44,13 @@ function initPlayground(id) {
     const btnReset = section.querySelector('.reset');
     
     // Set initial code
-    const htmlCode = codeTA.value.trim();
+    const htmlCode = codeTA.value.replace(/\r\n?/g, '\n');
+    const initialCode = htmlCode.length > 0 ? htmlCode : defaultPlaygroundCode;
     const editor = CodeMirror.fromTextArea(codeTA, {
         mode: 'python', theme: 'eclipse',
         lineNumbers: true, matchBrackets: true, indentUnit: 4
     });
-    editor.setValue(htmlCode.length > 0 ? htmlCode : defaultPlaygroundCode);
+    editor.setValue(initialCode);
     requestAnimationFrame(() => editor.refresh());
     if (document.fonts && document.fonts.ready) {
         document.fonts.ready.then(() => editor.refresh());
@@ -147,7 +148,7 @@ function initPlayground(id) {
     });
     
     if(btnReset) btnReset.addEventListener('click', () => { 
-        editor.setValue(defaultPlaygroundCode); 
+        editor.setValue(initialCode); 
         setStatus('Reset'); 
     });
     

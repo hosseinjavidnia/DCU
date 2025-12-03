@@ -258,3 +258,12 @@ footer {
   .card { height: auto; min-height: 0; }
   .output-pane { border-left: none; border-top: 1px solid var(--border); }
 }
+
+.intro-goals {
+  text-align: left;
+}
+
+.intro-goals p,
+.intro-goals ul {
+  margin-left: 0;
+}
