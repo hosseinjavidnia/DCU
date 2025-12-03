@@ -67,6 +67,14 @@ function initPlayground(id) {
         });
         editor.setOption('readOnly', disabled ? 'nocursor' : false);
         editor.getWrapperElement().classList.toggle('readonly', disabled);
+        const wrapEl = editor.getWrapperElement();
+        if(disabled){
+            wrapEl.style.height = 'auto';
+            wrapEl.style.minHeight = '120px';
+        } else {
+            wrapEl.style.height = '';
+            wrapEl.style.minHeight = '';
+        }
         requestAnimationFrame(() => editor.refresh());
         if(!disabled) requestAnimationFrame(() => editor.refresh());
         if(disabled && msg) setStatus(msg, 'idle');
