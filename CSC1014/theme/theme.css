@@ -44,8 +44,23 @@ body.playground {
   display: flex; flex-direction: column;
 }
 
-.wrap { max-width: min(900px, calc(100vw - 24px)); margin: 0 auto; width: 100%; }
-.wrap.wide { max-width: min(1200px, calc(100vw - 24px)); display: flex; flex-direction: column; flex: 1; height: 100%; }
+/* --- LAYOUT WRAPPERS --- */
+.wrap { 
+  max-width: min(900px, calc(100vw - 24px)); 
+  margin: 0 auto; 
+  width: 100%; 
+}
+
+.wrap.wide { 
+  max-width: min(1200px, calc(100vw - 24px)); 
+  display: flex; 
+  flex-direction: column; 
+  flex: 1; 
+  height: 100%;
+  /* CRITICAL FIX: Allows flex container to shrink below content size */
+  min-width: 0; 
+}
+
 body.lecture .wrap.wide { max-width: clamp(320px, 95vw, 1100px); }
 .wrap:not(.wide) { padding-bottom: 100px; }
 
@@ -96,24 +111,31 @@ h2::after { content: ""; flex: 1; height: 1px; background: var(--border); }
 
 /* --- NAV HEADER --- */
 nav { 
-  display: flex; align-items: center; justify-content: space-between; 
-  margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid var(--border);
+  display: flex; 
+  align-items: center; 
+  justify-content: space-between; 
+  /* CRITICAL FIX: Allow wrapping on small screens */
+  flex-wrap: wrap; 
+  gap: 10px;
+  margin-bottom: 20px; 
+  padding-bottom: 15px; 
+  border-bottom: 1px solid var(--border);
 }
-.nav-left { display: flex; align-items: center; gap: 15px; }
-.nav-left h1 { margin: 0; font-size: 18px; font-weight: 700; color: var(--text-main); }
+.nav-left { display: flex; align-items: center; gap: 15px; flex-wrap: wrap; }
+.nav-left h1 { margin: 0; font-size: 18px; font-weight: 700; color: var(--text-main); white-space: nowrap; }
 .back-link { 
   text-decoration: none; color: var(--muted); font-weight: 500; font-size: 14px; 
   display: flex; align-items: center; gap: 6px; transition: color 0.2s;
+  white-space: nowrap;
 }
 .back-link:hover { color: var(--brand); }
-.badge-top { font-size: 11px; background: #e0e7ff; color: var(--accent); padding: 4px 8px; border-radius: 6px; font-weight: 700; text-transform: uppercase; }
+.badge-top { font-size: 11px; background: #e0e7ff; color: var(--accent); padding: 4px 8px; border-radius: 6px; font-weight: 700; text-transform: uppercase; white-space: nowrap; }
 
 /* --- INTERACTIVE CARD (Shared) --- */
 .card {
   background: var(--card); border: 1px solid var(--border); border-radius: 12px;
   box-shadow: 0 4px 20px rgba(0,0,0,0.05); overflow: hidden;
   display: flex; flex-direction: column; flex: 1;
-  /* Default min-height for Playground, overridden for Lectures */
   min-height: 500px;
 }
 .card-head {
@@ -136,7 +158,7 @@ nav {
 
 .card-body { padding: 0; flex: 1; min-height: 0; position: relative; }
 
-/* --- PLAYGROUND LAYOUT (Side by Side) --- */
+/* --- PLAYGROUND LAYOUT --- */
 .playground { display: grid; grid-template-columns: 1fr 1fr; height: 100%; }
 .playground .editor-pane,
 .playground .output-pane { min-height: 0; }
@@ -171,8 +193,8 @@ nav {
 /* --- FOOTER & LEGAL --- */
 footer {
   margin-top: 20px;
-  padding-top: 20px;          /* Increased slightly for balance */
-  padding-bottom: 40px;       /* ADDED: This creates the margin at the bottom */
+  padding-top: 20px;          
+  padding-bottom: 40px;      
   border-top: 1px solid var(--border);
   text-align: center;
   color: var(--muted);
@@ -184,20 +206,12 @@ footer {
 }
 
 .legal-notice {
-  font-size: 11px;
-  color: #ef4444; 
-  background: #fef2f2;
-  display: inline-block;
-  padding: 8px 16px;
-  border-radius: 6px;
-  border: 1px solid #fee2e2;
-  max-width: 650px;
-  line-height: 1.4;
+  font-size: 11px; color: #ef4444; background: #fef2f2;
+  display: inline-block; padding: 8px 16px; border-radius: 6px;
+  border: 1px solid #fee2e2; max-width: 650px; line-height: 1.4;
 }
 
-/* --- LECTURE LAYOUT (New Professional Style) --- */
-
-/* 1. Grid Layout for Sidebar + Content */
+/* --- LECTURE LAYOUT --- */
 .lecture-wrap {
   display: grid;
   grid-template-columns: minmax(220px, 280px) minmax(0, 1fr);
@@ -205,7 +219,6 @@ footer {
   align-items: start;
 }
 
-/* 2. Sticky Sidebar (Table of Contents) */
 .lecture-sidebar {
   position: sticky; top: 20px;
   border-right: 1px solid var(--border);
@@ -221,36 +234,31 @@ footer {
 .toc-link:hover { color: var(--accent); }
 .toc-link.active { color: var(--brand); font-weight: 600; border-left: 2px solid var(--brand); padding-left: 10px; margin-left: -12px; }
 
-/* 3. Content Area Typography */
 .lecture-content h1 { font-size: 32px; font-weight: 800; color: var(--text-main); letter-spacing: -0.02em; margin-bottom: 16px; }
 .lecture-content .lead { font-size: 18px; color: var(--muted); margin-bottom: 40px; }
 
 .lecture-content h2 {
   font-size: 20px; color: var(--text-main); font-weight: 700; margin: 60px 0 24px;
   padding-bottom: 12px; border-bottom: 1px solid var(--border);
-  display: block; /* Override flex */
+  display: block; 
 }
-.lecture-content h2::after { display: none; } /* Remove the middle line from Index style */
+.lecture-content h2::after { display: none; } 
 
 .lecture-content p { font-size: 16px; color: var(--text-body); margin-bottom: 24px; max-width: none; }
 .lecture-content code { background: #f1f5f9; padding: 2px 6px; border-radius: 4px; font-family: var(--mono); font-size: 0.9em; color: var(--brand); }
 
-/* 4. Compact Interactive Cards */
 .lecture-content .card { min-height: auto; margin: 30px 0; border: 1px solid var(--border); box-shadow: none; }
 .lecture-content .card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
 
-/* 5. Stacked Editor Layout */
 .lecture-stack { display: flex; flex-direction: column; }
 .lecture-stack .CodeMirror { height: auto !important; min-height: 120px; }
 .lecture-stack .output-pane { border-left: none; border-top: 1px solid var(--border); min-height: 80px; }
 
-/* 6. Concept Boxes */
 .box { padding: 20px 24px; border-radius: 8px; margin: 30px 0; border-left: 4px solid; font-size: 15px; }
 .box-warn { background: #fef2f2; border-color: var(--danger); color: #991b1b; }
 .box-info { background: #eff6ff; border-color: var(--accent); color: #1e3a8a; }
 .box-title { display: block; font-weight: 700; text-transform: uppercase; font-size: 11px; margin-bottom: 8px; letter-spacing: 0.05em; }
 
-/* --- Additional Lecture Helpers --- */
 .callout { background: #f8f9fa; border-left: 4px solid #333; padding: 18px 20px; border-radius: 8px; margin: 24px 0; text-align: left; }
 .callout .callout-title { display: block; font-weight: 700; text-transform: uppercase; font-size: 11px; letter-spacing: 0.05em; margin-bottom: 10px; color: var(--muted); text-align: left; }
 .callout-goal { border-color: #333; background: #f8f9fa; }
@@ -282,36 +290,35 @@ footer {
 .split-card { background: #f8f9fa; border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; flex: 1 1 260px; }
 .split-card.issue { color: #c0392b; border-color: #f5c7c2; background: #fff5f3; }
 
-/* Mobile */
-/* --- Mobile Optimizations --- */
+/* --- INTRO GOALS (Keep these) --- */
+.intro-goals { text-align: left; }
+.intro-goals p, .intro-goals ul { margin-left: 0; }
+
+/* =========================================
+   MOBILE & RESPONSIVE FIXES
+   ========================================= */
 @media (max-width: 900px) {
   
-  /* 1. Stop the page from being wider than the phone screen */
+  /* 1. Prevent Horizontal Scrolling */
   html, body {
     overflow-x: hidden;
     width: 100%;
     position: relative;
   }
 
-  /* 2. Adjust padding so text doesn't touch the edges */
+  /* 2. Adjust Layout Padding */
   body, body.lecture { 
     padding: 15px 15px 80px; 
   }
 
-  /* 3. Allow the top Navigation bar to wrap onto two lines */
-  nav {
-    flex-wrap: wrap;
-    gap: 10px;
-  }
-  
-  /* 4. Force the main container to fit 100% of the screen */
+  /* 3. Force Wrapper to Block (Fixes Flexbox width issues) */
   body.lecture .wrap.wide { 
-    max-width: 100%; 
-    width: 100%;
     display: block; 
+    max-width: 100%; 
+    width: 100%; 
   }
-  
-  /* 5. Stack the lecture content (Remove Sidebar) */
+
+  /* 4. Remove Sidebar & Stack Content */
   body.lecture .lecture-wrap { 
     display: block; 
     gap: 30px; 
@@ -319,29 +326,20 @@ footer {
   body.lecture .lecture-sidebar { display: none; }
   body.lecture .lecture-content { max-width: 100%; }
 
-  /* 6. Typography adjustments for smaller screens */
+  /* 5. Typography Scaling */
   body.lecture nav h1 { font-size: 16px; }
-  body.lecture .lecture-content h1 { font-size: 28px; }
+  body.lecture .lecture-content h1 { font-size: 26px; word-wrap: break-word; }
   body.lecture .lecture-content h2 { font-size: 18px; margin: 40px 0 18px; }
 
-  /* 7. Fix Playground/Editor Layout */
+  /* 6. Stacked Editors */
   body.playground { padding: 10px; height: auto; display: block; }
   .playground { grid-template-columns: 1fr; grid-template-rows: 400px 300px; }
   .card { height: auto; min-height: 0; }
   .output-pane { border-left: none; border-top: 1px solid var(--border); }
   
-  /* 8. Ensure images and code blocks don't push the screen width out */
-  img, pre, .CodeMirror, canvas {
+  /* 7. SAFETY: Ensure nothing exceeds screen width */
+  img, pre, .CodeMirror, canvas, .box, .callout {
     max-width: 100% !important;
-    height: auto;
+    box-sizing: border-box;
   }
-}
-
-.intro-goals {
-  text-align: left;
-}
-
-.intro-goals p,
-.intro-goals ul {
-  margin-left: 0;
 }
