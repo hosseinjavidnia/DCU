@@ -293,6 +293,16 @@ body.playground { padding: 10px; height: auto; display: block; }
   body.lecture .wrap.wide { max-width: min(100%, calc(100vw - 24px)); }
 }
 
+@media (max-width: 640px) {
+  body.lecture { overflow-x: hidden; }
+  body.lecture nav h1 { font-size: 16px; }
+  body.lecture .lecture-content h1 { font-size: 28px; }
+  body.lecture .lecture-content h2 { font-size: 18px; margin: 40px 0 18px; }
+  body.lecture .callout { padding: 14px 16px; }
+  body.lecture .feature-grid { gap: 12px; }
+  body.lecture .split-row { gap: 16px; }
+}
+
 .intro-goals {
   text-align: left;
 }
