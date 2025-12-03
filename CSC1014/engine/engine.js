@@ -63,6 +63,7 @@ function initPlayground(id) {
         });
         editor.setOption('readOnly', disabled ? 'nocursor' : false);
         editor.getWrapperElement().classList.toggle('readonly', disabled);
+        if(!disabled) requestAnimationFrame(() => editor.refresh());
         if(disabled && msg) setStatus(msg, 'idle');
     }
 
