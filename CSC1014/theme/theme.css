@@ -283,28 +283,58 @@ footer {
 .split-card.issue { color: #c0392b; border-color: #f5c7c2; background: #fff5f3; }
 
 /* Mobile */
+/* --- Mobile Optimizations --- */
 @media (max-width: 900px) {
-  body { padding: 20px 12px 60px; }
-  body.lecture { padding: 16px 12px 60px; }
-  body.lecture .lecture-wrap { grid-template-columns: 1fr; gap: 30px; }
+  
+  /* 1. Stop the page from being wider than the phone screen */
+  html, body {
+    overflow-x: hidden;
+    width: 100%;
+    position: relative;
+  }
+
+  /* 2. Adjust padding so text doesn't touch the edges */
+  body, body.lecture { 
+    padding: 15px 15px 80px; 
+  }
+
+  /* 3. Allow the top Navigation bar to wrap onto two lines */
+  nav {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  
+  /* 4. Force the main container to fit 100% of the screen */
+  body.lecture .wrap.wide { 
+    max-width: 100%; 
+    width: 100%;
+    display: block; 
+  }
+  
+  /* 5. Stack the lecture content (Remove Sidebar) */
+  body.lecture .lecture-wrap { 
+    display: block; 
+    gap: 30px; 
+  }
   body.lecture .lecture-sidebar { display: none; }
+  body.lecture .lecture-content { max-width: 100%; }
+
+  /* 6. Typography adjustments for smaller screens */
+  body.lecture nav h1 { font-size: 16px; }
+  body.lecture .lecture-content h1 { font-size: 28px; }
+  body.lecture .lecture-content h2 { font-size: 18px; margin: 40px 0 18px; }
+
+  /* 7. Fix Playground/Editor Layout */
   body.playground { padding: 10px; height: auto; display: block; }
   .playground { grid-template-columns: 1fr; grid-template-rows: 400px 300px; }
   .card { height: auto; min-height: 0; }
   .output-pane { border-left: none; border-top: 1px solid var(--border); }
-
-  body.lecture .wrap.wide { max-width: min(100%, calc(100vw - 24px)); }
-  body.lecture .lecture-content { max-width: 100%; }
-}
-
-@media (max-width: 640px) {
-  body.lecture { overflow-x: hidden; }
-  body.lecture nav h1 { font-size: 16px; }
-  body.lecture .lecture-content h1 { font-size: 28px; }
-  body.lecture .lecture-content h2 { font-size: 18px; margin: 40px 0 18px; }
-  body.lecture .callout { padding: 14px 16px; }
-  body.lecture .feature-grid { gap: 12px; grid-template-columns: 1fr; }
-  body.lecture .split-row { gap: 16px; flex-direction: column; }
+  
+  /* 8. Ensure images and code blocks don't push the screen width out */
+  img, pre, .CodeMirror, canvas {
+    max-width: 100% !important;
+    height: auto;
+  }
 }
 
 .intro-goals {
