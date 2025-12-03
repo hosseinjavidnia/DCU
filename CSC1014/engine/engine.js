@@ -51,6 +51,9 @@ function initPlayground(id) {
     });
     editor.setValue(htmlCode.length > 0 ? htmlCode : defaultPlaygroundCode);
     requestAnimationFrame(() => editor.refresh());
+    if (document.fonts && document.fonts.ready) {
+        document.fonts.ready.then(() => editor.refresh());
+    }
 
     // Helper: UI Updates
     function setStatus(msg, type='idle'){
