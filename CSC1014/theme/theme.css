@@ -45,7 +45,7 @@ body.playground {
 }
 
 .wrap { max-width: 900px; margin: 0 auto; width: 100%; }
-.wrap.wide { max-width: 1400px; display: flex; flex-direction: column; flex: 1; height: 100%; }
+.wrap.wide { max-width: min(1400px, calc(100vw - 32px)); display: flex; flex-direction: column; flex: 1; height: 100%; }
 .wrap:not(.wide) { padding-bottom: 100px; }
 
 /* --- HEADER --- */
@@ -288,11 +288,9 @@ body.playground { padding: 10px; height: auto; display: block; }
 .playground { grid-template-columns: 1fr; grid-template-rows: 400px 300px; }
 .card { height: auto; min-height: 0; }
 .output-pane { border-left: none; border-top: 1px solid var(--border); }
-}
 
-@media (max-width: 900px) {
   body.lecture { padding: 16px 12px 60px; }
-  body.lecture .wrap.wide { max-width: 100%; width: 100%; }
+  body.lecture .wrap.wide { max-width: min(100%, calc(100vw - 24px)); }
 }
 
 .intro-goals {
