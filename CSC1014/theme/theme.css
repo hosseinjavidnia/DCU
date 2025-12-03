@@ -200,7 +200,7 @@ footer {
 /* 1. Grid Layout for Sidebar + Content */
 .lecture-wrap {
   display: grid;
-  grid-template-columns: 240px minmax(0, 1fr);
+  grid-template-columns: minmax(220px, 280px) minmax(0, 1fr);
   gap: 60px;
   align-items: start;
 }
@@ -285,14 +285,14 @@ footer {
 /* Mobile */
 @media (max-width: 900px) {
   body { padding: 20px 12px 60px; }
-  .lecture-wrap { grid-template-columns: 1fr; }
-  .lecture-sidebar { display: none; }
+  body.lecture { padding: 16px 12px 60px; }
+  body.lecture .lecture-wrap { grid-template-columns: 1fr; gap: 30px; }
+  body.lecture .lecture-sidebar { display: none; }
   body.playground { padding: 10px; height: auto; display: block; }
   .playground { grid-template-columns: 1fr; grid-template-rows: 400px 300px; }
   .card { height: auto; min-height: 0; }
   .output-pane { border-left: none; border-top: 1px solid var(--border); }
 
-  body.lecture { padding: 16px 12px 60px; }
   body.lecture .wrap.wide { max-width: min(100%, calc(100vw - 24px)); }
   body.lecture .lecture-content { max-width: 100%; }
 }
