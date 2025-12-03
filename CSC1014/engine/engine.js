@@ -39,6 +39,9 @@ function initPlayground(id) {
     const outputEl = section.querySelector('.output-box');
     const statusEl = section.querySelector('.status-text');
     const dotEl = section.querySelector('.dot');
+    const btnRun = section.querySelector('.run');
+    const btnClear = section.querySelector('.clear');
+    const btnReset = section.querySelector('.reset');
     
     // Set initial code
     const htmlCode = codeTA.value.trim();
@@ -54,6 +57,15 @@ function initPlayground(id) {
         if(dotEl) dotEl.className = 'dot ' + (type === 'idle' ? '' : type);
     }
 
+    function setControlsDisabled(disabled, msg){
+        [btnRun, btnClear, btnReset].forEach(btn => {
+            if(btn) btn.disabled = disabled;
+        });
+        editor.setOption('readOnly', disabled ? 'nocursor' : false);
+        editor.getWrapperElement().classList.toggle('readonly', disabled);
+        if(disabled && msg) setStatus(msg, 'idle');
+    }
+
     // Main Run Function
     async function run(){
         const code = editor.getValue();
@@ -61,7 +73,11 @@ function initPlayground(id) {
         
         try {
             // 1. Ensure Engine is Loaded
-            if(!pyodide) await loadPyodideEngine(setStatus);
+            if(!pyodide) {
+                setControlsDisabled(true, 'Downloading Python Engine...');
+                await loadPyodideEngine(setStatus);
+                setControlsDisabled(false);
+            }
             
             setStatus('Running...', 'idle');
 
@@ -99,18 +115,21 @@ function initPlayground(id) {
     }
 
     // Bind Buttons
-    if(section.querySelector('.run')) section.querySelector('.run').addEventListener('click', run);
+    if(btnRun) btnRun.addEventListener('click', run);
     
-    if(section.querySelector('.clear')) section.querySelector('.clear').addEventListener('click', () => { 
+    if(btnClear) btnClear.addEventListener('click', () => { 
         outputEl.textContent = ''; 
         setStatus('Cleared'); 
     });
     
-    if(section.querySelector('.reset')) section.querySelector('.reset').addEventListener('click', () => { 
+    if(btnReset) btnReset.addEventListener('click', () => { 
         editor.setValue(defaultPlaygroundCode); 
         setStatus('Reset'); 
     });
     
-    // Pre-load Pyodide when page opens (optional, makes first run faster)
-    setTimeout(() => loadPyodideEngine(setStatus), 1000);
+    // Pre-load Pyodide when page opens; disable controls until ready
+    setControlsDisabled(true, 'Downloading Python Engine...');
+    loadPyodideEngine(setStatus)
+      .then(() => setControlsDisabled(false))
+      .catch(() => setStatus('Error loading Python', 'err'));
 }

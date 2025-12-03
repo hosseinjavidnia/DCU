@@ -142,6 +142,7 @@ nav {
 .playground .CodeMirror-scroll { height: 100%; }
 .playground .CodeMirror { height: 100% !important; }
 .playground .output-pane { border-left: 1px solid var(--border); }
+.CodeMirror.readonly { filter: grayscale(0.9); background: #f8fafc; opacity: 0.8; }
 
 /* --- SHARED EDITOR COMPONENTS --- */
 .CodeMirror { font-family: var(--mono); font-size: 14px; line-height: 1.6; }
