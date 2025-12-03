@@ -130,6 +130,6 @@ function initPlayground(id) {
     // Pre-load Pyodide when page opens; disable controls until ready
     setControlsDisabled(true, 'Downloading Python Engine...');
     loadPyodideEngine(setStatus)
-      .then(() => setControlsDisabled(false))
+      .then(() => { setControlsDisabled(false); setStatus('Python Ready', 'ok'); })
       .catch(() => setStatus('Error loading Python', 'err'));
 }
