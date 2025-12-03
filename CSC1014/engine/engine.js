@@ -50,6 +50,7 @@ function initPlayground(id) {
         lineNumbers: true, matchBrackets: true, indentUnit: 4
     });
     editor.setValue(htmlCode.length > 0 ? htmlCode : defaultPlaygroundCode);
+    requestAnimationFrame(() => editor.refresh());
 
     // Helper: UI Updates
     function setStatus(msg, type='idle'){
@@ -63,6 +64,7 @@ function initPlayground(id) {
         });
         editor.setOption('readOnly', disabled ? 'nocursor' : false);
         editor.getWrapperElement().classList.toggle('readonly', disabled);
+        requestAnimationFrame(() => editor.refresh());
         if(!disabled) requestAnimationFrame(() => editor.refresh());
         if(disabled && msg) setStatus(msg, 'idle');
     }
