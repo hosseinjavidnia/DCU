@@ -12,9 +12,6 @@ students = ["Alice", "Bob", "Charlie"]
 print("--- Class Roster ---")
 for s in students:
     print(greet(s))
-
-# Try making a syntax error below to see the real Python traceback!
-# print("Broken"
 `;
 
 let pyodide = null;
