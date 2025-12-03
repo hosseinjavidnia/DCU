@@ -54,6 +54,15 @@ function initPlayground(id) {
     if (document.fonts && document.fonts.ready) {
         document.fonts.ready.then(() => editor.refresh());
     }
+    const editorWrapper = editor.getWrapperElement();
+    editorWrapper.style.position = editorWrapper.style.position || 'relative';
+    const overlay = document.createElement('div');
+    overlay.style.position = 'absolute';
+    overlay.style.inset = '0';
+    overlay.style.zIndex = '5';
+    overlay.style.pointerEvents = 'none';
+    overlay.setAttribute('aria-hidden', 'true');
+    editorWrapper.appendChild(overlay);
 
     // Helper: UI Updates
     function setStatus(msg, type='idle'){
@@ -65,9 +74,10 @@ function initPlayground(id) {
         [btnRun, btnClear, btnReset].forEach(btn => {
             if(btn) btn.disabled = disabled;
         });
-        editor.setOption('readOnly', disabled ? 'nocursor' : false);
-        editor.getWrapperElement().classList.toggle('readonly', disabled);
-        const wrapEl = editor.getWrapperElement();
+        editor.setOption('readOnly', disabled ? true : false);
+        editorWrapper.classList.toggle('readonly', disabled);
+        overlay.style.pointerEvents = disabled ? 'auto' : 'none';
+        const wrapEl = editorWrapper;
         if(disabled){
             wrapEl.style.height = 'auto';
             wrapEl.style.minHeight = '120px';
