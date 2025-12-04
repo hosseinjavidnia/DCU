@@ -294,6 +294,23 @@ footer {
 .intro-goals { text-align: left; }
 .intro-goals p, .intro-goals ul { margin-left: 0; }
 
+.not-found { text-align: center; padding: 60px 20px 40px; }
+.not-found .code-404,
+.not-found h2 {
+  font-size: clamp(36px, 8vw, 72px);
+  margin: 0;
+  letter-spacing: -0.04em;
+  font-weight: 800;
+}
+.not-found .code-404 { color: var(--brand); }
+.not-found h2 {
+  color: var(--text-main);
+  text-transform: none;
+  display: block;
+}
+.not-found p { max-width: 540px; margin: 12px auto 28px; color: var(--muted); font-size: 16px; }
+.not-found .actions { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; }
+
 /* =========================================
    MOBILE & RESPONSIVE FIXES
    ========================================= */
