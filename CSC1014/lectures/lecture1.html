@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Lecture 1 | CSC1014</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+
+  <script src="https://cdn.jsdelivr.net/pyodide/v0.23.4/full/pyodide.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/eclipse.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/python/python.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/matchbrackets.min.js"></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../theme/theme.css">
+</head>
+<body class="lecture">
+
+  <div class="wrap wide">
+    
+    <nav>
+      <div class="nav-left">
+        <a href="../index.html" class="back-link">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 12H5m7-7l-7 7 7 7"></path></svg>
+          Back to Course
+        </a>
+        <span style="color:var(--border)">|</span>
+        <h1>Week 1</h1>
+      </div>
+      <span class="badge-top">Lecture Note</span>
+    </nav>
+
+    <div class="lecture-wrap">
+      
+      <aside class="lecture-sidebar">
+        <div class="toc-title">On this page</div>
+        <a href="#intro" class="toc-link active">Introduction</a>
+        <a href="#computers" class="toc-link">1. What is a Computer?</a>
+        <a href="#program" class="toc-link">2. What is a Program?</a>
+        <a href="#algorithms" class="toc-link">3. Algorithms</a>
+        <a href="#algorithms-code" class="toc-link">4. From Algorithms to Code</a>
+        <a href="#python-preview" class="toc-link">5. Meet Python</a>
+        <a href="#recap" class="toc-link">6. Recap &amp; Self-check</a>
+      </aside>
+
+      <main class="lecture-content">
+        
+        <!-- INTRO -->
+        <header id="intro">
+          <h1>Week 1 – What Is Programming?</h1>
+
+          <p class="lede">
+            Welcome to CSC1014. This week we are not trying to turn you into a programmer overnight.
+            Instead, we are building the mental model you will use for the rest of the module:
+            what computers are, what programs are, and how everyday instructions relate to algorithms.
+          </p>
+
+          <div class="callout callout-goal">
+            <span class="callout-title">Lecture goals</span>
+            <ul>
+              <li>Describe what a computer does at a high level.</li>
+              <li>Explain what a program is and why precision matters.</li>
+              <li>Recognise everyday activities as algorithms.</li>
+              <li>Understand how algorithms are translated into programming languages.</li>
+              <li>Briefly meet Python, the language we’ll use in this module.</li>
+            </ul>
+          </div>
+
+        
+
+        <div class="callout callout-idea">
+          <span class="callout-title">Big picture</span>
+          Today is about concepts, not details. If you leave this lecture
+          seeing recipes, instructions, and checklists as algorithms, you’re in the right place.
+        </div>
+
+        </header>
+
+        <!-- 1. WHAT IS A COMPUTER? -->
+        <h2 id="computers">1. What Is a Computer?</h2>
+        <p>
+          A computer is an electronic device that can <strong>store</strong> data and
+          <strong>follow instructions</strong> to transform that data. Although modern computers
+          look very different (phones, laptops, watches, car dashboards), a lot of them share the
+          same basic structure.
+        </p>
+
+        <figure>
+          <img src="https://upload.wikimedia.org/wikipedia/commons/8/84/Von_Neumann_architecture.svg"
+               alt="Simplified diagram of a computer: input, output, memory, control unit, arithmetic and logic unit"
+               style="max-width: 480px; width: 100%; display: block; margin: 1rem auto;">
+          <figcaption>
+            A simplified view of a computer: <strong>input</strong>, <strong>output</strong>,
+            <strong>memory</strong>, and a <strong>CPU</strong> (Central Processing Unit).
+          </figcaption>
+        </figure>
+
+        <p>At a high level, we can think of a computer as having:</p>
+        <div class="feature-grid">
+          <div class="feature-card">
+            <strong>Input devices</strong>
+            <p>Keyboard, mouse, touchscreen, microphone, camera.</p>
+          </div>
+          <div class="feature-card">
+            <strong>Output devices</strong>
+            <p>Screen, speakers, printer, vibration motor.</p>
+          </div>
+          <div class="feature-card">
+            <strong>Memory</strong>
+            <p>Where data and instructions are stored.</p>
+          </div>
+          <div class="feature-card">
+            <strong>CPU</strong>
+            <p>Performs calculations and decides which instruction to run next.</p>
+          </div>
+        </div>
+
+        <p>
+          The CPU repeatedly performs a simple cycle:
+        </p>
+
+        <div class="pill-steps">
+          <div class="pill-step">Fetch</div>
+          <div class="pill-sep">→</div>
+          <div class="pill-step">Decode</div>
+          <div class="pill-sep">→</div>
+          <div class="pill-step">Execute</div>
+        </div>
+
+        <div class="box box-info">
+          <span class="box-title">Key Idea</span>
+          A computer is <strong>fast but stupid</strong>. It can perform billions of simple
+          operations per second, but only if we provide precise, unambiguous instructions.
+        </div>
+
+        <h3>1.1 Different kinds of computers</h3>
+        <p>
+          When we say “computer”, most people picture a laptop or desktop. But from a programming
+          point of view, many everyday objects count as computers:
+        </p>
+        <ul>
+          <li>A smartphone running apps.</li>
+          <li>A smartwatch tracking your steps.</li>
+          <li>A car’s onboard system controlling engine and sensors.</li>
+          <li>A games console, smart TV, or even your washing machine.</li>
+        </ul>
+        <p>
+          All of these contain one or more CPUs, some memory, and programs that control how they behave.
+        </p>
+
+        <h3>1.2 Myth vs reality</h3>
+        <div class="split-row">
+          <div class="split-card">
+            <strong>Myth:</strong> A computer is “smart”.<br>
+            <strong>Reality:</strong> A computer follows instructions blindly and literally.
+          </div>
+          <div class="split-card">
+            <strong>Myth:</strong> Programming means “talking to the computer”.<br>
+            <strong>Reality:</strong> Programming means writing <em>precise rules</em> that the computer obeys.
+          </div>
+        </div>
+
+        <p><strong>Mini activity (2–3 minutes):</strong></p>
+        <ul>
+          <li>List three devices you used today that count as computers (not just “laptop”).</li>
+          <li>For each one, identify one input and one output.</li>
+          <li>Notice how many computers are “hidden” in everyday objects.</li>
+        </ul>
+
+        <!-- 2. WHAT IS A PROGRAM? -->
+        <h2 id="program">2. What Is a Program?</h2>
+        <p>
+          A <strong>program</strong> is a precise sequence of instructions that a computer can execute.
+          It tells the computer:
+        </p>
+        <ul>
+          <li>What <strong>data</strong> to use (input).</li>
+          <li>What <strong>steps</strong> to perform (processing).</li>
+          <li>What <strong>results</strong> to produce (output).</li>
+        </ul>
+
+        <h3>2.1 Programs you already use</h3>
+        <p>
+          Even if you’ve never written code before, you probably use dozens of programs every day:
+        </p>
+        <ul>
+          <li>Your web browser, email client, and messaging apps.</li>
+          <li>Maps and navigation apps that compute routes.</li>
+          <li>Photo and video apps that transform images and sound.</li>
+          <li>Banking apps, online shopping sites, games, and more.</li>
+        </ul>
+        <p>
+          Behind each of these is code: someone wrote instructions that describe exactly how the
+          program should respond to your input.
+        </p>
+
+        <h3>2.2 Human Language vs Computer Language</h3>
+        <p>
+          Humans are good at dealing with <em>vague</em> instructions:
+          “Can you send me that thing later?” usually works.
+          Computers are terrible at this. They require instructions that are:
+        </p>
+        <ul>
+          <li><strong>Exact</strong> – no missing steps.</li>
+          <li><strong>Unambiguous</strong> – only one possible meaning.</li>
+          <li><strong>Complete</strong> – everything needed to reach the goal is specified.</li>
+        </ul>
+
+        <div class="box box-warn">
+          <span class="box-title">Important</span>
+          A computer <strong>cannot guess</strong> what you meant. If the instructions are vague,
+          contradictory, or incomplete, the program will either crash or do the wrong thing.
+        </div>
+
+        <h3>2.3 Data and Programs in Memory</h3>
+        <p>
+          Modern computers store <strong>programs in memory alongside data</strong>. The same
+          memory chip might hold:
+        </p>
+        <ul>
+          <li>The instructions that define your web browser.</li>
+          <li>The text of the page you’re reading.</li>
+          <li>Your typed responses and settings.</li>
+        </ul>
+        <p>
+          This is called the <strong>stored-program concept</strong>. You don’t need to
+          remember the name, but it explains why computers can load and run different programs so flexibly.
+        </p>
+
+        <div class="activity-box">
+          <span class="box-title">Think–pair–share (5 minutes)</span>
+          <p>(Or simply think + jot down notes if you are working alone.)</p>
+          <ol>
+            <li>Pick one app or website you use a lot.</li>
+            <li>List three things it can do in response to your actions (e.g. “when I click X, it does Y”).</li>
+            <li>For each one, imagine the invisible program instruction behind it.</li>
+          </ol>
+        </div>
+
+        <!-- 3. ALGORITHMS -->
+        <h2 id="algorithms">3. Algorithms: Step-by-Step Instructions</h2>
+        <p>
+          Before we write code, we need to describe <em>how</em> to solve a problem. An
+          <strong>algorithm</strong> is:
+        </p>
+        <blockquote>
+          A step-by-step method for solving a problem or achieving a goal.
+        </blockquote>
+
+        <p>
+          You already use algorithms in everyday life: recipes, directions, assembly instructions,
+          checklists, and so on.
+        </p>
+
+        <figure>
+          <img src="https://upload.wikimedia.org/wikipedia/commons/a/a9/Tea_processing_chart_II.svg"
+               alt="Flowchart showing steps in tea processing"
+               style="max-width: 650px; width: 100%; display: block; margin: 1rem auto;">
+          <figcaption>
+            An example of an algorithm represented as a flowchart (steps in processing tea leaves).
+          </figcaption>
+        </figure>
+
+        <h3>3.1 Properties of a Good Algorithm</h3>
+        <div class="feature-grid">
+          <div class="feature-card">
+            <strong>Input</strong>
+            <p>What information does it start with?</p>
+          </div>
+          <div class="feature-card">
+            <strong>Output</strong>
+            <p>What result does it produce?</p>
+          </div>
+          <div class="feature-card">
+            <strong>Definiteness</strong>
+            <p>Each step is clear and unambiguous.</p>
+          </div>
+          <div class="feature-card">
+            <strong>Finiteness</strong>
+            <p>It eventually finishes, rather than looping forever.</p>
+          </div>
+          <div class="feature-card">
+            <strong>Effectiveness</strong>
+            <p>Steps are simple enough to be carried out mechanically.</p>
+          </div>
+        </div>
+
+        <h3>3.2 Everyday Example: Making a Cup of Tea</h3>
+        <div class="split-row">
+          <div class="split-card">
+            <strong>Informal (Human):</strong>
+            <ol>
+              <li>Boil water.</li>
+              <li>Put a teabag in a cup.</li>
+              <li>Pour boiling water into the cup.</li>
+              <li>Wait a few minutes.</li>
+              <li>Remove the teabag.</li>
+              <li>Add milk/sugar if desired.</li>
+              <li>Drink.</li>
+            </ol>
+          </div>
+          <div class="split-card issue">
+            <strong>Computer issues:</strong>
+            <ul>
+              <li>How much water?</li>
+              <li>How hot?</li>
+              <li>What if there are no cups?</li>
+              <li>What if there is no teabag?</li>
+              <li>Infinite loop if water never boils?</li>
+              <li>How much milk/sugar? (or none?)</li>
+              <li>When exactly is it ready to drink?</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="box box-info">
+          <span class="box-title">Programming Mindset</span>
+          When you think like a programmer, you start noticing all the hidden assumptions in
+          everyday instructions. Programming is partly about <strong>removing</strong> those assumptions.
+        </div>
+
+        <h3>3.3 Three basic patterns in algorithms</h3>
+        <ul>
+          <li><strong>Sequence</strong> – do one step after another in order.</li>
+          <li><strong>Selection</strong> – choose between two or more paths (e.g. “if it is raining, take an umbrella”).</li>
+          <li><strong>Repetition</strong> – repeat some steps (e.g. “stir until the sugar dissolves”).</li>
+        </ul>
+        <p>
+          Most programs you write in this module will be built by combining these three patterns.
+          Later, you will see them again as <strong>statements</strong> in Python:
+          normal lines of code (sequence), <code>if</code> (selection), and <code>while</code>/<code>for</code> (repetition).
+        </p>
+
+        <h3>3.4 Activity: Write an Everyday Algorithm</h3>
+        <div class="activity-box">
+          <span class="box-title">Activity</span>
+          <p><strong>(10–15 minutes, discussion in class or self-reflection)</strong></p>
+          <p>Pick one of these tasks (or invent your own):</p>
+          <ul>
+            <li>Brushing your teeth.</li>
+            <li>Locking up your house when you leave.</li>
+            <li>Making a sandwich.</li>
+          </ul>
+          <p>Write down the steps as if explaining to a very literal robot:</p>
+          <ul>
+            <li>Put <strong>one action per line</strong>.</li>
+            <li>Avoid vague words like “some”, “a bit”, “properly”.</li>
+            <li>Look for decision points: <em>If there is no bread, then…</em></li>
+            <li>Look for repetition: <em>Stir until no lumps remain.</em></li>
+          </ul>
+          <p>When you’re done, check:</p>
+          <ul>
+            <li>Did you clearly state the <strong>starting point</strong> (inputs)?</li>
+            <li>Did you clearly state the <strong>goal</strong> (output)?</li>
+            <li>Could someone else follow your steps without improvising?</li>
+          </ul>
+        </div>
+
+        <!-- 4. FROM ALGORITHMS TO CODE -->
+        <h2 id="algorithms-code">4. From Algorithms to Code</h2>
+        <p>
+          A computer cannot understand human languages directly. We need a way to turn our
+          algorithm (idea) into something a computer can execute. This is where
+          <strong>programming languages</strong> come in.
+        </p>
+
+        <h3>4.1 Levels of Description</h3>
+        <ol>
+          <li>
+            <strong>Informal description</strong> – “Find the largest of three numbers.”
+          </li>
+          <li>
+            <strong>Algorithm (natural language or pseudocode)</strong> – step-by-step instructions that a human can follow.
+          </li>
+          <li>
+            <strong>Code</strong> – the algorithm written in a formal programming language like Python.
+          </li>
+        </ol>
+        <p>
+          In this module we will spend a lot of time moving between (2) and (3): from algorithm
+          to code and back again.
+        </p>
+
+        <h3>4.2 Pseudocode (Not Real Code Yet!)</h3>
+        <p>
+          <strong>Pseudocode</strong> looks a bit like programming, but it’s written for humans,
+          not machines. There is no single “correct” syntax; the goal is clarity.
+        </p>
+        <p>Example: find the largest of three numbers <code>a</code>, <code>b</code>, <code>c</code>:</p>
+        <div class="pseudo-block">Set largest to a
+If b is greater than largest:
+    Set largest to b
+If c is greater than largest:
+    Set largest to c
+Output largest</div>
+
+        <p>
+          Different people might write this slightly differently, and that’s fine. Once
+          the algorithm is clear, we can translate it into Python in a later lecture.
+        </p>
+
+        <h3>4.3 Sequence, selection, and repetition in code</h3>
+        <p>
+          Remember the three basic patterns of algorithms:
+        </p>
+        <ul>
+          <li><strong>Sequence</strong> – in code, this is just one statement after another.</li>
+          <li><strong>Selection</strong> – implemented with <code>if</code>, <code>elif</code>, <code>else</code>.</li>
+          <li><strong>Repetition</strong> – implemented with <code>while</code> and <code>for</code> loops.</li>
+        </ul>
+        <p>
+          In Week 1 and Week 2 we focus more on the ideas. In later weeks you will see exactly how
+          these patterns look in real Python code.
+        </p>
+
+        <h3>4.4 Activity: Pseudocode for a Simple Problem</h3>
+        <p><strong>(10 minutes)</strong></p>
+        <div class="activity-box">
+          <span class="box-title">Activity: Pseudocode</span>
+          <p>Write pseudocode for one of these tasks:</p>
+          <ul>
+            <li>
+              Given three test scores, compute the average and say whether it is a
+              <em>pass</em> or <em>fail</em>.
+            </li>
+            <li>
+              Given a person’s age, decide whether they are a <em>child</em>,
+              <em>teenager</em>, <em>adult</em>, or <em>senior</em>.
+            </li>
+          </ul>
+          <p>Focus on the logic, not on Python syntax. Ask yourself:</p>
+          <ul>
+            <li>What are the inputs?</li>
+            <li>What is the output?</li>
+            <li>What decisions (if any) are needed?</li>
+            <li>Is there any repetition?</li>
+          </ul>
+        </div>
+
+        <!-- 5. MEET PYTHON (OPTIONAL DEMO WITH CODE CARD) -->
+        <h2 id="python-preview">5. Meet Python</h2>
+        <p>
+          In this module we will use the <strong>Python</strong> programming language.
+          Python is widely used in web development, data science, artificial intelligence,
+          automation, and more.
+        </p>
+
+        <ul>
+          <li>Its syntax is relatively simple and readable.</li>
+          <li>It runs on many platforms (Windows, macOS, Linux, the web).</li>
+          <li>There is a huge ecosystem of libraries and learning resources.</li>
+        </ul>
+
+        <h3>5.1 How Python runs your code</h3>
+        <p>
+          Python is an <strong>interpreted</strong> language. That means an interpreter reads
+          your program and executes it line by line. In this course:
+        </p>
+        <ul>
+          <li>You will type Python code into an editor in the browser.</li>
+          <li>The browser sends your code to a Python interpreter (Pyodide) running behind the scenes.</li>
+          <li>The interpreter executes your instructions and sends the output back to you.</li>
+        </ul>
+        <p>
+          This setup means you don’t have to install anything to get started.
+        </p>
+
+        <p>
+          In this course, you will run Python code directly in your browser using the embedded
+          editor and terminal on this page. In later weeks we will depend on this heavily.
+          For now, here is a <em>single, optional</em> first interaction with Python.
+        </p>
+
+        <section class="card" id="ex-1">
+          <div class="card-head">
+            <div class="file-name">Optional Demo 1.1 – Say Hello</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+# This is your very first Python command.
+# Press "Run" and see what appears in the Terminal Output box.
+
+print("Hello, world!")
+print("This is my first Python lecture.")
+</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="status">
+            <span class="dot"></span><span class="status-text">Ready</span>
+          </div>
+        </section>
+
+        <div class="box box-warn">
+          <span class="box-title">Common Pitfall</span>
+          Python is <strong>case-sensitive</strong>. <code>print()</code> is correct, but
+          <code>Print()</code> or <code>PRINT()</code> will cause an error. We’ll explore
+          why in future lectures.
+        </div>
+
+        <h3>5.2 Mini tasks with Python</h3>
+        <p>Try editing the code above and then pressing <strong>Run</strong> again:</p>
+        <ul>
+          <li>Change the message inside the quotation marks.</li>
+          <li>Add another line with <code>print("Your own message here")</code>.</li>
+          <li>Remove one of the closing quotation marks and run it – see what error appears.</li>
+        </ul>
+        <p>
+          You don’t need to understand the error message yet. For now, just notice that
+          <strong>small changes in your instructions</strong> can completely change what
+          the computer does.
+        </p>
+
+        <p>
+          We will not go deeper into syntax today. The important takeaway is that we now have a
+          way to turn our ideas (algorithms) into something a computer can execute.
+        </p>
+
+        <!-- 6. RECAP & SELF-CHECK -->
+        <h2 id="recap">6. Recap &amp; Self-check</h2>
+        <h3>6.1 Key Ideas from Week 1</h3>
+        <ul>
+          <li>A computer is a device that stores data and follows instructions to process it.</li>
+          <li>
+            A program is a <strong>precise sequence of instructions</strong> that a computer can execute.
+          </li>
+          <li>
+            An algorithm is a <strong>step-by-step method</strong> for solving a problem, independent of any code.
+          </li>
+          <li>
+            Good algorithms have clear inputs and outputs and are finite, definite, and effective.
+          </li>
+          <li>
+            Programming languages like Python let us express algorithms in a form a computer understands.
+          </li>
+          <li>
+            Most programs can be broken down into <strong>sequence</strong>, <strong>selection</strong>,
+            and <strong>repetition</strong>.
+          </li>
+        </ul>
+
+        <h3>6.2 Quick Concept Quiz (click to check)</h3>
+        <div class="quiz">
+          <ol>
+            <li>
+              Which of these is <strong>not</strong> an algorithm?
+              <ol type="a">
+                <li>A recipe for baking a cake.</li>
+                <li>Directions from your house to campus.</li>
+                <li>A random list of unconnected words.</li>
+                <li>Instructions for assembling a bookshelf.</li>
+              </ol>
+              <details>
+                <summary>Show answer</summary>
+                <div class="callout callout-idea">Correct: A random list of unconnected words.</div>
+              </details>
+            </li>
+            <li>
+              Why do computers need precise instructions?
+              <ol type="a">
+                <li>They cannot guess what you meant.</li>
+                <li>They execute instructions very literally.</li>
+                <li>They get bored easily.</li>
+                <li>They cannot fill in missing steps like humans can.</li>
+              </ol>
+              <details>
+                <summary>Show answer</summary>
+                <div class="callout callout-idea">
+                  Correct: (a), (b), and (d). Computers follow instructions literally and cannot guess or fill in missing steps.
+                </div>
+              </details>
+            </li>
+            <li>
+              True or False: An algorithm must involve a computer to be an algorithm.
+              <details>
+                <summary>Show answer</summary>
+                <div class="callout callout-idea">False — algorithms are step-by-step methods, with or without machines.</div>
+              </details>
+            </li>
+          </ol>
+        </div>
+
+        <h3>6.3 Reflection</h3>
+        <p>In 2–3 sentences, answer for yourself:</p>
+        <ul>
+          <li>What was the most surprising or interesting idea for you in this lecture?</li>
+          <li>Can you describe one everyday activity as an algorithm?</li>
+          <li>Where did you notice hidden assumptions in your own instructions?</li>
+        </ul>
+
+        <div class="box box-info">
+          <span class="box-title">Next Time</span>
+          In Week 2, we start using Python as a smart calculator. We will explore
+          basic data types (integers, floating-point numbers, Booleans, and strings) and
+          see how Python evaluates simple expressions.
+        </div>
+
+      </main>
+    </div>
+
+    <footer>
+      <p class="copyright"></p>
+      <div class="legal-notice"></div>
+    </footer>
+
+  </div>
+
+  <script src="../theme/footer.js"></script>
+  <script src="../theme/legal.js"></script>
+  <script src="../engine/engine.js"></script>
+  <script>
+    initPlayground('ex-1');
+    applyFooterText();
+    applyLegalNotice();
+  </script>
+</body>
+</html>
