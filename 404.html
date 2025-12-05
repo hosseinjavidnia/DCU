@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>Page Not Found | CSC1014</title>
+  <title>Page Not Found</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -15,7 +15,7 @@
   <div class="wrap">
     <header>
       <span class="eyebrow">Dublin City University</span>
-      <h1>CSC1014 Programming Fundamentals</h1>
+      <h1 id="course-title">Course Page</h1>
       <p class="lead">Looks like the page you were looking for is missing.</p>
     </header>
 
@@ -24,8 +24,8 @@
       <h2>Page not found</h2>
       <p>The link may be broken or the page might have moved. Use the shortcuts below to continue exploring the course site.</p>
       <div class="actions">
-        <a class="btn btn-primary" href="/DCU/CSC1014/index.html">Back to course home</a>
-        <a class="btn" href="/DCU/CSC1014/playground.html">Python playground</a>
+        <a class="btn btn-primary" id="home-link" href="/DCU/CSC1014/index.html">Back to course home</a>
+        <a class="btn" id="secondary-link" href="/DCU/CSC1014/playground.html">Python playground</a>
       </div>
     </section>
 
@@ -40,6 +40,35 @@
   <script>
     applyFooterText();
     applyLegalNotice();
+    (function setCourseContext() {
+      const courseData = {
+        CSC1014: {
+          title: "CSC1014 Programming Fundamentals",
+          home: "/DCU/CSC1014/index.html",
+          secondary: "/DCU/CSC1014/playground.html",
+          secondaryLabel: "Python playground"
+        },
+        CSC1184: {
+          title: "CSC1184 Programming for Data Analysis",
+          home: "/DCU/CSC1184/index.html",
+          secondary: "/DCU/CSC1184/playground.html",
+          secondaryLabel: "Python Playground"
+        }
+      };
+      const parts = location.pathname.split("/").filter(Boolean);
+      const course = parts[1];
+      const data = courseData[course] || courseData.CSC1014;
+      document.title = `Page Not Found | ${data.title}`;
+      const titleEl = document.getElementById("course-title");
+      const homeLink = document.getElementById("home-link");
+      const secondaryLink = document.getElementById("secondary-link");
+      if (titleEl) titleEl.textContent = data.title;
+      if (homeLink) homeLink.href = data.home;
+      if (secondaryLink) {
+        secondaryLink.href = data.secondary;
+        secondaryLink.textContent = data.secondaryLabel;
+      }
+    })();
   </script>
 </body>
 </html>
