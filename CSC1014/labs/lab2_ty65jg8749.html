@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Lab 2 | CSC1014</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+
+  <!-- Pyodide & CodeMirror (CDN) -->
+  <script src="https://cdn.jsdelivr.net/pyodide/v0.23.4/full/pyodide.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/eclipse.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/python/python.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/matchbrackets.min.js"></script>
+
+  <!-- Course theme -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../theme/theme.css">
+</head>
+<body class="lecture">
+
+  <div class="wrap wide">
+    
+    <nav>
+      <div class="nav-left">
+        <a href="../index.html" class="back-link">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 12H5m7-7l-7 7 7 7"></path></svg>
+          Back to Course
+        </a>
+        <span style="color:var(--border)">|</span>
+        <h1>Week 2 – Lab</h1>
+      </div>
+      <span class="badge-top">Lab Exercise</span>
+    </nav>
+
+    <div class="lecture-wrap">
+      
+      <aside class="lecture-sidebar">
+        <div class="toc-title">On this page</div>
+        <a href="#intro" class="toc-link active">Introduction</a>
+        <a href="#warmup" class="toc-link">1. Warm-up: Types in Python</a>
+        <a href="#numbers" class="toc-link">2. Working with Numbers</a>
+        <a href="#precedence" class="toc-link">3. Precedence Puzzles</a>
+        <a href="#calculator" class="toc-link">4. Calculator Word Problems</a>
+        <a href="#comparisons" class="toc-link">5. Comparisons &amp; Booleans</a>
+        <a href="#strings" class="toc-link">6. Strings vs Numbers</a>
+        <a href="#wrapup" class="toc-link">7. Wrap-up &amp; Checklist</a>
+      </aside>
+
+      <main class="lecture-content">
+        
+        <!-- INTRO -->
+        <header id="intro">
+          <h1>Week 2 Lab – Types, Expressions &amp; the Python Calculator</h1>
+
+          <p class="lede">
+            In this lab you will practise using Python as a calculator, explore how different
+            <strong>types</strong> behave, and get more comfortable reading and writing
+            <strong>expressions</strong> with a clear order of operations.
+          </p>
+
+          <div class="callout callout-goal">
+            <span class="callout-title">Lab goals</span>
+            <ul>
+              <li>Use <code>type()</code> to inspect the types of values and expression results.</li>
+              <li>Practise writing and evaluating arithmetic expressions.</li>
+              <li>Develop intuition for operator precedence and the effect of parentheses.</li>
+              <li>Use Python to solve small calculator-style word problems.</li>
+              <li>Write and interpret simple comparison expressions that yield <code>True</code>/<code>False</code>.</li>
+              <li>Clearly distinguish between <strong>numbers</strong> and <strong>strings</strong>.</li>
+            </ul>
+          </div>
+
+          <div class="callout callout-idea">
+            <span class="callout-title">Important</span>
+            Today we still avoid variables and input.  
+            All your work will be with <strong>literal values</strong> inside expressions.
+            Next week, you’ll start giving those values names.
+          </div>
+        </header>
+
+        <!-- 1. WARM-UP: TYPES IN PYTHON -->
+        <h2 id="warmup">1. Warm-up: Types in Python</h2>
+
+        <p>
+          We’ll begin by checking that your environment is working and reminding ourselves
+          of Python’s basic types: <code>int</code>, <code>float</code>, <code>bool</code> and <code>str</code>.
+        </p>
+
+        <section class="card" id="lab2-ex-1">
+          <div class="card-head">
+            <div class="file-name">Exercise 1 – Checking Types</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+# Exercise 1: Warm-up with types
+# 1. Press Run.
+# 2. Then extend the example as described below.
+
+print("Value:", 7, "Type:", type(7))
+print("Value:", 3.14, "Type:", type(3.14))
+print("Value:", True, "Type:", type(True))
+print("Value:", "hello", "Type:", type("hello"))
+</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="status">
+            <span class="dot"></span><span class="status-text">Ready</span>
+          </div>
+        </section>
+
+        <h3>1.1 Tasks</h3>
+        <ul>
+          <li>Add a line for <code>-5</code>. What type do you expect?</li>
+          <li>Add a line for <code>0.0</code>. Is it <code>int</code> or <code>float</code>?</li>
+          <li>Add a line for <code>"42"</code>. How is that different from <code>42</code>?</li>
+          <li>Add a line for <code>False</code>. Confirm its type.</li>
+        </ul>
+
+        <div class="box box-info">
+          <span class="box-title">Observation</span>
+          Two values can <em>look</em> similar but have different types.
+          For example, <code>"42"</code> (string) vs <code>42</code> (integer).
+          This will matter when we try to do arithmetic.
+        </div>
+
+        <!-- 2. WORKING WITH NUMBERS -->
+        <h2 id="numbers">2. Working with Numbers</h2>
+
+        <p>
+          Next we’ll practise numeric expressions and see how Python handles integer and
+          floating-point results.
+        </p>
+
+        <section class="card" id="lab2-ex-2">
+          <div class="card-head">
+            <div class="file-name">Exercise 2 – Numeric Expressions</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+# Exercise 2: Basic numeric expressions
+# 1. Predict the result of each line.
+# 2. Then press Run and compare.
+
+print("2 + 3 =", 2 + 3)
+print("10 - 4 =", 10 - 4)
+print("3 * 7 =", 3 * 7)
+print("20 / 5 =", 20 / 5)     # division
+print("20 / 6 =", 20 / 6)
+print("20 // 6 =", 20 // 6)   # integer division
+print("20 % 6 =", 20 % 6)     # remainder
+</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="status">
+            <span class="dot"></span><span class="status-text">Ready</span>
+          </div>
+        </section>
+
+        <h3>2.1 Tasks</h3>
+        <ol>
+          <li>Before running, write down your predicted results for each line (including decimals).</li>
+          <li>Run the code and check. Did any result surprise you?</li>
+          <li>
+            Add lines to compute:
+            <ul>
+              <li>Number of hours in 3 days: <code>3 * 24</code></li>
+              <li>Number of minutes in 2 hours: <code>2 * 60</code></li>
+              <li>Number of seconds in 5 minutes: <code>5 * 60</code></li>
+            </ul>
+          </li>
+        </ol>
+
+        <section class="card" id="lab2-ex-3">
+          <div class="card-head">
+            <div class="file-name">Exercise 3 – Types of Numeric Results</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+# Exercise 3: Check the type of each result
+
+print("2 + 3 =", 2 + 3, "Type:", type(2 + 3))
+print("10 / 4 =", 10 / 4, "Type:", type(10 / 4))
+print("10 // 4 =", 10 // 4, "Type:", type(10 // 4))
+print("10 % 4 =", 10 % 4, "Type:", type(10 % 4))
+</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="status">
+            <span class="dot"></span><span class="status-text">Ready</span>
+          </div>
+        </section>
+
+        <h3>2.2 Tasks</h3>
+        <ul>
+          <li>Add <code>print("5 * 2.0 =", 5 * 2.0, "Type:", type(5 * 2.0))</code>.</li>
+          <li>What type do you get when you mix an <code>int</code> and a <code>float</code>?</li>
+          <li>
+            Try <code>print("Type of (20 / 5):", type(20 / 5))</code> and explain why Python
+            chooses that type.
+          </li>
+        </ul>
+
+        <!-- 3. PRECEDENCE PUZZLES -->
+        <h2 id="precedence">3. Precedence Puzzles</h2>
+
+        <p>
+          Many mistakes in beginner programs come from misunderstanding the
+          <strong>order of operations</strong>. Let’s practise reading and predicting
+          expressions with multiple operators.
+        </p>
+
+        <section class="card" id="lab2-ex-4">
+          <div class="card-head">
+            <div class="file-name">Exercise 4 – Precedence &amp; Parentheses</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+# Exercise 4: Predict the results before running.
+
+print("1 + 2 * 3 =", 1 + 2 * 3)
+print("(1 + 2) * 3 =", (1 + 2) * 3)
+print("10 - 4 - 1 =", 10 - 4 - 1)
+print("10 - (4 - 1) =", 10 - (4 - 1))
+print("2 ** 3 * 4 =", 2 ** 3 * 4)
+print("2 ** (3 * 4) =", 2 ** (3 * 4))
+</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="status">
+            <span class="dot"></span><span class="status-text">Ready</span>
+          </div>
+        </section>
+
+        <h3>3.1 Tasks</h3>
+        <ol>
+          <li>For each line, write down your predicted result before running.</li>
+          <li>Run the code and compare. Circle any surprising results.</li>
+          <li>For each surprising line, add a <code># comment</code> explaining the order:
+            e.g. <code># multiply first, then add</code>.</li>
+        </ol>
+
+        <h3>3.2 Create your own precedence puzzle</h3>
+        <div class="activity-box">
+          <span class="box-title">Activity – Your expression</span>
+          <ol>
+            <li>Invent an expression with at least three operators (e.g. <code>+ - *</code>).</li>
+            <li>Write one version <em>without</em> parentheses and one with parentheses.</li>
+            <li>Add two <code>print</code> lines to the script to show both results.</li>
+            <li>Swap with a classmate (if in lab) or imagine you’re setting an exam question:
+                would your expression confuse someone who ignores the precedence rules?</li>
+          </ol>
+        </div>
+
+        <!-- 4. CALCULATOR WORD PROBLEMS -->
+        <h2 id="calculator">4. Calculator Word Problems</h2>
+
+        <p>
+          We’ll now use expressions to solve small “word problems” – the kind of thing you might
+          otherwise do on a calculator. We still <em>hard-code</em> the numbers for now.
+        </p>
+
+        <section class="card" id="lab2-ex-5">
+          <div class="card-head">
+            <div class="file-name">Exercise 5 – Hard-coded Calculator</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+# Exercise 5: Use Python as a calculator for word problems.
+# Complete the expressions marked TODO.
+
+# 1) A person works 8 hours at a rate of 15 euro per hour.
+#    TODO: replace 0 with the correct expression.
+print("Daily pay =", 0, "euro")
+
+# 2) The average of the numbers 12, 15, and 19.
+#    TODO: replace 0 with the correct expression.
+print("Average of 12, 15, and 19 =", 0)
+
+# 3) A shop sells 3 items costing 4.50, 2.00, and 1.25 euro.
+#    TODO: complete the expression for the total cost.
+print("Total cost =", 0)
+
+# 4) There are 125 students and each lab room can hold 30 students.
+#    How many full rooms are needed, and how many students are left over?
+#    Use // for full rooms and % for the remainder.
+#    TODO: complete both expressions.
+print("Full rooms needed =", 0)
+print("Students left over =", 0)
+</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="status">
+            <span class="dot"></span><span class="status-text">Ready</span>
+          </div>
+        </section>
+
+        <h3>4.1 Tasks</h3>
+        <ul>
+          <li>Fill in the missing lines (look for the TODO comments).</li>
+          <li>Change the hourly rate or item prices and see how the output changes.</li>
+          <li>
+            Add one extra “word problem” of your own, for example:
+            <ul>
+              <li>Converting 25 degrees Celsius to Fahrenheit using <code>F = C * 9/5 + 32</code>.</li>
+              <li>Computing the total cost of multiple tickets.</li>
+            </ul>
+          </li>
+        </ul>
+
+        <div class="box box-info">
+          <span class="box-title">Looking ahead</span>
+          In a later lab, you will replace these “hard-coded” numbers with variables and user input.
+          The expression part (how you combine the numbers) will remain the same.
+        </div>
+
+        <!-- 5. COMPARISONS & BOOLEANS -->
+        <h2 id="comparisons">5. Comparisons &amp; Booleans</h2>
+
+        <p>
+          We now practise comparison expressions that produce <code>True</code> or <code>False</code>.
+          Think of these as questions you ask Python.
+        </p>
+
+        <section class="card" id="lab2-ex-6">
+          <div class="card-head">
+            <div class="file-name">Exercise 6 – Simple Comparisons</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+# Exercise 6: Comparison expressions
+
+print("3 < 5:", 3 < 5)
+print("3 > 5:", 3 > 5)
+print("10 == 2 * 5:", 10 == 2 * 5)
+print("7 != 7:", 7 != 7)
+
+print("Type of (3 < 5):", type(3 < 5))
+print("Type of True:", type(True))
+</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="status">
+            <span class="dot"></span><span class="status-text">Ready</span>
+          </div>
+        </section>
+
+        <h3>5.1 Tasks</h3>
+        <ul>
+          <li>Add a line that checks if <code>8</code> is greater than <code>10</code>.</li>
+          <li>Add a line that checks if <code>20 / 4</code> is equal to <code>5</code>.</li>
+          <li>
+            Add a line that checks if <code>2 + 3 * 4</code> is greater than <code>20</code>.
+            Think about the order of operations.
+          </li>
+        </ul>
+
+        <section class="card" id="lab2-ex-7">
+          <div class="card-head">
+            <div class="file-name">Exercise 7 – Boolean Combinations (Preview)</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+# Exercise 7: Combining Boolean expressions (preview)
+
+print("3 < 5 and 2 < 1:", 3 < 5 and 2 < 1)
+print("3 < 5 or 2 < 1:", 3 < 5 or 2 < 1)
+print("not (3 < 5):", not (3 < 5))
+</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="status">
+            <span class="dot"></span><span class="status-text">Ready</span>
+          </div>
+        </section>
+
+        <h3>5.2 Tasks</h3>
+        <ol>
+          <li>Predict each result before running.</li>
+          <li>Run and compare.</li>
+          <li>
+            Add one line that uses <code>and</code> where the whole expression is <code>True</code>.
+          </li>
+          <li>
+            Add one line that uses <code>or</code> where the whole expression is <code>True</code>,
+            even though one part is <code>False</code>.
+          </li>
+        </ol>
+
+        <!-- 6. STRINGS VS NUMBERS -->
+        <h2 id="strings">6. Strings vs Numbers</h2>
+
+        <p>
+          Finally, we’ll see how strings and numbers behave differently in expressions.
+        </p>
+
+        <section class="card" id="lab2-ex-8">
+          <div class="card-head">
+            <div class="file-name">Exercise 8 – Strings and Types</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+# Exercise 8: Strings vs numbers
+
+print("Value:", "123", "Type:", type("123"))
+print("Value:", 123, "Type:", type(123))
+
+print("2 + 3 =", 2 + 3)
+print('"2" + "3" =', "2" + "3")
+
+# Uncomment the next line and run. What happens?
+# print("2" - "1")
+</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="status">
+            <span class="dot"></span><span class="status-text">Ready</span>
+          </div>
+        </section>
+
+        <h3>6.1 Tasks</h3>
+        <ol>
+          <li>Run with the <code>print("2" - "1")</code> line commented out. Observe the output.</li>
+          <li>
+            Then uncomment that line and run again. You should see a different kind of error
+            (not a SyntaxError this time).
+          </li>
+          <li>
+            Read the error message:
+            <ul>
+              <li>What is the <strong>name</strong> of the error?</li>
+              <li>What does the message say about the operation?</li>
+            </ul>
+          </li>
+          <li>
+            Re-comment the line so the program runs again without errors.
+          </li>
+        </ol>
+
+        <div class="box box-info">
+          <span class="box-title">Error preview</span>
+          In Lab 1 you saw <strong>SyntaxError</strong> when the <em>structure</em> of the code
+          was broken.  
+          In this exercise you probably saw a <strong>TypeError</strong>, which happens when
+          you try an operation that doesn’t make sense for the <em>types</em> involved
+          (like subtracting one string from another).
+          We’ll talk more about different error types later in the course.
+        </div>
+
+        <h3>6.2 Build a message with mixed types</h3>
+        <p>
+          Use what you know about strings and numbers to build a friendly message.
+        </p>
+        <ul>
+          <li>
+            Write a line that prints something like:
+            <code>The sum of 4 and 6 is 10</code>  
+            but using the expression <code>4 + 6</code> rather than typing <code>10</code> directly.
+          </li>
+          <li>
+            Write a line that prints:
+            <code>Is 7 greater than 10? False</code> using the expression <code>7 &gt; 10</code>.
+          </li>
+        </ul>
+
+        <!-- 7. WRAP-UP -->
+        <h2 id="wrapup">7. Wrap-up &amp; Checklist</h2>
+
+        <h3>7.1 By the end of this lab, you should…</h3>
+        <ul>
+          <li>Be comfortable running and editing simple Python scripts in the browser.</li>
+          <li>Be able to use <code>type()</code> to inspect the type of a value or expression.</li>
+          <li>Have practised arithmetic expressions and understood how precedence and parentheses affect results.</li>
+          <li>Have used Python to solve small calculator-style word problems with hard-coded numbers.</li>
+          <li>Have written and interpreted comparison expressions that produce Boolean results.</li>
+          <li>Have seen how strings behave differently from numbers and caused/fixed at least one <strong>TypeError</strong>.</li>
+        </ul>
+
+        <h3>7.2 If you finish early</h3>
+        <ul>
+          <li>Invent three more word problems and solve them with Python expressions.</li>
+          <li>Write a “mini quiz” script that prints 3 expressions and their answers.</li>
+          <li>
+            Take one of your calculator expressions and change it so that it produces a
+            <code>float</code> instead of an <code>int</code>, and vice versa.
+          </li>
+        </ul>
+
+        <div class="box box-info">
+          <span class="box-title">Looking ahead</span>
+          In the next lecture and lab, you’ll start using <strong>variables</strong> to
+          store these values in named boxes, and then – shortly after – use them
+          to build programs that can react to user input.
+        </div>
+
+      </main>
+    </div>
+
+    <footer>
+      <p class="copyright"></p>
+      <div class="legal-notice"></div>
+    </footer>
+
+  </div>
+
+  <script src="../theme/footer.js"></script>
+  <script src="../theme/legal.js"></script>
+  <script src="../engine/engine.js"></script>
+  <script>
+    initPlayground('lab2-ex-1');
+    initPlayground('lab2-ex-2');
+    initPlayground('lab2-ex-3');
+    initPlayground('lab2-ex-4');
+    initPlayground('lab2-ex-5');
+    initPlayground('lab2-ex-6');
+    initPlayground('lab2-ex-7');
+    initPlayground('lab2-ex-8');
+    applyFooterText();
+    applyLegalNotice();
+  </script>
+</body>
+</html>
