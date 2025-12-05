@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Lecture 1 | CSC1014</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<script src="https://cdn.jsdelivr.net/pyodide/v0.23.4/full/pyodide.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/eclipse.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/python/python.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/matchbrackets.min.js"></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="theme/theme.css">
+</head>
+<body>
+
+  <div class="wrap wide">
+    
+    <nav>
+      <div class="nav-left">
+        <a href="index.html" class="back-link">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 12H5m7-7l-7 7 7 7"></path></svg>
+          Back to Course
+        </a>
+        <span style="color:var(--border)">|</span>
+        <h1>Week 1</h1>
+      </div>
+      <span class="badge-top">Lecture Note</span>
+    </nav>
+
+    <div class="lecture-wrap">
+      
+      <aside class="lecture-sidebar">
+        <div class="toc-title">On this page</div>
+        <a href="#intro" class="toc-link active">Introduction</a>
+        <a href="#print" class="toc-link">1. The Print Function</a>
+        <a href="#sequence" class="toc-link">2. Sequence & Order</a>
+        <a href="#types" class="toc-link">3. Numbers vs Strings</a>
+      </aside>
+
+      <main class="lecture-content">
+        
+        <header id="intro">
+          <h1>Intro to Pythonic Thinking</h1>
+          <p class="lead">How to talk to computers, print basic text, and understand the difference between numbers and strings.</p>
+        </header>
+
+        <h2 id="print">1. The Print Function</h2>
+        <p>
+          The first thing any programmer learns is how to make the computer speak. In Python, we use the <code>print()</code> function. Think of functions as "verbs"—they are actions the computer performs.
+        </p>
+
+        <section class="card" id="ex-1">
+          <div class="card-head">
+            <div class="file-name">Exercise 1.1</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">print("Hello, World!")
+print("Welcome to Python.")</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="status">
+            <span class="dot"></span><span class="status-text">Ready</span>
+          </div>
+        </section>
+
+        <div class="box box-warn">
+          <span class="box-title">Common Pitfall</span>
+          Python is <strong>case-sensitive</strong>. This means <code>print()</code> is correct, but <code>Print()</code> or <code>PRINT()</code> will cause an error.
+        </div>
+
+        <h2 id="sequence">2. Sequence & Order</h2>
+        <p>
+          A computer program is read from the top down, line by line. It does not look ahead. 
+          If you tell it to cook the eggs before cracking them, it will try (and fail).
+        </p>
+
+
+        <section class="card" id="ex-2">
+          <div class="card-head">
+            <div class="file-name">Exercise 1.2</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">print("1. Ready...")
+print("2. Set...")
+print("3. Go!")</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="status">
+            <span class="dot"></span><span class="status-text">Ready</span>
+          </div>
+        </section>
+
+        <h2 id="types">3. Numbers vs Strings</h2>
+        <p>
+          Computers are excellent calculators. When working with numbers, we <strong>do not use quotes</strong>.
+          If you put quotes around a number (e.g., <code>"5"</code>), Python treats it as a text character.
+        </p>
+
+        <div class="box box-info">
+          <span class="box-title">Key Concept</span>
+          <strong>Integers</strong> are whole numbers. <strong>Strings</strong> are text. You can add numbers together, but adding strings just joins them together (concatenation).
+        </div>
+
+        <section class="card" id="ex-3">
+          <div class="card-head">
+            <div class="file-name">Exercise 1.3</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">print(5 + 10)
+print(100 - 1)
+# Quotes make it text, not math:
+print("5 + 10")</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="status">
+            <span class="dot"></span><span class="status-text">Ready</span>
+          </div>
+        </section>
+
+      </main>
+    </div>
+
+    <footer>
+      <p class="copyright"></p>
+      <div class="legal-notice"></div>
+    </footer>
+
+  </div>
+
+  <script src="theme/footer.js"></script>
+  <script src="theme/legal.js"></script>
+  <script src="engine/engine.js"></script>
+  <script>
+    initPlayground('ex-1');
+    initPlayground('ex-2');
+    initPlayground('ex-3');
+    applyFooterText();
+    applyLegalNotice();
+  </script>
+</body>
+</html>

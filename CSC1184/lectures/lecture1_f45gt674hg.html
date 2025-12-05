@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Lecture 1 | CSC1184</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+
+  <!-- Pyodide + CodeMirror (same stack as other module) -->
+  <script src="https://cdn.jsdelivr.net/pyodide/v0.23.4/full/pyodide.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/eclipse.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/python/python.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/matchbrackets.min.js"></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../theme/theme.css">
+</head>
+<body class="lecture">
+
+  <div class="wrap wide">
+    
+    <nav>
+      <div class="nav-left">
+        <a href="../index.html" class="back-link">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path d="M19 12H5m7-7l-7 7 7 7"></path>
+          </svg>
+          Back to Course
+        </a>
+        <span style="color:var(--border)">|</span>
+        <h1>Week 1</h1>
+      </div>
+      <span class="badge-top">Lecture Note</span>
+    </nav>
+
+    <div class="lecture-wrap">
+      
+      <aside class="lecture-sidebar">
+        <div class="toc-title">On this page</div>
+        <a href="#intro" class="toc-link active">Introduction</a>
+        <a href="#pda" class="toc-link">1. What Is Programming for Data Analysis?</a>
+        <a href="#data-vocab" class="toc-link">2. Datasets, Variables & Observations</a>
+        <a href="#kinds-of-questions" class="toc-link">3. Kinds of Questions We Ask</a>
+        <a href="#workflow" class="toc-link">4. A Simple Analysis Workflow</a>
+        <a href="#python-role" class="toc-link">5. Why Python? Where This Module Fits</a>
+        <a href="#python-refresh" class="toc-link">6. Python Refresh: Lists & Built-ins</a>
+        <a href="#demo" class="toc-link">7. Interactive Examples</a>
+        <a href="#module-run" class="toc-link">8. How Lectures & Labs Fit Together</a>
+        <a href="#recap" class="toc-link">9. Recap & Self-check</a>
+      </aside>
+
+      <main class="lecture-content">
+        
+        <!-- INTRO -->
+        <header id="intro">
+          <h1>Week 1 – Programming for Data Analysis: Mindset & Warm-Up</h1>
+
+          <p class="lede">
+            CSC1184 is a second-year module about using Python to work with data: loading it,
+            cleaning it, exploring it, and building simple models. In this first week we focus on
+            language and mindset rather than heavy code: what counts as “data”, what kinds of
+            questions we can ask, and how the Python you learned earlier fits into that picture.
+          </p>
+
+          <div class="callout callout-goal">
+            <span class="callout-title">By the end of this lecture, you should be able to:</span>
+            <ul>
+              <li>Explain what “programming for data analysis” means in plain language.</li>
+              <li>Use terms like <em>dataset</em>, <em>observation</em>, and <em>variable</em> correctly.</li>
+              <li>Recognise a simple workflow from question → data → conclusion.</li>
+              <li>Describe where Python and its data libraries fit into that workflow.</li>
+              <li>Read and modify small Python examples that analyse lists of numbers.</li>
+            </ul>
+          </div>
+
+          <div class="callout callout-idea">
+            <span class="callout-title">Big idea</span>
+            In this module, code is not the “final product”. The real goal is the <strong>insight
+            you get from the data</strong> and how clearly you can explain it to someone else.
+          </div>
+        </header>
+
+        <!-- 1. WHAT IS PROGRAMMING FOR DATA ANALYSIS? -->
+        <h2 id="pda">1. What Is Programming for Data Analysis?</h2>
+
+        <p>
+          In first-year programming you often wrote code to solve small, self-contained problems:
+          tax calculators, guessing games, simple simulations. In this module, the problems start
+          with <strong>data</strong>. You have measurements, logs, survey responses, or records,
+          and you want to learn something from them.
+        </p>
+
+        <p>
+          You can think of “programming for data analysis” as sitting at the intersection of:
+        </p>
+
+        <ul>
+          <li><strong>Programming</strong> – writing correct, readable Python code.</li>
+          <li><strong>Statistics</strong> – reasoning about variability, averages, relationships.</li>
+          <li><strong>Domain questions</strong> – what you actually care about (students, finance, sports, etc.).</li>
+        </ul>
+
+        <p>
+          A data-analysis task might be as simple as “What is the typical exam score?” or as
+          ambitious as “Can we predict who will pass?” Either way, your Python skills are there to
+          help you move from raw data to a clear, evidence-based answer.
+        </p>
+
+        <div class="split-row">
+          <div class="split-card">
+            <strong>Earlier programming modules</strong>
+            <ul>
+              <li>Focus on language features and basic problem solving.</li>
+              <li>Work with small, carefully chosen examples.</li>
+              <li>Success = program matches the specification exactly.</li>
+            </ul>
+          </div>
+          <div class="split-card">
+            <strong>Programming for data analysis</strong>
+            <ul>
+              <li>Focus on making sense of real or realistic datasets.</li>
+              <li>Data can be messy, incomplete, or noisy.</li>
+              <li>Success = you can defend what the data suggests (and what it does <em>not</em> say).</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- 2. DATASETS, VARIABLES & OBSERVATIONS -->
+        <h2 id="data-vocab">2. Datasets, Variables &amp; Observations</h2>
+
+        <p>
+          Most of the time, we will picture data as a table, similar to a spreadsheet:
+        </p>
+
+        <ul>
+          <li>
+            A <strong>dataset</strong> is the entire table – all rows and all columns together.
+          </li>
+          <li>
+            An <strong>observation</strong> (or record) is one row – one student, one match,
+            one transaction, one day.
+          </li>
+          <li>
+            A <strong>variable</strong> is one column – something we measure or record about
+            each observation (age, score, programme, price, category, date).
+          </li>
+        </ul>
+
+        <h3>2.1 Types of variables</h3>
+
+        <p>
+          Different types of variables call for different plots, summaries, and models. For this
+          module, it is enough to recognise three broad types:
+        </p>
+
+        <ul>
+          <li><strong>Numeric</strong> – things you can sensibly add and average (age, score, height, price).</li>
+          <li><strong>Categorical</strong> – labels or groups (programme, country, grade band, product category).</li>
+          <li><strong>Time-based</strong> – dates and times (exam date, timestamp of a log entry).</li>
+        </ul>
+
+        <div class="activity-box">
+          <span class="box-title">Activity – Spot observations and variables</span>
+          Think of a dataset you might actually see in your degree: module marks, lab attendance,
+          or a small log of system requests. What is one observation in that dataset? List three
+          variables you could record about it.
+        </div>
+
+        <!-- 3. KINDS OF QUESTIONS -->
+        <h2 id="kinds-of-questions">3. Kinds of Questions We Ask About Data</h2>
+
+        <p>
+          Not all data-analysis questions are the same. It helps to name a few common types, both
+          so you can frame your own questions and so you can recognise what a client or colleague
+          is really asking for.
+        </p>
+
+        <ul>
+          <li>
+            <strong>Descriptive</strong> – “What does this dataset look like?”  
+            Examples: distribution of exam marks, number of students per programme, average daily
+            temperature over a month.
+          </li>
+          <li>
+            <strong>Comparative</strong> – “Are these groups different?”  
+            Examples: average score in two different modules, sales before vs after a promotion.
+          </li>
+          <li>
+            <strong>Relational</strong> – “Are these variables related?”  
+            Examples: relationship between lab attendance and exam score; price vs size for
+            houses.
+          </li>
+          <li>
+            <strong>Predictive</strong> – “Can we predict one thing from others?”  
+            Examples: predict exam score from coursework and attendance; predict whether a customer
+            will buy again.
+          </li>
+        </ul>
+
+        <p>
+          In this module we will mainly tackle descriptive, comparative, and relational questions,
+          with a gentle introduction to predictive models later in the semester.
+        </p>
+
+        <!-- 4. WORKFLOW -->
+        <h2 id="workflow">4. A Simple Data Analysis Workflow</h2>
+
+        <p>
+          Many data-science workflows follow a similar pattern: start from a question, obtain
+          data, clean it, explore it, build a model, and communicate results. The exact diagram
+          differs between sources, but the core pattern is the same.
+        </p>
+
+        <div class="pill-steps">
+          <div class="pill-step">Ask</div>
+          <div class="pill-sep">→</div>
+          <div class="pill-step">Obtain</div>
+          <div class="pill-sep">→</div>
+          <div class="pill-step">Clean</div>
+          <div class="pill-sep">→</div>
+          <div class="pill-step">Explore</div>
+          <div class="pill-sep">→</div>
+          <div class="pill-step">Model</div>
+          <div class="pill-sep">→</div>
+          <div class="pill-step">Communicate</div>
+        </div>
+
+        <h3>4.1 The stages in more detail</h3>
+
+        <div class="split-row">
+          <div class="split-card">
+            <h4>Ask</h4>
+            <p>
+              Clarify what you want to know. “Is attendance related to marks?” is clearer and more
+              testable than “Is this dataset interesting?”. A good question mentions the variables
+              you care about and the kind of comparison or pattern you are interested in.
+            </p>
+          </div>
+          <div class="split-card">
+            <h4>Obtain</h4>
+            <p>
+              Get data from somewhere: CSV exports, databases, log files, APIs, manual entry.
+              In this module we mainly use CSV files and small text files, but the same ideas
+              extend to larger systems. You should always ask where the data came from and how it
+              was collected.
+            </p>
+          </div>
+        </div>
+
+        <div class="split-row">
+          <div class="split-card">
+            <h4>Clean</h4>
+            <p>
+              Fix obvious problems: missing values, wrong types, duplicated rows, inconsistent
+              labels (for example, “CS”, “Computer Science”, and “CompSci” being used for the same
+              programme). Cleaning is often the longest part of a project and has a big impact on
+              the quality of your conclusions.
+            </p>
+          </div>
+          <div class="split-card">
+            <h4>Explore</h4>
+            <p>
+              Compute summaries and create plots to understand distributions, patterns, and
+              anomalies. You might look at averages, histograms, boxplots, or simple scatterplots.
+              The goal here is curiosity: get a feel for the data before committing to any one
+              model or story.
+            </p>
+          </div>
+        </div>
+
+        <div class="split-row">
+          <div class="split-card">
+            <h4>Model</h4>
+            <p>
+              Fit a simple model to capture a relationship or make basic predictions. In this
+              module that might be a linear regression or a simple classifier. A model should be
+              interpretable and checked against the data; it is not a magic answer generator.
+            </p>
+          </div>
+          <div class="split-card">
+            <h4>Communicate</h4>
+            <p>
+              Turn your work into something another person can read or act on: a short report,
+              a slide deck, or a notebook with commentary. Good communication explains what you
+              did, what you found, and what the limitations are, rather than just dumping code
+              and numbers.
+            </p>
+          </div>
+        </div>
+
+        <p>
+          The rest of the module essentially walks this workflow with increasing levels of
+          sophistication. Week 1 sits mainly in “Ask” and “Explore” for very small datasets.
+        </p>
+
+        <!-- 5. PYTHON'S ROLE -->
+        <h2 id="python-role">5. Why Python? Where This Module Fits</h2>
+
+        <p>
+          Python is widely used in data analysis because of the ecosystem around it: NumPy for
+          efficient arrays, pandas for data tables, Matplotlib and other libraries for plots,
+          scikit-learn for models, and so on. This module does not try to cover everything; it
+          focuses on the ideas and tools you are likely to see again.
+        </p>
+
+        <p>
+          CSC1184 aims to:
+        </p>
+
+        <ul>
+          <li>Strengthen your basic Python when applied to data rather than toy puzzles.</li>
+          <li>Introduce core libraries (NumPy, pandas, basic plotting) at a comfortable pace.</li>
+          <li>Give you a solid mental model of the data-analysis workflow.</li>
+          <li>Prepare you to read and adapt examples from standard Python data-analysis resources.</li>
+        </ul>
+
+        <p>
+          In Week 1 and Week 2 we stay close to “plain” Python and small tables so that when we add
+          libraries, they feel like natural extensions rather than magic.
+        </p>
+
+        <!-- 6. PYTHON REFRESH -->
+        <h2 id="python-refresh">6. Python Refresh: Lists &amp; Built-ins</h2>
+
+        <p>
+          Before we look at the code examples, we slow down and name exactly what kinds of
+          Python objects we are using and what the basic operations mean. In Week 1 we only need:
+        </p>
+
+        <ul>
+          <li><strong>Numbers</strong> (integers and floats).</li>
+          <li><strong>Lists</strong> (ordered collections of values).</li>
+          <li><strong>Built-in functions</strong> like <code>len</code>, <code>sum</code>, <code>min</code>, <code>max</code>, and <code>print</code>.</li>
+          <li><strong>Simple loops</strong> with <code>for</code>.</li>
+        </ul>
+
+        <h3>6.1 What is a list?</h3>
+
+        <p>
+          A <strong>list</strong> in Python is an ordered collection of items. Important properties:
+        </p>
+
+        <ul>
+          <li>
+            Written with square brackets, for example:
+            <code>[55, 62, 71, 48]</code>.
+          </li>
+          <li>
+            The order matters: the first element is at position 0, the second at 1, and so on.
+          </li>
+          <li>
+            You can access a single element by its index, e.g. <code>scores[0]</code> is the first
+            score, <code>scores[1]</code> the second.
+          </li>
+          <li>
+            Lists are <strong>mutable</strong>: after creating a list, you can change, add, or
+            remove elements (for example, <code>scores.append(100)</code> to add a value).
+          </li>
+          <li>
+            Lists can grow or shrink: you are not stuck with a fixed size.
+          </li>
+          <li>
+            Technically, a list can contain values of different types, but in data analysis we
+            usually keep one list to “one meaning” (for example, all exam scores, all temperatures,
+            or all daily study times).
+          </li>
+        </ul>
+
+<p>Here is a small example you can talk through and also run:</p>
+
+<section class="card" id="ex-list">
+  <div class="card-head">
+    <div class="file-name">Example – A Small List</div>
+    <div class="toolbar">
+      <button class="btn btn-primary run">Run ▸</button>
+      <button class="btn clear">Clear</button>
+      <button class="btn reset">Reset</button>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="lecture-stack">
+      <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+# A tiny list of exam scores.
+scores = [55, 62, 71, 48]
+
+print("The whole list:", scores)
+
+print("First score:", scores[0])
+print("Second score:", scores[1])
+
+print("Number of scores:", len(scores))
+</textarea>
+      </div>
+      <div class="output-pane">
+        <div class="output-label">Terminal Output</div>
+        <pre class="output-box" aria-live="polite"></pre>
+      </div>
+    </div>
+  </div>
+  <div class="status">
+    <span class="dot"></span><span class="status-text">Ready</span>
+  </div>
+</section>
+
+        <p>
+          In this lecture we treat a list of numbers as a tiny dataset: a mini “column” of values
+          that we want to summarise or count.
+        </p>
+
+        <h3>6.2 What is a function?</h3>
+
+        <p>
+          At a high level, a <strong>function</strong> is a named chunk of code that:
+        </p>
+
+        <ul>
+          <li>takes some inputs (called <em>arguments</em>),</li>
+          <li>does some work,</li>
+          <li>and optionally returns a result.</li>
+        </ul>
+
+        <p>
+          You have already seen functions like <code>print</code> in first-year programming. In
+          this lecture we will mainly rely on <strong>built-in functions</strong> that come with
+          Python itself. We are not defining new functions inside the examples yet; we are just
+          practising how to <em>use</em> existing ones.
+        </p>
+
+        <h3>6.3 What is a built-in function?</h3>
+
+        <p>
+          Python provides many functions “out of the box”. These are called
+          <strong>built-in functions</strong>. You do not need to import anything to use them.
+          In Week 1 we rely on a small set:
+        </p>
+
+        <ul>
+          <li><strong><code>len(x)</code></strong> – returns how many items are in <code>x</code>.</li>
+          <li><strong><code>sum(x)</code></strong> – returns the total when you add all numeric items in <code>x</code>.</li>
+          <li><strong><code>min(x)</code></strong> – returns the smallest item in <code>x</code>.</li>
+          <li><strong><code>max(x)</code></strong> – returns the largest item in <code>x</code>.</li>
+          <li><strong><code>print(...)</code></strong> – displays text and values in the output area.</li>
+        </ul>
+
+        <p>
+          The interactive examples below all follow the same pattern:
+        </p>
+
+        <ol>
+          <li>Store a small dataset as a list of numbers.</li>
+          <li>Use built-in functions to compute summaries (length, total, average, minimum, maximum).</li>
+          <li>Use a simple <code>for</code> loop to count how many values meet a condition.</li>
+        </ol>
+
+        <!-- 7. INTERACTIVE EXAMPLES -->
+        <h2 id="demo">7. Interactive Examples – Lists &amp; Simple Summaries</h2>
+
+        <p>
+          Each of the three playgrounds below is deliberately simple and focuses on one context:
+          exam scores, temperatures, and study time. All three use the same ideas: lists,
+          built-in functions, and <code>for</code> loops. There are no user-defined functions or
+          external libraries in Week 1’s code.
+        </p>
+
+        <!-- Example 1 -->
+        <section class="card" id="ex-1">
+          <div class="card-head">
+            <div class="file-name">Example 1 – Exam Scores</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+# Example 1: Exam scores
+
+# A list of exam scores for one group of students.
+exam_scores = [55, 62, 71, 48, 90, 77, 68, 82]
+
+print("Exam scores:", exam_scores)
+
+# Basic summaries using built-in functions.
+count_scores = len(exam_scores)
+total_scores = sum(exam_scores)
+average_score = total_scores / count_scores
+
+print()
+print("Number of scores:", count_scores)
+print("Total of scores:", total_scores)
+print("Average score:", average_score)
+print("Lowest score:", min(exam_scores))
+print("Highest score:", max(exam_scores))
+
+# Count how many scores are at least 60.
+threshold = 60
+num_passing = 0
+
+for score in exam_scores:
+    if score >= threshold:
+        num_passing += 1
+
+print()
+print("Threshold:", threshold)
+print("Number of scores >= threshold:", num_passing)
+
+# Try:
+# - Adding a new score to the list.
+# - Changing the threshold to 50 or 70.
+</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="status">
+            <span class="dot"></span><span class="status-text">Ready</span>
+          </div>
+        </section>
+
+        <!-- Example 2 -->
+        <section class="card" id="ex-2">
+          <div class="card-head">
+            <div class="file-name">Example 2 – Daily Temperatures</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+# Example 2: Daily temperatures (°C) over a week
+
+temperatures = [11.2, 12.5, 9.8, 10.1, 13.4, 12.0, 8.9]
+
+print("Daily temperatures:", temperatures)
+
+num_days = len(temperatures)
+total_temp = sum(temperatures)
+average_temp = total_temp / num_days
+
+print()
+print("Number of days:", num_days)
+print("Average temperature:", average_temp)
+print("Coldest day temperature:", min(temperatures))
+print("Warmest day temperature:", max(temperatures))
+
+# Count how many days were "cold" (below 10°C).
+cold_days = 0
+
+for t in temperatures:
+    if t < 10.0:
+        cold_days += 1
+
+print("Number of cold days (< 10°C):", cold_days)
+
+# Try:
+# - Changing one or two temperatures.
+# - Changing the 'cold' threshold.
+</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="status">
+            <span class="dot"></span><span class="status-text">Ready</span>
+          </div>
+        </section>
+
+        <!-- Example 3 -->
+        <section class="card" id="ex-3">
+          <div class="card-head">
+            <div class="file-name">Example 3 – Study Time</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+# Example 3: Study time (minutes per day)
+
+study_minutes = [25, 40, 0, 60, 30, 90, 45]
+
+print("Study minutes per day:", study_minutes)
+
+days_recorded = len(study_minutes)
+total_study = sum(study_minutes)
+average_study = total_study / days_recorded
+
+print()
+print("Days recorded:", days_recorded)
+print("Total study time (minutes):", total_study)
+print("Average study time (minutes per day):", average_study)
+
+# Count how many days you studied at least 30 minutes.
+consistent_days = 0
+
+for minutes in study_minutes:
+    if minutes >= 30:
+        consistent_days += 1
+
+print("Days with at least 30 minutes of study:", consistent_days)
+
+# Try:
+# - Changing the study times (add more zero days or long study days).
+# - Using a different threshold (e.g. 45 minutes).
+</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="status">
+            <span class="dot"></span><span class="status-text">Ready</span>
+          </div>
+        </section>
+
+        <div class="box box-info">
+          <span class="box-title">Teaching tip</span>
+          You can walk slowly through each example in turn: first read the list, then ask the
+          room what <code>len</code>, <code>sum</code>, <code>min</code>, and <code>max</code>
+          will return before you run the code. Each example is the same pattern in a different
+          context.
+        </div>
+
+        <!-- 8. HOW MODULE RUNS -->
+        <h2 id="module-run">8. How Lectures &amp; Labs Fit Together</h2>
+
+        <p>
+          Each week, the lecture introduces concepts and small examples like the ones above.
+          The lab then gives you more time with a keyboard to apply the same ideas to slightly
+          larger or more realistic datasets.
+        </p>
+
+        <ul>
+          <li>
+            In Week 1 labs, you will work with tiny datasets represented as lists and practise
+            writing simple summaries and counts.
+          </li>
+          <li>
+            In Week 2, you will move from data typed directly into code to data stored in files
+            (for example, CSV), and start thinking about basic loading and parsing.
+          </li>
+          <li>
+            Later weeks will make heavier use of libraries such as NumPy and pandas, but they are
+            built on the patterns you see here: collect values, filter them, summarise them.
+          </li>
+        </ul>
+
+        <!-- 9. RECAP -->
+        <h2 id="recap">9. Recap &amp; Self-check</h2>
+
+        <h3>9.1 Key points from Week 1</h3>
+
+        <ul>
+          <li>Programming for data analysis starts from <strong>questions about data</strong>, not from syntax.</li>
+          <li>A dataset can be pictured as a table: rows are observations, columns are variables.</li>
+          <li>Common questions are descriptive (“what is typical?”), comparative (“are these groups different?”), relational, and predictive.</li>
+          <li>A simple workflow – Ask → Obtain → Clean → Explore → Model → Communicate – underlies the rest of the module.</li>
+          <li>Lists, built-in functions like <code>len</code> and <code>sum</code>, and basic loops are still the foundations of most analyses.</li>
+        </ul>
+
+        <h3>9.2 Self-check prompts</h3>
+
+        <ul>
+          <li>Can you describe a dataset from your own life and identify its observations and variables?</li>
+          <li>For any of the lists in the examples, what does each call to <code>len</code>, <code>sum</code>, <code>min</code>, and <code>max</code> tell you in words?</li>
+          <li>Which part of the workflow (Ask, Obtain, Clean, Explore, Model, Communicate) feels most familiar and which feels new?</li>
+          <li>Do you know how you will run Python for this module (browser playground, lab machines, your own laptop)?</li>
+        </ul>
+
+        <div class="box box-info">
+          <span class="box-title">Next week</span>
+          In Week 2 we keep the datasets small but move them into files. You will see how to read
+          text files and CSVs, and how to turn file contents into the kind of lists you worked
+          with in this lecture so that the same summary patterns still apply.
+        </div>
+
+      </main>
+    </div>
+
+    <footer>
+      <p class="copyright"></p>
+      <div class="legal-notice"></div>
+    </footer>
+
+  </div>
+
+  <script src="../theme/footer.js"></script>
+  <script src="../theme/legal.js"></script>
+  <script src="../engine/engine.js"></script>
+  <script>
+    initPlayground('ex-list');
+    initPlayground('ex-1');
+    initPlayground('ex-2');
+    initPlayground('ex-3');
+    applyFooterText();
+    applyLegalNotice();
+  </script>
+</body>
+</html>
