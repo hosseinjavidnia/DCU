@@ -25,7 +25,7 @@ async function loadPyodideEngine(setStatus) {
     pyodide = await loadPyodide();
     
     // Optional: Load common packages
-    await pyodide.loadPackage(["numpy", "pandas"]);
+    // await pyodide.loadPackage(["numpy", "pandas"]);
     
     setStatus('Python Ready', 'idle');
     return pyodide;
