@@ -1,7 +1,7 @@
 // engine/engine.js
 
 // 1. Configuration
-const defaultPlaygroundCode = `# Welcome to the CSC1014 Playground
+const defaultPlaygroundCode = `# Welcome to the CSC1184 Playground
 # This is a real Python environment running in your browser.
 
 def greet(name):
@@ -24,8 +24,8 @@ async function loadPyodideEngine(setStatus) {
     // Initialize Pyodide
     pyodide = await loadPyodide();
     
-    // Optional: Load common packages if you need them later
-    // await pyodide.loadPackage(["numpy", "pandas"]);
+    // Optional: Load common packages
+    await pyodide.loadPackage(["numpy", "pandas"]);
     
     setStatus('Python Ready', 'idle');
     return pyodide;
@@ -43,7 +43,7 @@ function initPlayground(id) {
     const btnClear = section.querySelector('.clear');
     const btnReset = section.querySelector('.reset');
     
-    // Set initial code
+    // Editor Setup
     const htmlCode = codeTA.value.replace(/\r\n?/g, '\n');
     const initialCode = htmlCode.length > 0 ? htmlCode : defaultPlaygroundCode;
     const editor = CodeMirror.fromTextArea(codeTA, {
@@ -65,10 +65,24 @@ function initPlayground(id) {
     overlay.setAttribute('aria-hidden', 'true');
     editorWrapper.appendChild(overlay);
 
+    // --- SAFETY & STATE CONFIG ---
+    const MAX_OUTPUT_CHARS = 10000; 
+    let accumulatedOutput = "";
+    let isOutputPending = false;
+    let rafId = null; // Track the animation frame to prevent race conditions
+
     // Helper: UI Updates
     function setStatus(msg, type='idle'){
         if(statusEl) statusEl.textContent = msg;
         if(dotEl) dotEl.className = 'dot ' + (type === 'idle' ? '' : type);
+    }
+
+    // Helper: Throttle DOM updates to prevent freezing
+    function flushOutput() {
+        if (!isOutputPending && accumulatedOutput.length === 0 && outputEl.textContent === '') return;
+        outputEl.textContent = accumulatedOutput;
+        outputEl.scrollTop = outputEl.scrollHeight; 
+        isOutputPending = false;
     }
 
     function setControlsDisabled(disabled, msg){
@@ -78,6 +92,8 @@ function initPlayground(id) {
         editor.setOption('readOnly', disabled ? true : false);
         editorWrapper.classList.toggle('readonly', disabled);
         overlay.style.pointerEvents = disabled ? 'auto' : 'none';
+        
+        // Mobile height fix
         const wrapEl = editorWrapper;
         if(disabled){
             wrapEl.style.height = 'auto';
@@ -86,6 +102,7 @@ function initPlayground(id) {
             wrapEl.style.height = '';
             wrapEl.style.minHeight = '';
         }
+
         requestAnimationFrame(() => editor.refresh());
         if(!disabled) requestAnimationFrame(() => editor.refresh());
         if(disabled && msg) setStatus(msg, 'idle');
@@ -94,10 +111,16 @@ function initPlayground(id) {
     // Main Run Function
     async function run(){
         const code = editor.getValue();
-        outputEl.textContent = ''; // Clear previous output
+        
+        // Reset State
+        outputEl.textContent = ''; 
+        accumulatedOutput = "";
+        isOutputPending = false;
+        
+        // Cancel any pending updates from previous runs or lingering loops
+        if (rafId) cancelAnimationFrame(rafId);
         
         try {
-            // 1. Ensure Engine is Loaded
             if(!pyodide) {
                 setControlsDisabled(true, 'Downloading Python Engine...');
                 await loadPyodideEngine(setStatus);
@@ -106,36 +129,65 @@ function initPlayground(id) {
             
             setStatus('Running...', 'idle');
 
-            // 2. Setup Output Handling
-            // Pyodide allows us to redirect stdout (print) to a function
+            // 1. FIX FOR MEMORY LEAK (Variable Persistence)
+            // Wipe global variables so Block B doesn't see Block A's data.
+            // Note: Users must re-import libraries (import pandas as pd) every time.
+            pyodide.runPython(`
+                # Clear all global variables except internal python builtins
+                for name in list(globals().keys()):
+                    if not name.startswith("_"):
+                        del globals()[name]
+            `);
+
+            // 2. FIX FOR INFINITE LOOPS (Crash Prevention)
             pyodide.setStdout({
                 batched: (text) => {
-                    outputEl.textContent += text + "\n";
+                    // Check if we exceeded the limit
+                    if (accumulatedOutput.length > MAX_OUTPUT_CHARS) {
+                        // CRITICAL: Throwing an Error here stops the Python engine!
+                        throw new Error("STDOUT_LIMIT_EXCEEDED");
+                    }
+
+                    accumulatedOutput += text + "\n";
+                    
+                    // Throttle UI updates
+                    if (!isOutputPending) {
+                        isOutputPending = true;
+                        // Assign ID so we can cancel it if an error occurs
+                        rafId = requestAnimationFrame(flushOutput);
+                    }
                 }
             });
 
-            // 3. Run the Code
-            // We use runPythonAsync to ensure the UI doesn't freeze
+            // 3. Execute
             await pyodide.runPythonAsync(code);
             
+            flushOutput();
             setStatus('Execution successful', 'ok');
 
         } catch(err) {
-            // 4. Handle Errors (The Magic Part)
-            // Pyodide throws JS errors that contain the Python traceback.
-            // We clean it up slightly to remove internal Pyodide references if needed.
-            
-            setStatus('Error', 'err');
-            
-            // Format the error to look like a terminal
-            const errorText = err.toString();
-            
-            // Create a span with your 'stderr' class for red styling
-            const errSpan = document.createElement('span');
-            errSpan.className = 'stderr';
-            errSpan.textContent = "\n" + errorText;
-            
-            outputEl.appendChild(errSpan);
+            // FIX: Cancel pending successful print updates. 
+            // Prevents the "success" text from overwriting the error message.
+            if (rafId) cancelAnimationFrame(rafId);
+
+            flushOutput(); // Show whatever text we have so far
+
+            // 4. Handle our custom "Kill Switch" Error
+            if (err.toString().includes("STDOUT_LIMIT_EXCEEDED")) {
+                setStatus('Terminated', 'err');
+                const msg = document.createElement('div');
+                msg.className = 'stderr';
+                msg.style.marginTop = "10px";
+                msg.textContent = "--- Execution Stopped: Output limit exceeded (possible infinite loop) ---";
+                outputEl.appendChild(msg);
+            } else {
+                // Handle normal Python errors
+                setStatus('Error', 'err');
+                const errSpan = document.createElement('span');
+                errSpan.className = 'stderr';
+                errSpan.textContent = "\n" + err.toString();
+                outputEl.appendChild(errSpan);
+            }
         }
     }
 
@@ -144,6 +196,7 @@ function initPlayground(id) {
     
     if(btnClear) btnClear.addEventListener('click', () => { 
         outputEl.textContent = ''; 
+        accumulatedOutput = ""; 
         setStatus('Cleared'); 
     });
     
@@ -152,7 +205,7 @@ function initPlayground(id) {
         setStatus('Reset'); 
     });
     
-    // Pre-load Pyodide when page opens; disable controls until ready
+    // Initial Load
     setControlsDisabled(true, 'Downloading Python Engine...');
     loadPyodideEngine(setStatus)
       .then(() => { setControlsDisabled(false); setStatus('Python Ready', 'ok'); })
