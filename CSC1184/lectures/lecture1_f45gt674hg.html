@@ -340,34 +340,345 @@
         <h3>6.1 What is a list?</h3>
 
         <p>
-          A <strong>list</strong> in Python is an ordered collection of items. Important properties:
+          A <strong>list</strong> in Python is an ordered, mutable collection written with square brackets. In data analysis we usually keep “one list = one meaning” (e.g., all exam scores).
         </p>
 
         <ul>
-          <li>
-            Written with square brackets, for example:
-            <code>[55, 62, 71, 48]</code>.
-          </li>
-          <li>
-            The order matters: the first element is at position 0, the second at 1, and so on.
-          </li>
-          <li>
-            You can access a single element by its index, e.g. <code>scores[0]</code> is the first
-            score, <code>scores[1]</code> the second.
-          </li>
-          <li>
-            Lists are <strong>mutable</strong>: after creating a list, you can change, add, or
-            remove elements (for example, <code>scores.append(100)</code> to add a value).
-          </li>
-          <li>
-            Lists can grow or shrink: you are not stuck with a fixed size.
-          </li>
-          <li>
-            Technically, a list can contain values of different types, but in data analysis we
-            usually keep one list to “one meaning” (for example, all exam scores, all temperatures,
-            or all daily study times).
-          </li>
+          <li><strong>Creation:</strong> <code>[]</code>, <code>[1, 2, 3]</code>, <code>[1, "Hello", 3.4]</code>, and nested lists like <code>["mouse", [8, 4, 6], ["a"]]</code>.</li>
+          <li><strong>Order &amp; indexing:</strong> Order is preserved. Positive indexing starts at <code>0</code>. Negative indexing starts at <code>-1</code> from the right.</li>
+          <li><strong>Slicing:</strong> <code>a:b</code> returns a sub-list from index <code>a</code> up to (but not including) <code>b</code>. <code>[:b]</code>, <code>[a:]</code>, and <code>[:]</code> are shorthand slices.</li>
+          <li><strong>Common methods (overview):</strong> <code>append</code>, <code>clear</code>, <code>copy</code>, <code>count</code>, <code>extend</code>, <code>index</code>, <code>insert</code>, <code>pop</code>, <code>remove</code>, <code>reverse</code>, <code>sort</code>.</li>
+          <li><strong>Concatenation (3 ways):</strong> <code>+</code>, <code>.extend(...)</code>, or loop &amp; <code>.append(...)</code>.</li>
+          <li><strong>Contrast:</strong> tuples are ordered but <em>immutable</em> (defined with parentheses).</li>
         </ul>
+
+        <div class="box box-info">
+          <span class="box-title">List methods – what they do (before coding)</span>
+          <ul>
+            <li><code>append(x)</code> – add a single item at the end (mutates the list).</li>
+            <li><code>clear()</code> – remove all items; the list becomes empty.</li>
+            <li><code>copy()</code> – create a shallow copy of the list.</li>
+            <li><code>count(x)</code> – return how many times <code>x</code> appears.</li>
+            <li><code>extend(iterable)</code> – append each element from another iterable to the end.</li>
+            <li><code>index(x)</code> – return the position of the first occurrence of <code>x</code> (error if not found).</li>
+            <li><code>insert(i, x)</code> – insert <code>x</code> at position <code>i</code>, shifting later items right.</li>
+            <li><code>pop([i])</code> – remove and return the item at index <code>i</code> (defaults to the last item).</li>
+            <li><code>remove(x)</code> – remove the first matching value <code>x</code> (error if not found).</li>
+            <li><code>reverse()</code> – reverse the list in place.</li>
+            <li><code>sort()</code> – sort the list in place (default ascending; items must be comparable).</li>
+          </ul>
+        </div>
+
+        <!-- NEW: Method examples (from the PDF). Each in its own runnable block. -->
+        <section class="card" id="ex-append">
+          <div class="card-head">
+            <div class="file-name">Example – append()</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+items = [1, 2, 3]
+print("start:", items)
+items.append(4)           # add single item at end
+print("after append:", items)
+</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="status"><span class="dot"></span><span class="status-text">Ready</span></div>
+        </section>
+
+        <section class="card" id="ex-clear">
+          <div class="card-head">
+            <div class="file-name">Example – clear()</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+nums = [10, 20, 30]
+print("start:", nums)
+nums.clear()              # remove all items
+print("after clear:", nums)
+</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="status"><span class="dot"></span><span class="status-text">Ready</span></div>
+        </section>
+
+        <section class="card" id="ex-copy">
+          <div class="card-head">
+            <div class="file-name">Example – copy()</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+a = [1, 2, 3]
+b = a.copy()              # shallow copy
+b.append(99)
+print("a:", a)            # original unchanged
+print("b:", b)            # copy modified
+</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="status"><span class="dot"></span><span class="status-text">Ready</span></div>
+        </section>
+
+        <section class="card" id="ex-count">
+          <div class="card-head">
+            <div class="file-name">Example – count(x)</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+vals = [1, 2, 2, 3, 2, 4]
+print("values:", vals)
+print("count of 2:", vals.count(2))
+</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="status"><span class="dot"></span><span class="status-text">Ready</span></div>
+        </section>
+
+        <section class="card" id="ex-extend">
+          <div class="card-head">
+            <div class="file-name">Example – extend(iterable)</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+a = [1, 2, 3]
+print("start:", a)
+a.extend([4, 5])          # add each element of iterable
+print("after extend:", a)
+</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="status"><span class="dot"></span><span class="status-text">Ready</span></div>
+        </section>
+
+        <section class="card" id="ex-index">
+          <div class="card-head">
+            <div class="file-name">Example – index(x)</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+letters = ['a', 'b', 'c', 'b']
+print("letters:", letters)
+print("index of 'b':", letters.index('b'))  # first occurrence
+</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="status"><span class="dot"></span><span class="status-text">Ready</span></div>
+        </section>
+
+        <section class="card" id="ex-insert">
+          <div class="card-head">
+            <div class="file-name">Example – insert(i, x)</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+nums = [10, 20, 30]
+print("start:", nums)
+nums.insert(1, 99)        # insert at index 1
+print("after insert:", nums)
+</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="status"><span class="dot"></span><span class="status-text">Ready</span></div>
+        </section>
+
+        <section class="card" id="ex-pop">
+          <div class="card-head">
+            <div class="file-name">Example – pop([i])</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+q = ['x', 'y', 'z']
+print("start:", q)
+last = q.pop()            # remove last
+print("popped:", last, "| now:", q)
+first = q.pop(0)          # remove by index
+print("popped index 0:", first, "| now:", q)
+</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="status"><span class="dot"></span><span class="status-text">Ready</span></div>
+        </section>
+
+        <section class="card" id="ex-remove">
+          <div class="card-head">
+            <div class="file-name">Example – remove(x)</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+names = ["Ana", "Bob", "Ana", "Cat"]
+print("start:", names)
+names.remove("Ana")       # remove first matching value
+print("after remove:", names)
+</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="status"><span class="dot"></span><span class="status-text">Ready</span></div>
+        </section>
+
+        <section class="card" id="ex-reverse">
+          <div class="card-head">
+            <div class="file-name">Example – reverse()</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+r = [1, 2, 3, 4]
+print("start:", r)
+r.reverse()               # in-place reverse
+print("after reverse:", r)
+</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="status"><span class="dot"></span><span class="status-text">Ready</span></div>
+        </section>
+
+        <section class="card" id="ex-sort">
+          <div class="card-head">
+            <div class="file-name">Example – sort()</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+s = [5, 2, 9, 1]
+print("start:", s)
+s.sort()                  # in-place ascending
+print("after sort:", s)
+</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="status"><span class="dot"></span><span class="status-text">Ready</span></div>
+        </section>
+        <!-- END NEW METHOD EXAMPLES -->
 
 <p>Here is a small example you can talk through and also run:</p>
 
@@ -711,6 +1022,18 @@ print("Days with at least 30 minutes of study:", consistent_days)
   <script src="../theme/legal.js"></script>
   <script src="../engine/engine.js"></script>
   <script>
+    initPlayground('ex-append');
+    initPlayground('ex-clear');
+    initPlayground('ex-copy');
+    initPlayground('ex-count');
+    initPlayground('ex-extend');
+    initPlayground('ex-index');
+    initPlayground('ex-insert');
+    initPlayground('ex-pop');
+    initPlayground('ex-remove');
+    initPlayground('ex-reverse');
+    initPlayground('ex-sort');
+
     initPlayground('ex-list');
     initPlayground('ex-1');
     initPlayground('ex-2');
