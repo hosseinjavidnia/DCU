@@ -1,0 +1,8 @@
+﻿transaction_id,product,category,price,quantity
+T1,Laptop,Electronics,1200,1
+T2,Mouse,Electronics,25,2
+T3,Desk Chair,Furniture,150,1
+T4,Monitor,Electronics,300,2
+T5,Notebook,Stationery,5,10
+T6,Keyboard,Electronics,45,1
+T7,Lamp,Furniture,30,3
