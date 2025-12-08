@@ -139,6 +139,21 @@ function initPlayground(id) {
                         del globals()[name]
             `);
 
+            // 1b. Browser-backed input() so prompts work in codeboxes
+            pyodide.runPython(`
+                import builtins
+                from js import prompt as _js_prompt
+
+                def __csc1014_input(prompt=""):
+                    # Use a native browser prompt; return empty string if cancelled.
+                    result = _js_prompt(prompt or "Input:")
+                    if result is None:
+                        return ""
+                    return str(result)
+
+                builtins.input = __csc1014_input
+            `);
+
             // 2. FIX FOR INFINITE LOOPS (Crash Prevention)
             pyodide.setStdout({
                 batched: (text) => {
