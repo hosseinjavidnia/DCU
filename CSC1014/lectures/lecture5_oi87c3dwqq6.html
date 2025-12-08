@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Lecture 5 | CSC1014</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+
+  <!-- Pyodide & CodeMirror (CDN) -->
+  <script src="https://cdn.jsdelivr.net/pyodide/v0.23.4/full/pyodide.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/eclipse.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/python/python.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/matchbrackets.min.js"></script>
+
+  <!-- Course theme -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../theme/theme.css">
+</head>
+<body class="lecture">
+
+  <div class="wrap wide">
+    
+    <nav>
+      <div class="nav-left">
+        <a href="../index.html" class="back-link">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 12H5m7-7l-7 7 7 7"></path></svg>
+          Back to Course
+        </a>
+        <span style="color:var(--border)">|</span>
+        <h1>Week 5</h1>
+      </div>
+      <span class="badge-top">Lecture Note</span>
+    </nav>
+
+    <div class="lecture-wrap">
+      
+      <aside class="lecture-sidebar">
+        <div class="toc-title">On this page</div>
+        <a href="#intro" class="toc-link active">Introduction</a>
+        <a href="#why-decisions" class="toc-link">1. Why Programs Need Decisions</a>
+        <a href="#booleans" class="toc-link">2. Boolean Expressions as Conditions</a>
+        <a href="#if-basic" class="toc-link">3. One-Way <code>if</code> Statements</a>
+        <a href="#if-else" class="toc-link">4. Two-Way <code>if</code> / <code>else</code></a>
+        <a href="#if-elif-else" class="toc-link">5. Multi-Way <code>if</code> / <code>elif</code> / <code>else</code></a>
+        <a href="#pitfalls" class="toc-link">6. Common Pitfalls</a>
+        <a href="#examples" class="toc-link">7. Putting It Together</a>
+        <a href="#recap" class="toc-link">8. Recap &amp; Self-check</a>
+      </aside>
+
+      <main class="lecture-content">
+        
+        <!-- INTRO -->
+        <header id="intro">
+          <h1>Week 5 – Making Decisions with <code>if</code> Statements</h1>
+
+          <p class="lede">
+            So far your programs always followed the same sequence of steps: read input, do
+            calculations, print results. In this lecture you will learn how to make your programs
+            <strong>choose</strong> between different actions using Boolean conditions and
+            <code>if</code> statements.
+          </p>
+
+          <div class="callout callout-goal">
+            <span class="callout-title">Lecture goals</span>
+            <ul>
+              <li>Understand why programs need decision-making, not just calculation.</li>
+              <li>Use Boolean expressions as <strong>conditions</strong> that are either <code>True</code> or <code>False</code>.</li>
+              <li>Write one-way <code>if</code> statements that conditionally execute a block of code.</li>
+              <li>Write two-way decisions using <code>if</code> / <code>else</code>.</li>
+              <li>Write multi-way decisions using <code>if</code> / <code>elif</code> / <code>else</code>.</li>
+              <li>Recognise and avoid common mistakes with <code>if</code> statements (indentation, <code>=</code> vs <code>==</code>, unreachable branches).</li>
+            </ul>
+          </div>
+
+          <div class="box box-info">
+            <span class="box-title">Where are we?</span>
+            <ul>
+              <li>Week 3: variables and state – programs can <em>remember</em> values.</li>
+              <li>Week 4: input and output – programs can talk to users and use their data.</li>
+              <li>Week 5: decisions – programs can choose actions based on that data.</li>
+            </ul>
+          </div>
+        </header>
+
+        <!-- 1. WHY DECISIONS -->
+        <h2 id="why-decisions">1. Why Programs Need Decisions</h2>
+
+        <p>
+          Think about how often you make decisions in everyday life:
+        </p>
+        <ul>
+          <li>If it is raining, take an umbrella; otherwise, wear sunglasses.</li>
+          <li>If you pass the exam, you get credit; otherwise, you repeat the module.</li>
+          <li>If your bank balance is negative, apply an overdraft fee.</li>
+        </ul>
+
+        <p>
+          Our programs should be able to react in similar ways:
+        </p>
+        <ul>
+          <li>If the user is under 18, show a different message.</li>
+          <li>If the score is above a pass mark, print “Pass”; otherwise, “Fail”.</li>
+          <li>If the input is negative, show a warning; otherwise, continue normally.</li>
+        </ul>
+
+        <p>
+          Without decision-making, a program can only do the same thing every time, regardless of
+          the data. It can calculate, but it cannot <strong>choose</strong>.
+        </p>
+
+        <div class="box box-info">
+          <span class="box-title">Key idea</span>
+          Decision-making in programs is about asking a <strong>yes/no question</strong> and then
+          choosing between different blocks of code depending on the answer.
+        </div>
+
+        <!-- 2. BOOLEANS AS CONDITIONS -->
+        <h2 id="booleans">2. Boolean Expressions as Conditions</h2>
+
+        <p>
+          In Week 2, you saw that Python has Boolean values <code>True</code> and <code>False</code>,
+          and that comparison operators produce these values:
+        </p>
+        <ul>
+          <li><code>age &gt;= 18</code></li>
+          <li><code>score == 100</code></li>
+          <li><code>balance &lt; 0</code></li>
+        </ul>
+
+        <p>
+          These are <strong>Boolean expressions</strong>. They are the “questions” your program
+          can ask: “Is this condition true?” A Boolean expression is a good
+          <strong>condition</strong> if it can only be <code>True</code> or <code>False</code>.
+        </p>
+
+        <h3>2.1 Comparisons and logical operators</h3>
+
+        <p>
+          Quick reminder:
+        </p>
+        <ul>
+          <li>Comparison operators: <code>&lt;</code>, <code>&gt;</code>, <code>&lt;=</code>, <code>&gt;=</code>, <code>==</code>, <code>!=</code></li>
+          <li>Logical operators: <code>and</code>, <code>or</code>, <code>not</code></li>
+        </ul>
+
+        <p>
+          We can combine these to form richer conditions:
+        </p>
+        <ul>
+          <li><code>age &gt;= 18 and age &lt;= 65</code></li>
+          <li><code>score &gt;= 40 or bonus_points &gt; 0</code></li>
+          <li><code>not (status == "cancelled")</code></li>
+        </ul>
+
+        <section class="card" id="ex-1">
+          <div class="card-head">
+            <div class="file-name">Example 5.1 – Boolean Expressions Recap</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+# Example 5.1: Try tweaking these values and re-running.
+
+age = 20
+score = 55
+balance = -10.0
+
+print("age >= 18:", age >= 18)
+print("score == 100:", score == 100)
+print("balance < 0:", balance < 0)
+
+# Combined conditions:
+print("Adult and passing:", age >= 18 and score >= 40)
+print("Adult or negative balance:", age >= 18 or balance < 0)
+</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="status">
+            <span class="dot"></span><span class="status-text">Ready</span>
+          </div>
+        </section>
+
+        <div class="activity-box">
+          <span class="box-title">Activity – Conditions from English</span>
+          <p>For each English statement, sketch a possible condition (just on paper):</p>
+          <ul>
+            <li>“The order is large if total_price is at least 100 euro.”</li>
+            <li>“The user is a teenager if age is between 13 and 19 inclusive.”</li>
+            <li>“The student passes if score is at least 40 and attendance is at least 80.”</li>
+          </ul>
+        </div>
+
+        <!-- 3. ONE-WAY IF -->
+        <h2 id="if-basic">3. One-Way <code>if</code> Statements</h2>
+
+        <p>
+          The simplest decision is a one-way <code>if</code>: do something only if a condition
+          is true, otherwise skip it.
+        </p>
+
+        <h3>3.1 Structure and indentation</h3>
+
+        <p>
+          Conceptually, the structure is:
+        </p>
+
+        <pre class="code-block">
+if &lt;condition&gt;:
+    &lt;indented block of one or more statements&gt;
+
+&lt;next statement after the if&gt;
+        </pre>
+
+        <p>
+          Execution steps:
+        </p>
+        <ol>
+          <li>Evaluate the condition once.</li>
+          <li>If it is <code>True</code>, execute the indented block.</li>
+          <li>If it is <code>False</code>, skip the block entirely.</li>
+          <li>Then continue with the next unindented statement after the block.</li>
+        </ol>
+
+        <p>
+          Indentation (spaces at the start of a line) is how Python knows which statements belong
+          to the <code>if</code>. All lines in the block must be indented consistently.
+        </p>
+
+        <section class="card" id="ex-2">
+          <div class="card-head">
+            <div class="file-name">Example 5.2 – One-Way if: Voting Age</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+# Example 5.2: One-way if
+
+age_text = input("Enter your age in years: ")
+age = int(age_text)
+
+if age >= 18:
+    print("You are allowed to vote in many countries.")
+
+print("Thank you for using this program.")
+</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="status">
+            <span class="dot"></span><span class="status-text">Ready</span>
+          </div>
+        </section>
+
+        <p>
+          Try running this program twice: once with an age above 18 and once below 18. Notice which
+          lines always run and which only run when the condition is true.
+        </p>
+
+        <div class="activity-box">
+          <span class="box-title">Activity – Trace the flow</span>
+          <ol>
+            <li>On paper, write out the steps the program takes when <code>age = 20</code>.</li>
+            <li>Repeat for <code>age = 15</code>.</li>
+            <li>Highlight the line(s) that only appear in one of the two cases.</li>
+          </ol>
+        </div>
+
+        <!-- 4. IF / ELSE -->
+        <h2 id="if-else">4. Two-Way Decisions with <code>if</code> / <code>else</code></h2>
+
+        <p>
+          A one-way <code>if</code> handles “maybe do this extra thing”. Often we want exactly one
+          of two alternatives: if the condition is true, do A; otherwise, do B. This is a two-way
+          decision.
+        </p>
+
+        <h3>4.1 Structure</h3>
+
+        <pre class="code-block">
+if &lt;condition&gt;:
+    &lt;block A&gt;
+else:
+    &lt;block B&gt;
+        </pre>
+
+        <p>
+          Exactly one of the two blocks will run:
+        </p>
+        <ul>
+          <li>If the condition is <code>True</code> → run block A, skip block B.</li>
+          <li>If the condition is <code>False</code> → skip block A, run block B.</li>
+        </ul>
+
+        <section class="card" id="ex-3">
+          <div class="card-head">
+            <div class="file-name">Example 5.3 – Pass/Fail Decision</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+# Example 5.3: Pass/fail using if/else
+
+score_text = input("Enter exam score (0-100): ")
+score = int(score_text)
+
+if score >= 40:
+    print("Result: PASS")
+else:
+    print("Result: FAIL")
+
+print("Score was:", score)
+</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="status">
+            <span class="dot"></span><span class="status-text">Ready</span>
+          </div>
+        </section>
+
+        <p>
+          Here the program always prints exactly one of “PASS” or “FAIL”. There is no situation
+          where it prints both or neither.
+        </p>
+
+        <h3>4.2 Positive vs non-positive numbers</h3>
+
+        <p>
+          Another classic two-way decision is testing the sign of a number:
+        </p>
+
+        <section class="card" id="ex-4">
+          <div class="card-head">
+            <div class="file-name">Example 5.4 – Positive or Not?</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+# Example 5.4: Classify a number as positive or not
+
+n_text = input("Enter a number (can be negative): ")
+n = float(n_text)
+
+if n > 0:
+    print("The number is positive.")
+else:
+    print("The number is zero or negative.")
+</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="status">
+            <span class="dot"></span><span class="status-text">Ready</span>
+          </div>
+        </section>
+
+        <!-- 5. IF / ELIF / ELSE -->
+        <h2 id="if-elif-else">5. Multi-Way Decisions with <code>if</code> / <code>elif</code> / <code>else</code></h2>
+
+        <p>
+          Many real problems have more than two categories: multiple letter grades, several age
+          groups, or different ticket prices. Writing separate, disconnected <code>if</code>
+          statements can lead to overlapping logic. Instead, we use a single ordered chain:
+        </p>
+
+        <pre class="code-block">
+if &lt;condition1&gt;:
+    &lt;block 1&gt;
+elif &lt;condition2&gt;:
+    &lt;block 2&gt;
+elif &lt;condition3&gt;:
+    &lt;block 3&gt;
+else:
+    &lt;default block&gt;
+        </pre>
+
+        <p>
+          Python evaluates the conditions in order:
+        </p>
+        <ol>
+          <li>If <code>condition1</code> is true, run block 1 and skip all others.</li>
+          <li>Otherwise, if <code>condition2</code> is true, run block 2 and skip the rest.</li>
+          <li>Otherwise, if <code>condition3</code> is true, run block 3 and skip the rest.</li>
+          <li>If none of the conditions is true, run the <code>else</code> block (if present).</li>
+        </ol>
+
+        <p>
+          At most one block runs.
+        </p>
+
+        <h3>5.1 Example: Grade classification</h3>
+
+        <section class="card" id="ex-5">
+          <div class="card-head">
+            <div class="file-name">Example 5.5 – Grade Categories</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+# Example 5.5: Categorise a score using if/elif/else
+
+score_text = input("Enter exam score (0-100): ")
+score = int(score_text)
+
+if score < 40:
+    grade = "Fail"
+elif score < 60:
+    grade = "Pass"
+elif score < 80:
+    grade = "Merit"
+else:
+    grade = "Distinction"
+
+print("Score:", score, "Grade:", grade)
+</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="status">
+            <span class="dot"></span><span class="status-text">Ready</span>
+          </div>
+        </section>
+
+        <p>
+          Notice that we did not write conditions like <code>score &gt;= 40 and score &lt; 60</code>.
+          Because the chain is ordered, by the time we reach <code>elif score &lt; 60</code>, we
+          already know that <code>score &gt;= 40</code>, since the earlier branch (<code>score &lt; 40</code>)
+          was not taken.
+        </p>
+
+        <div class="activity-box">
+          <span class="box-title">Activity – Age groups</span>
+          <p>On paper, design an age classification like:</p>
+          <ul>
+            <li>Under 13 → “Child”</li>
+            <li>13–17 → “Teenager”</li>
+            <li>18–64 → “Adult”</li>
+            <li>65+ → “Senior”</li>
+          </ul>
+          <p>Write out the conditions in order as they would appear in an <code>if</code> /
+          <code>elif</code> / <code>else</code> chain.</p>
+        </div>
+
+        <!-- 6. PITFALLS -->
+        <h2 id="pitfalls">6. Common Pitfalls with <code>if</code> Statements</h2>
+
+        <h3>6.1 Assignment (<code>=</code>) vs comparison (<code>==</code>)</h3>
+
+        <p>
+          One of the most common beginner mistakes is to confuse assignment (<code>=</code>) with
+          comparison (<code>==</code>):
+        </p>
+        <ul>
+          <li><code>x = 5</code> means “store 5 in the variable <code>x</code>”.</li>
+          <li><code>x == 5</code> means “check whether <code>x</code> is equal to 5”.</li>
+        </ul>
+
+        <p>
+          Inside an <code>if</code> condition, you almost always want <code>==</code>, not <code>=</code>.
+        </p>
+
+        <section class="card" id="ex-6">
+          <div class="card-head">
+            <div class="file-name">Example 5.6 – Comparison vs Assignment</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+# Example 5.6: Using == in a condition
+
+answer = input("Type yes or no: ")
+
+if answer == "yes":
+    print("You typed yes.")
+else:
+    print("You did not type yes.")
+</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="status">
+            <span class="dot"></span><span class="status-text">Ready</span>
+          </div>
+        </section>
+
+        <div class="box box-warn">
+          <span class="box-title">Remember</span>
+          <code>=</code> changes a variable; <code>==</code> checks a value. Using <code>=</code> in
+          an <code>if</code> condition is a syntax error in Python.
+        </div>
+
+        <h3>6.2 Indentation errors</h3>
+
+        <p>
+          Python uses indentation to mark blocks. Common mistakes:
+        </p>
+        <ul>
+          <li>Forgetting to indent a line that should be inside an <code>if</code> block.</li>
+          <li>Accidentally indenting a line that should be outside the block.</li>
+          <li>Mixing tabs and spaces (we recommend 4 spaces per indentation level).</li>
+        </ul>
+
+        <p>
+          If the indentation is wrong, Python may raise an <code>IndentationError</code> or your
+          program may run but behave differently from what you intended.
+        </p>
+
+        <h3>6.3 Unreachable or overlapping branches</h3>
+
+        <p>
+          In an <code>if</code> / <code>elif</code> chain, the order of conditions matters.
+          A common logical bug is to write overlapping conditions so that some branches can never
+          be taken.
+        </p>
+
+        <p>For example, imagine:</p>
+
+        <pre class="code-block">
+if score >= 40:
+    print("Pass")
+elif score >= 80:
+    print("Distinction")
+        </pre>
+
+        <p>
+          The second branch will never run: any score ≥ 80 already satisfies <code>score &gt;= 40</code>,
+          so the first branch always catches it. Instead, the more specific condition should appear first.
+        </p>
+
+        <div class="activity-box">
+          <span class="box-title">Activity – Fix the logic</span>
+          <p>On paper, correct the above snippet so that “Distinction” is possible. Then test your
+          idea by plugging in different scores in your head.</p>
+        </div>
+
+        <!-- 7. PUTTING IT TOGETHER -->
+        <h2 id="examples">7. Putting It Together: Decision-Based Programs</h2>
+
+        <p>
+          Let’s combine input, conversion, variables, expressions, and conditionals into two
+          slightly richer examples.
+        </p>
+
+        <h3>7.1 Extended grading helper</h3>
+
+        <section class="card" id="ex-7">
+          <div class="card-head">
+            <div class="file-name">Example 5.7 – Simple Grading Helper</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+# Example 5.7: Grading helper with categories
+
+score_text = input("Enter exam score (0-100): ")
+score = int(score_text)
+
+if score < 0 or score > 100:
+    print("Error: score must be between 0 and 100.")
+else:
+    if score < 40:
+        grade = "Fail"
+    elif score < 60:
+        grade = "Pass"
+    elif score < 80:
+        grade = "Merit"
+    else:
+        grade = "Distinction"
+
+    print(f"Score {score} gives grade: {grade}")
+</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="status">
+            <span class="dot"></span><span class="status-text">Ready</span>
+          </div>
+        </section>
+
+        <p>
+          Here we have:
+        </p>
+        <ul>
+          <li>Input and conversion.</li>
+          <li>Validation of the input range using a Boolean expression.</li>
+          <li>An <code>if</code> / <code>elif</code> / <code>else</code> chain for grade categories.</li>
+        </ul>
+
+        <h3>7.2 Ticket price calculator</h3>
+
+        <section class="card" id="ex-8">
+          <div class="card-head">
+            <div class="file-name">Example 5.8 – Ticket Price by Age</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+# Example 5.8: Simple ticket price calculator
+
+age_text = input("Enter age: ")
+age = int(age_text)
+
+# Base ticket price:
+base_price = 10.0
+
+if age < 5:
+    category = "Infant"
+    price = 0.0
+elif age < 18:
+    category = "Child"
+    price = base_price * 0.5
+elif age < 65:
+    category = "Adult"
+    price = base_price
+else:
+    category = "Senior"
+    price = base_price * 0.7
+
+print(f"Category: {category}")
+print(f"Ticket price: {price} euro")
+</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="status">
+            <span class="dot"></span><span class="status-text">Ready</span>
+          </div>
+        </section>
+
+        <div class="activity-box">
+          <span class="box-title">Activity – Modify the rules</span>
+          <p>On paper or in the editor, propose one change to the ticket rules, for example:</p>
+          <ul>
+            <li>Introduce a student discount category.</li>
+            <li>Change the age boundaries.</li>
+            <li>Increase or decrease the base price.</li>
+          </ul>
+          <p>Explain how that change affects the <code>if</code> / <code>elif</code> / <code>else</code> structure.</p>
+        </div>
+
+        <!-- 8. RECAP -->
+        <h2 id="recap">8. Recap &amp; Self-check</h2>
+
+        <h3>8.1 Key ideas from Week 5</h3>
+        <ul>
+          <li>Programs need decision-making to react differently to different input.</li>
+          <li>Boolean expressions (<code>True</code>/<code>False</code>) are used as conditions in <code>if</code> statements.</li>
+          <li>A one-way <code>if</code> optionally executes a block if the condition is true.</li>
+          <li><code>if</code> / <code>else</code> chooses exactly one of two blocks.</li>
+          <li><code>if</code> / <code>elif</code> / <code>else</code> chooses among many alternatives, in order.</li>
+          <li>Assignment (<code>=</code>) and comparison (<code>==</code>) have different meanings.</li>
+          <li>Indentation defines which statements belong to which block.</li>
+          <li>Ordering conditions correctly avoids unreachable branches.</li>
+        </ul>
+
+        <h3>8.2 Concept quiz</h3>
+        <div class="quiz">
+          <ol>
+            <li>
+              For the code:
+<pre class="code-block">
+x = 10
+if x > 5:
+    print("A")
+print("B")
+</pre>
+              What is printed?
+              <details>
+                <summary>Show answer</summary>
+                <div class="callout callout-idea">
+                  Both <code>A</code> and <code>B</code>. The condition is true, so the <code>if</code>
+                  block runs, and then execution continues with the next statement.
+                </div>
+              </details>
+            </li>
+            <li>
+              For the code:
+<pre class="code-block">
+score = 75
+if score < 40:
+    grade = "Fail"
+elif score < 60:
+    grade = "Pass"
+elif score < 80:
+    grade = "Merit"
+else:
+    grade = "Distinction"
+</pre>
+              What is the final value of <code>grade</code>?
+              <details>
+                <summary>Show answer</summary>
+                <div class="callout callout-idea">
+                  <code>"Merit"</code>. The first two conditions are false; the third
+                  (<code>score &lt; 80</code>) is true, so that block runs and the rest are skipped.
+                </div>
+              </details>
+            </li>
+            <li>
+              Why is this code logically wrong for distinguishing pass and distinction?
+<pre class="code-block">
+if score >= 40:
+    print("Pass")
+elif score >= 80:
+    print("Distinction")
+</pre>
+              <details>
+                <summary>Show answer</summary>
+                <div class="callout callout-idea">
+                  Any score ≥ 80 also satisfies <code>score ≥ 40</code>, so the first branch always
+                  catches it and the second branch is never reached. The more specific condition
+                  should come first.
+                </div>
+              </details>
+            </li>
+          </ol>
+        </div>
+
+        <h3>8.3 Reflection</h3>
+        <p>For yourself:</p>
+        <ul>
+          <li>Can you explain, in your own words, what happens when a program reaches an <code>if</code> statement?</li>
+          <li>Which part of today’s material felt most challenging: conditions, indentation, or multi-way decisions?</li>
+          <li>Think of one decision you make regularly in real life. How could you express it as an <code>if</code> / <code>elif</code> / <code>else</code> chain?</li>
+        </ul>
+
+        <div class="box box-info">
+          <span class="box-title">Next time</span>
+          In Week 6, you will learn how to repeat actions using <strong>loops</strong>
+          (<code>while</code> and later <code>for</code>) and combine them with the decision-making
+          patterns from this lecture.
+        </div>
+
+      </main>
+    </div>
+
+    <footer>
+      <p class="copyright"></p>
+      <div class="legal-notice"></div>
+    </footer>
+
+  </div>
+
+  <script src="../theme/footer.js"></script>
+  <script src="../theme/legal.js"></script>
+  <script src="../engine/engine.js"></script>
+  <script>
+    initPlayground('ex-1');
+    initPlayground('ex-2');
+    initPlayground('ex-3');
+    initPlayground('ex-4');
+    initPlayground('ex-5');
+    initPlayground('ex-6');
+    initPlayground('ex-7');
+    initPlayground('ex-8');
+    applyFooterText();
+    applyLegalNotice();
+  </script>
+</body>
+</html>

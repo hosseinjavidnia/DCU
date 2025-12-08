@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Lecture 4 | CSC1014</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+
+  <!-- Pyodide & CodeMirror (CDN) -->
+  <script src="https://cdn.jsdelivr.net/pyodide/v0.23.4/full/pyodide.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/eclipse.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/python/python.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/matchbrackets.min.js"></script>
+
+  <!-- Course theme -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../theme/theme.css">
+</head>
+<body class="lecture">
+
+  <div class="wrap wide">
+    
+    <nav>
+      <div class="nav-left">
+        <a href="../index.html" class="back-link">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 12H5m7-7l-7 7 7 7"></path></svg>
+          Back to Course
+        </a>
+        <span style="color:var(--border)">|</span>
+        <h1>Week 4</h1>
+      </div>
+      <span class="badge-top">Lecture Note</span>
+    </nav>
+
+    <div class="lecture-wrap">
+      
+      <aside class="lecture-sidebar">
+        <div class="toc-title">On this page</div>
+        <a href="#intro" class="toc-link active">Introduction</a>
+        <a href="#why-input" class="toc-link">1. Why Input?</a>
+        <a href="#print" class="toc-link">2. The <code>print()</code> Function (and <code>printf</code>)</a>
+        <a href="#input" class="toc-link">3. The <code>input()</code> Function</a>
+        <a href="#conversion" class="toc-link">4. Converting Input to Numbers</a>
+        <a href="#scripts" class="toc-link">5. Small Interactive Scripts</a>
+        <a href="#comparisons" class="toc-link">6. Comparisons on Input Data</a>
+        <a href="#errors" class="toc-link">7. Errors with Input &amp; Conversion</a>
+        <a href="#recap" class="toc-link">8. Recap &amp; Self-check</a>
+      </aside>
+
+      <main class="lecture-content">
+        
+        <!-- INTRO -->
+        <header id="intro">
+          <h1>Week 4 – Input, Output &amp; Simple Interactive Programs</h1>
+
+          <p class="lede">
+            In Weeks 2–3 you used Python like a calculator and learned how to store results in
+            variables. This week you connect your programs to the outside world: asking the user
+            for information with <code>input()</code> and presenting results clearly with
+            <code>print()</code> and simple <strong>printf-style formatting</strong>.
+          </p>
+
+          <div class="callout callout-goal">
+            <span class="callout-title">Lecture goals</span>
+            <ul>
+              <li>Understand why interactive programs need user <strong>input</strong>.</li>
+              <li>Use <code>print()</code> precisely, including multiple arguments and basic formatting ideas.</li>
+              <li>Use <code>input()</code> to read data as text from the user.</li>
+              <li>Convert string input into numbers using <code>int()</code> and <code>float()</code>.</li>
+              <li>Combine input, variables, and expressions into small interactive scripts.</li>
+              <li>See how comparisons can be applied to user-provided data (preview for <code>if</code>).</li>
+              <li>Recognise and interpret common errors related to input and conversion.</li>
+            </ul>
+          </div>
+        </header>
+
+        <!-- 1. WHY INPUT? -->
+        <h2 id="why-input">1. Why Do We Need Input?</h2>
+
+        <p>
+          So far, every number in your programs was typed directly into the code:
+          <code>(12 + 15 + 19) / 3</code>, <code>8 * 15</code>, <code>125 // 30</code>, and so on.
+          This is sometimes called <strong>hard-coded</strong> data. The program always does the
+          same calculation with the same values unless you edit the code.
+        </p>
+
+        <p>
+          That is fine for quick experiments, but most useful programs need to work with
+          <strong>different data each time they run</strong>:
+        </p>
+
+        <ul>
+          <li>A currency converter should work for any amount the user types.</li>
+          <li>A grade calculator should work for any student’s marks.</li>
+          <li>A time estimator should work for any distance and speed.</li>
+        </ul>
+
+        <p>
+          Instead of changing the code for each scenario, we want:
+        </p>
+
+        <div class="pill-steps">
+          <div class="pill-step">Ask</div>
+          <div class="pill-sep">→</div>
+          <div class="pill-step">Read</div>
+          <div class="pill-sep">→</div>
+          <div class="pill-step">Store</div>
+          <div class="pill-sep">→</div>
+          <div class="pill-step">Compute</div>
+          <div class="pill-sep">→</div>
+          <div class="pill-step">Show result</div>
+        </div>
+
+        <p>
+          The functions <code>print()</code> and <code>input()</code> work together to support
+          this pattern:
+        </p>
+        <ul>
+          <li><code>print()</code> – sends information <em>out</em> to the user.</li>
+          <li><code>input()</code> – brings information <em>in</em> from the user.</li>
+        </ul>
+
+        <div class="activity-box">
+          <span class="box-title">Activity – Programs that need input</span>
+          <p>Think of three tiny programs that clearly need user input, for example:</p>
+          <ul>
+            <li>“Ask the user for a temperature in Celsius and print it in Fahrenheit.”</li>
+            <li>“Ask for a distance in kilometres and print it in miles.”</li>
+            <li>“Ask for a number of days and print the equivalent in hours.”</li>
+          </ul>
+          <p>We will essentially build variations of these today.</p>
+        </div>
+
+        <!-- 2. PRINT() FUNCTION REVISITED & printf -->
+        <h2 id="print">2. The <code>print()</code> Function (and <code>printf</code>)</h2>
+
+        <p>
+          You have already used <code>print()</code> in earlier weeks, but we mostly treated it as
+          “magic that makes text appear”. Now we look more carefully at what it does and how it
+          relates to the common idea of <strong>printf-style formatting</strong>.
+        </p>
+
+        <h3>2.1 What <code>print()</code> actually does</h3>
+
+        <p>
+          The <code>print()</code> function:
+        </p>
+        <ul>
+          <li>Takes zero or more <strong>arguments</strong> (values you give it).</li>
+          <li>Converts each argument to a string representation.</li>
+          <li>Joins them with a separator (by default, a single space).</li>
+          <li>Sends the resulting line of text to the output, followed by a newline.</li>
+        </ul>
+
+        <section class="card" id="ex-1">
+          <div class="card-head">
+            <div class="file-name">Example 4.1 – Multiple Arguments to print()</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+# Example 4.1: How print() joins its arguments
+
+print("2 + 3 =", 2 + 3)
+print("Hello", "world")
+print("The value of pi is approximately", 3.14159)
+</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="status">
+            <span class="dot"></span><span class="status-text">Ready</span>
+          </div>
+        </section>
+
+        <p>
+          Notice that we can mix different types (strings, integers, floats, Booleans) in a single
+          <code>print()</code> call. Python takes care of converting each argument to text.
+        </p>
+
+        <div class="box box-info">
+          <span class="box-title">Key point</span>
+          <code>print()</code> is about <strong>displaying values</strong>, not changing them.
+          Calling <code>print()</code> never modifies the variables you pass in; it only shows their
+          current values.
+        </div>
+
+        <h3>2.2 A glimpse of formatting – the “printf” idea</h3>
+
+        <p>
+          In many programming languages, there is a function called <code>printf</code>
+          (short for “print formatted”) that prints a message with <strong>placeholders</strong> for
+          values. Conceptually, it looks like this:
+        </p>
+
+        <pre class="code-block">
+# Not Python, but the idea:
+printf("The total is %d euro\n", total);
+        </pre>
+
+        <p>
+          The idea is:
+        </p>
+        <ul>
+          <li>You write a <strong>template string</strong> with placeholders.</li>
+          <li>You supply values to fill those placeholders.</li>
+          <li>The function combines them into one nicely formatted message.</li>
+        </ul>
+
+        <p>
+          In modern Python, the closest and most convenient equivalent is the
+          <strong>formatted string literal</strong>, often called an <strong>f-string</strong>:
+        </p>
+
+        <section class="card" id="ex-2">
+          <div class="card-head">
+            <div class="file-name">Example 4.2 – printf-style Formatting with f-Strings</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+# Example 4.2: f-strings (Python's printf-style formatting)
+
+hours = 8
+rate = 15
+pay = hours * rate
+
+print("Using commas:", "Hours:", hours, "Rate:", rate, "Pay:", pay)
+
+# f-string: one template string with placeholders in {curly_braces}
+print(f"Using an f-string: {hours} hours at {rate} euro/hour gives {pay} euro.")
+</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="status">
+            <span class="dot"></span><span class="status-text">Ready</span>
+          </div>
+        </section>
+
+        <p>
+          You do not need to master f-strings immediately, but it is useful to know that when
+          people say “<strong>printf-style formatting</strong>”, they usually mean this idea:
+          “create a template-like string with placeholders and fill in the values”.
+        </p>
+
+        <div class="box box-info">
+          <span class="box-title">For this course</span>
+          We will mostly use the simpler form <code>print("label:", value)</code>, and occasionally
+          f-strings for cleaner output. In other languages you may meet a literal function named
+          <code>printf</code>, but the underlying concept is the same: formatted printing.
+        </div>
+
+        <!-- 3. INPUT() -->
+        <h2 id="input">3. The <code>input()</code> Function</h2>
+
+        <p>
+          Now we introduce the new piece: <code>input()</code>. This function lets your program
+          <strong>pause</strong> and wait for the user to type something.
+        </p>
+
+        <h3>3.1 Basic behaviour</h3>
+
+        <p>
+          The pattern is:
+        </p>
+
+        <pre class="code-block">
+variable_name = input(prompt_string)
+        </pre>
+
+        <p>
+          When Python reaches this line:
+        </p>
+        <ol>
+          <li>It prints the <code>prompt_string</code> (without a newline at the end).</li>
+          <li>It waits for the user to type a line of text and press Enter.</li>
+          <li>It takes everything the user typed (except the Enter) as a <strong>string</strong>.</li>
+          <li>It stores that string in <code>variable_name</code>.</li>
+        </ol>
+
+        <section class="card" id="ex-3">
+          <div class="card-head">
+            <div class="file-name">Example 4.3 – Simple Input and Output</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+# Example 4.3: Ask the user for their name and greet them.
+
+name = input("Enter your name: ")
+print("Hello,", name)
+</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="status">
+            <span class="dot"></span><span class="status-text">Ready</span>
+          </div>
+        </section>
+
+        <p>
+          In your head, the execution looks like:
+        </p>
+
+        <ol>
+          <li>Program starts, reaches <code>name = input("Enter your name: ")</code>.</li>
+          <li>“Enter your name: ” appears in the terminal.</li>
+          <li>You type, for example, <code>Ada</code> and press Enter.</li>
+          <li>The string <code>"Ada"</code> is stored in the variable <code>name</code>.</li>
+          <li>The next line <code>print("Hello,", name)</code> uses that variable.</li>
+        </ol>
+
+        <div class="box box-warn">
+          <span class="box-title">Important</span>
+          <code>input()</code> <strong>always returns a string</strong>, even if you only typed digits.
+          <code>"42"</code> is not the same as <code>42</code>. We will fix this shortly using
+          <code>int()</code> and <code>float()</code>.
+        </div>
+
+        <h3>3.2 Experiment</h3>
+        <p>Try running the example a few times, typing different names, including:</p>
+        <ul>
+          <li>Your full name with a space.</li>
+          <li>Just pressing Enter without typing anything.</li>
+        </ul>
+        <p>Notice how whatever you type appears in the output because it is stored and reused.</p>
+
+        <!-- 4. CONVERTING INPUT TO NUMBERS -->
+        <h2 id="conversion">4. Converting Input to Numbers</h2>
+
+        <p>
+          If you ask the user for their age or a distance, you probably want to use that value
+          in a numeric expression (add, multiply, compare). But <code>input()</code> gives you a
+          <code>str</code>, not an <code>int</code> or <code>float</code>.
+        </p>
+
+        <p>
+          To use the value in calculations, you need to convert the string to a number:
+        </p>
+
+        <ul>
+          <li><code>int("21")</code> → <code>21</code> (integer)</li>
+          <li><code>float("3.5")</code> → <code>3.5</code> (floating-point number)</li>
+        </ul>
+
+        <h3>4.1 Two-step pattern: safer for beginners</h3>
+
+        <p>
+          We will start with a two-step pattern:
+        </p>
+
+        <pre class="code-block">
+age_text = input("Enter your age: ")   # this is a string
+age = int(age_text)                    # convert string to int
+        </pre>
+
+        <section class="card" id="ex-4">
+          <div class="card-head">
+            <div class="file-name">Example 4.4 – Converting Age Input to an Integer</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+# Example 4.4: Asking for age and converting to int
+
+age_text = input("Enter your age in whole years: ")
+print("You typed the text:", age_text, "Type:", type(age_text))
+
+age = int(age_text)   # this will fail if age_text is not a valid integer string
+print("As a number, your age + 1 is:", age + 1)
+print("Type of age:", type(age))
+</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="status">
+            <span class="dot"></span><span class="status-text">Ready</span>
+          </div>
+        </section>
+
+        <p>
+          This example makes it very explicit that <code>input()</code> returns a string and that
+          <code>int()</code> changes that string to an integer, if possible.
+        </p>
+
+        <h3>4.2 <code>int()</code> vs <code>float()</code></h3>
+
+        <p>
+          Use <code>int()</code> when you expect a whole number (e.g. age in years, number of items).
+          Use <code>float()</code> when you expect a decimal number (e.g. hourly pay, temperature).
+        </p>
+
+        <section class="card" id="ex-5">
+          <div class="card-head">
+            <div class="file-name">Example 4.5 – Converting to float</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+# Example 4.5: Asking for a decimal number and converting to float
+
+temp_text = input("Enter a temperature in Celsius (e.g. 18.5): ")
+temp_c = float(temp_text)
+temp_f = temp_c * 9 / 5 + 32
+
+print("Celsius:", temp_c, "Fahrenheit:", temp_f)
+</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="status">
+            <span class="dot"></span><span class="status-text">Ready</span>
+          </div>
+        </section>
+
+        <div class="box box-warn">
+          <span class="box-title">Potential problem</span>
+          If the user types something that cannot be converted (e.g. <code>"hello"</code> or
+          <code>"3.5"</code> into <code>int()</code>), Python will raise a
+          <strong>ValueError</strong> and stop the program. We’ll look at this in more detail
+          in the section on errors.
+        </div>
+
+        <!-- 5. SMALL INTERACTIVE SCRIPTS -->
+        <h2 id="scripts">5. Small Interactive Scripts</h2>
+
+        <p>
+          Now we combine <code>input()</code>, type conversion, variables, and expressions to build
+          small but realistic interactive programs.
+        </p>
+
+        <h3>5.1 Greeting script (strings only)</h3>
+
+        <section class="card" id="ex-6">
+          <div class="card-head">
+            <div class="file-name">Example 4.6 – Greeting Script</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+# Example 4.6: Simple greeting script
+
+name = input("What is your name? ")
+favourite_colour = input("What is your favourite colour? ")
+
+print()
+print("Nice to meet you,", name + "!")
+print("You like", favourite_colour + ".")
+</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="status">
+            <span class="dot"></span><span class="status-text">Ready</span>
+          </div>
+        </section>
+
+        <p>
+          This example only uses strings; there are no conversions. It is a gentle bridge from the
+          “Hello, world” scripts to more interesting interactive behaviour.
+        </p>
+
+        <h3>5.2 Simple pay calculator (with numbers)</h3>
+
+        <section class="card" id="ex-7">
+          <div class="card-head">
+            <div class="file-name">Example 4.7 – Pay Calculator</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+# Example 4.7: Pay calculator with input
+
+hours_text = input("Enter hours worked today: ")
+rate_text = input("Enter hourly rate (euro): ")
+
+# Convert to numbers
+hours = float(hours_text)
+rate = float(rate_text)
+
+pay = hours * rate
+
+print()
+print("Hours worked:", hours)
+print("Hourly rate:", rate)
+print("Total pay:", pay, "euro")
+
+# Same information using an f-string (printf-style formatting)
+print(f"You worked {hours} hours at {rate} euro/hour and earned {pay} euro.")
+</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="status">
+            <span class="dot"></span><span class="status-text">Ready</span>
+          </div>
+        </section>
+
+        <p>
+          Compare this to the hard-coded expression <code>8 * 15</code> from earlier weeks.
+          Now the same program works for any hours and any rate, without changing the code.
+        </p>
+
+        <h3>5.3 Unit conversion example</h3>
+
+        <section class="card" id="ex-8">
+          <div class="card-head">
+            <div class="file-name">Example 4.8 – Kilometres to Miles Converter</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+# Example 4.8: Kilometres to miles
+
+km_text = input("Enter distance in kilometres: ")
+km = float(km_text)
+
+miles = km * 0.621371  # approx conversion factor
+
+print(f"{km} km is approximately {miles} miles.")
+</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="status">
+            <span class="dot"></span><span class="status-text">Ready</span>
+          </div>
+        </section>
+
+        <div class="activity-box">
+          <span class="box-title">Activity – Design your own converter</span>
+          <p>Choose one of these (or invent your own):</p>
+          <ul>
+            <li>Minutes to seconds.</li>
+            <li>Days to hours.</li>
+            <li>Euro to another currency (using a fixed rate you choose).</li>
+          </ul>
+          <p>
+            Write down, in words, what your program will ask for and what it will print. Then try
+            to write the code following the patterns above.
+          </p>
+        </div>
+
+        <!-- 6. COMPARISONS ON INPUT DATA -->
+        <h2 id="comparisons">6. Comparisons on Input Data (Preview of Decisions)</h2>
+
+        <p>
+          In Lecture 2 you learned that comparison operators like <code>&gt;=</code> and <code>&lt;</code>
+          produce Boolean values (<code>True</code>/<code>False</code>). Now you can apply them to
+          values that come from the user.
+        </p>
+
+        <p>
+          We still will not use <code>if</code> statements in this lecture; instead we simply
+          <strong>compute</strong> the Boolean value and print it as part of the result.
+        </p>
+
+        <section class="card" id="ex-9">
+          <div class="card-head">
+            <div class="file-name">Example 4.9 – Is the User an Adult?</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+# Example 4.9: Using comparisons on input data
+
+age_text = input("Enter your age in years: ")
+age = int(age_text)
+
+is_adult = age >= 18
+
+print("Age:", age)
+print("Adult status (age >= 18):", is_adult)
+</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="status">
+            <span class="dot"></span><span class="status-text">Ready</span>
+          </div>
+        </section>
+
+        <p>
+          This pattern is very close to what we will do with <code>if</code> statements:
+          we compute a condition like <code>age &gt;= 18</code> and then use it to choose between
+          different actions. For now, we just display the Boolean result.
+        </p>
+
+        <div class="activity-box">
+          <span class="box-title">Activity – Your own condition</span>
+          <p>Invent a condition using user input, for example:</p>
+          <ul>
+            <li>Ask for a test score and compute <code>is_pass = score &gt;= 50</code>.</li>
+            <li>Ask for a number and compute <code>is_big = number &gt;= 100</code>.</li>
+          </ul>
+          <p>Write a short script that prints the input and the Boolean result.</p>
+        </div>
+
+        <!-- 7. ERRORS WITH INPUT & CONVERSION -->
+        <h2 id="errors">7. Errors with Input &amp; Conversion</h2>
+
+        <p>
+          As soon as your program starts reading user input, there are more ways things can go wrong.
+          It is important to be able to recognise the main error types and roughly what they mean.
+        </p>
+
+        <h3>7.1 Quick review of error types</h3>
+
+        <ul>
+          <li>
+            <strong>SyntaxError</strong> – the code is not valid Python.
+            <br>Example: forgetting a closing parenthesis:
+<pre class="code-block">
+print("Hello"   # SyntaxError
+</pre>
+          </li>
+          <li>
+            <strong>TypeError</strong> – the operation makes no sense for the types involved.
+            <br>Example from last week:
+<pre class="code-block">
+"2" - "1"       # TypeError
+</pre>
+          </li>
+          <li>
+            <strong>ValueError</strong> – the value is the wrong shape/content for the operation,
+            even though the type is string.
+            <br>Example:
+<pre class="code-block">
+int("hello")    # ValueError
+int("3.5")      # ValueError (but float("3.5") is okay)
+</pre>
+          </li>
+        </ul>
+
+        <h3>7.2 ValueError with input conversion</h3>
+
+        <p>
+          When you convert user input with <code>int()</code> or <code>float()</code>, a
+          <code>ValueError</code> can occur if the user’s text is not a valid number.
+        </p>
+
+        <section class="card" id="ex-10">
+          <div class="card-head">
+            <div class="file-name">Example 4.10 – Triggering a ValueError</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+# Example 4.10: Try typing invalid input to see the error.
+
+age_text = input("Enter your age in whole years: ")
+age = int(age_text)   # Try "abc" or "3.5" here to see a ValueError
+
+print("Next year you will be", age + 1)
+</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="status">
+            <span class="dot"></span><span class="status-text">Ready</span>
+          </div>
+        </section>
+
+        <p>
+          When you see this type of error, read the message carefully. It usually tells you which
+          conversion failed and what the problematic text was.
+        </p>
+
+        <div class="box box-info">
+          <span class="box-title">For now</span>
+          In this module, we won’t yet build full error-handling around every input. The important
+          skill at this stage is to recognise whether an error was caused by:
+          <ul>
+            <li>A mistake in your code (SyntaxError, TypeError from wrong operation), or</li>
+            <li>An unexpected value typed by the user (ValueError in a conversion).</li>
+          </ul>
+        </div>
+
+        <!-- 8. RECAP -->
+        <h2 id="recap">8. Recap &amp; Self-check</h2>
+
+        <h3>8.1 Key ideas from Week 4</h3>
+        <ul>
+          <li><code>print()</code> displays values; it can take multiple arguments separated by commas.</li>
+          <li>Formatted output (printf-style) means writing a template string and filling in values;
+              in Python, f-strings are a convenient way to do this.</li>
+          <li><code>input()</code> pauses the program, shows a prompt, and returns a <code>str</code>
+              containing what the user typed.</li>
+          <li>To use input in arithmetic, you must convert it with <code>int()</code> or
+              <code>float()</code>.</li>
+          <li>Variables store user-provided values just like hard-coded ones.</li>
+          <li>Comparisons can be applied to input data to compute Booleans (preview of using <code>if</code>).</li>
+          <li>Common errors include SyntaxError, TypeError, and ValueError when converting invalid input.</li>
+        </ul>
+
+        <h3>8.2 Concept quiz</h3>
+        <div class="quiz">
+          <ol>
+            <li>
+              What is the type of the value returned by <code>input()</code>?
+              <details>
+                <summary>Show answer</summary>
+                <div class="callout callout-idea">
+                  <code>input()</code> always returns a value of type <code>str</code> (string).
+                </div>
+              </details>
+            </li>
+            <li>
+              Consider the following code:
+<pre class="code-block">
+age_text = input("Age: ")
+age = int(age_text)
+print("Next year:", age + 1)
+</pre>
+              Which of these can cause a ValueError?
+              <ol type="a">
+                <li>Typing <code>20</code>.</li>
+                <li>Typing <code>3.5</code>.</li>
+                <li>Typing <code>hello</code>.</li>
+              </ol>
+              <details>
+                <summary>Show answer</summary>
+                <div class="callout callout-idea">
+                  (b) and (c). The strings <code>"3.5"</code> and <code>"hello"</code> cannot be
+                  converted to an integer with <code>int()</code>.
+                </div>
+              </details>
+            </li>
+            <li>
+              Why is it often useful to write:
+<pre class="code-block">
+age_text = input("Age: ")
+age = int(age_text)
+</pre>
+              instead of:
+<pre class="code-block">
+age = int(input("Age: "))
+</pre>
+              when you are still learning?
+              <details>
+                <summary>Show answer</summary>
+                <div class="callout callout-idea">
+                  The two-step version makes it easier to see that <code>input()</code> returns a
+                  string first, and then <code>int()</code> converts that string. It is also easier
+                  to debug if something goes wrong.
+                </div>
+              </details>
+            </li>
+          </ol>
+        </div>
+
+        <h3>8.3 Reflection</h3>
+        <p>For yourself (no need to submit):</p>
+        <ul>
+          <li>Can you describe, in your own words, what <code>input()</code> does step by step?</li>
+          <li>Which part of today’s lecture felt most confusing: <code>input()</code> itself,
+              numeric conversion, or the error messages?</li>
+          <li>What small interactive program would you like to build next using these tools?</li>
+        </ul>
+
+        <div class="box box-info">
+          <span class="box-title">Next time</span>
+          In Week 5, you will use the Boolean expressions and user input from this lecture to make
+          programs that <strong>choose</strong> between different actions using
+          <code>if</code>, <code>elif</code>, and <code>else</code> statements.
+        </div>
+
+      </main>
+    </div>
+
+    <footer>
+      <p class="copyright"></p>
+      <div class="legal-notice"></div>
+    </footer>
+
+  </div>
+
+  <script src="../theme/footer.js"></script>
+  <script src="../theme/legal.js"></script>
+  <script src="../engine/engine.js"></script>
+  <script>
+    initPlayground('ex-1');
+    initPlayground('ex-2');
+    initPlayground('ex-3');
+    initPlayground('ex-4');
+    initPlayground('ex-5');
+    initPlayground('ex-6');
+    initPlayground('ex-7');
+    initPlayground('ex-8');
+    initPlayground('ex-9');
+    initPlayground('ex-10');
+    applyFooterText();
+    applyLegalNotice();
+  </script>
+</body>
+</html>

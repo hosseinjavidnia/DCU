@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Lecture 3 | CSC1014</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+
+  <!-- Pyodide & CodeMirror (CDN) -->
+  <script src="https://cdn.jsdelivr.net/pyodide/v0.23.4/full/pyodide.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/eclipse.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/python/python.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/matchbrackets.min.js"></script>
+
+  <!-- Course theme -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../theme/theme.css">
+</head>
+<body class="lecture">
+
+  <div class="wrap wide">
+    
+    <nav>
+      <div class="nav-left">
+        <a href="../index.html" class="back-link">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 12H5m7-7l-7 7 7 7"></path></svg>
+          Back to Course
+        </a>
+        <span style="color:var(--border)">|</span>
+        <h1>Week 3</h1>
+      </div>
+      <span class="badge-top">Lecture Note</span>
+    </nav>
+
+    <div class="lecture-wrap">
+      
+      <aside class="lecture-sidebar">
+        <div class="toc-title">On this page</div>
+        <a href="#intro" class="toc-link active">Introduction</a>
+        <a href="#why-variables" class="toc-link">1. Why Do We Need Variables?</a>
+        <a href="#memory-model" class="toc-link">2. Memory &amp; Named Boxes</a>
+        <a href="#assignment" class="toc-link">3. Assignment in Python</a>
+        <a href="#naming" class="toc-link">4. Choosing Good Variable Names</a>
+        <a href="#tracing" class="toc-link">5. Tracing Programs with Variables</a>
+        <a href="#variables-types" class="toc-link">6. Variables and Types</a>
+        <a href="#preview" class="toc-link">7. Preview: Counters &amp; Accumulators</a>
+        <a href="#recap" class="toc-link">8. Recap &amp; Self-check</a>
+      </aside>
+
+      <main class="lecture-content">
+        
+        <!-- INTRO -->
+        <header id="intro">
+          <h1>Week 3 – Variables &amp; State: Remembering Data</h1>
+
+          <p class="lede">
+            In Week 2, Python behaved like a calculator: you typed expressions, and it produced answers.
+            Today we move to real programs that can <strong>remember</strong> information as they run,
+            by using <strong>variables</strong>.
+          </p>
+
+          <div class="callout callout-goal">
+            <span class="callout-title">What you’ll learn today</span>
+            <ul>
+              <li>What variables are and why they are essential in programming.</li>
+              <li>How to picture memory as <strong>named boxes</strong> that hold values.</li>
+              <li>How Python’s assignment statement works, step by step.</li>
+              <li>How to choose clear, legal variable names.</li>
+              <li>How to trace small programs that use variables and update them over time.</li>
+              <li>How variables interact with types (<code>int</code>, <code>float</code>, <code>bool</code>, <code>str</code>).</li>
+            </ul>
+          </div>
+
+          <div class="box box-info">
+            <span class="box-title">Quick recap</span>
+            <ul>
+              <li>Week 1: computers, programs, algorithms, and pseudocode.</li>
+              <li>Week 2: values, types, and expressions; Python as a calculator.</li>
+            </ul>
+            Now we connect these ideas by giving names to the values we compute.
+          </div>
+        </header>
+
+        <!-- 1. WHY DO WE NEED VARIABLES? -->
+        <h2 id="why-variables">1. Why Do We Need Variables?</h2>
+
+        <p>
+          In the previous lecture, you wrote expressions like <code>(12 + 15 + 19) / 3</code>
+          or <code>20 // 6</code>. Python printed the answers, but then the answers disappeared.
+          If you wanted to use the same result again, you had to re-type the whole expression.
+        </p>
+
+        <p>
+          Imagine you want to do this:
+        </p>
+        <ul>
+          <li>Compute a total price.</li>
+          <li>Compute tax based on that price.</li>
+          <li>Print both the price before tax and the price after tax.</li>
+        </ul>
+
+        <p>
+          Without variables, you end up writing long, repetitive expressions everywhere, and if you
+          change the underlying numbers, you must update them in multiple places. This is error-prone
+          and hard to read.
+        </p>
+
+        <div class="box box-info">
+          <span class="box-title">Key idea</span>
+          A <strong>variable</strong> is a <em>name</em> that refers to a value stored in memory.
+          It lets a program remember data and re-use it in later calculations.
+        </div>
+
+        <p>
+          Once we introduce variables, we can say “<code>price</code>” instead of repeatedly writing
+          the full expression that produced the price. Variables make programs:
+        </p>
+        <ul>
+          <li>Shorter and less repetitive.</li>
+          <li>Easier to understand when you read them.</li>
+          <li>Easier to change later (“What if the tax rate changes?”).</li>
+        </ul>
+
+        <div class="activity-box">
+          <span class="box-title">Activity – Where would you use variables?</span>
+          <p>
+            Think of one everyday situation where you calculate something and then use that result
+            again later – for example:
+          </p>
+          <ul>
+            <li>Working out total study hours in a week.</li>
+            <li>Calculating a student’s average grade, then checking if they passed.</li>
+            <li>Estimating a budget and then adding different expenses to it.</li>
+          </ul>
+          <p>
+            In each case, what would you want to “remember” as you work through the steps?
+          </p>
+        </div>
+
+        <!-- 2. MEMORY & NAMED BOXES -->
+        <h2 id="memory-model">2. Memory &amp; Named Boxes</h2>
+
+        <p>
+          Inside your computer there is memory that can store many values at once.
+          The machine doesn’t think in terms of “variables”; it just has cells of memory that
+          contain bits. Programming languages like Python give us a friendlier view:
+          we can imagine each value living inside a <strong>box with a label on it</strong>.
+        </p>
+
+        <h3>2.1 The “named box” model</h3>
+        <p>
+          Picture this situation in a program:
+        </p>
+        <ul>
+          <li>You have a box labelled <code>age</code> that contains the value <code>21</code>.</li>
+          <li>You have a box labelled <code>name</code> that contains the text <code>"Ada"</code>.</li>
+          <li>You have a box labelled <code>is_student</code> that contains <code>True</code>.</li>
+        </ul>
+
+        <p>
+          In your head, you might imagine something like:
+        </p>
+
+        <pre class="code-block">
++-----------+---------+
+| name      |  Ada    |
++-----------+---------+
+
++-----------+---------+
+| age       |   21    |
++-----------+---------+
+
++-----------+---------+
+| is_student|  True   |
++-----------+---------+
+        </pre>
+
+        <p>
+          The important part of this picture is the separation between the <strong>label</strong>
+          (the variable name) and the <strong>content</strong> (the value). The content can change
+          over time, but the label still points to “the same box”.
+        </p>
+
+        <h3>2.2 Updating the contents</h3>
+        <p>
+          Suppose you have a box called <code>count</code> that currently contains <code>0</code>.
+          If your program processes another item, you might want to increase <code>count</code> by 1.
+          After the update, the same box <code>count</code> now contains <code>1</code>.
+        </p>
+
+        <p>
+          Over time, you can imagine memory evolving as the program runs:
+        </p>
+
+        <pre class="code-block">
+Initially:
++--------+-----+
+| count  |  0  |
++--------+-----+
+
+After one update:
++--------+-----+
+| count  |  1  |
++--------+-----+
+
+After two updates:
++--------+-----+
+| count  |  2  |
++--------+-----+
+        </pre>
+
+        <p>
+          This idea of memory changing as the program runs is called the program’s <strong>state</strong>.
+          Variables are how we observe and control that state.
+        </p>
+
+        <!-- 3. ASSIGNMENT IN PYTHON -->
+        <h2 id="assignment">3. Assignment in Python</h2>
+
+        <p>
+          Now we connect the mental model to Python syntax. In Python, we <strong>create</strong>
+          or <strong>update</strong> a variable using an <strong>assignment statement</strong>.
+        </p>
+
+        <h3>3.1 General form</h3>
+        <p>
+          The general pattern of assignment is:
+        </p>
+
+        <pre class="code-block">
+name = expression
+        </pre>
+
+        <p>
+          When Python executes an assignment, it follows this order:
+        </p>
+        <ol>
+          <li>Evaluate the <strong>expression</strong> on the right-hand side (RHS).</li>
+          <li>Store the result in the variable named on the left-hand side (LHS).</li>
+        </ol>
+
+        <p>
+          If the variable name is being used for the first time, Python will create a new box.
+          If it already exists, Python will replace the old value in that box with the new one.
+        </p>
+
+        <section class="card" id="ex-1">
+          <div class="card-head">
+            <div class="file-name">Example 3.1 – First Variables</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+# Example 3.1: Basic assignment and printing
+
+# Create a box called age and put 21 in it.
+age = 21
+
+# Create a box called height_cm and put 172.5 in it.
+height_cm = 172.5
+
+# Create a box called name and put text in it.
+name = "Ada"
+
+print("Name:", name)
+print("Age:", age)
+print("Height in cm:", height_cm)
+</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="status">
+            <span class="dot"></span><span class="status-text">Ready</span>
+          </div>
+        </section>
+
+        <h3>3.2 Assignment vs equality</h3>
+        <p>
+          In mathematics, an equation like <code>x = x + 1</code> makes no sense:
+          one side cannot be both equal to and bigger than the other side at the same time.
+        </p>
+
+        <p>
+          In programming, <code>x = x + 1</code> has a different meaning:
+        </p>
+        <ul>
+          <li>Compute the value of <code>x + 1</code> using the <em>old</em> value of <code>x</code>.</li>
+          <li>Store that new value back into the box labelled <code>x</code>.</li>
+        </ul>
+
+        <p>
+          So if <code>x</code> was <code>4</code>, after <code>x = x + 1</code>, <code>x</code> becomes <code>5</code>.
+        </p>
+
+        <section class="card" id="ex-2">
+          <div class="card-head">
+            <div class="file-name">Example 3.2 – Updating a Variable</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+# Example 3.2: Updating a variable using its old value
+
+count = 0
+print("Initial count:", count)
+
+count = count + 1
+print("After first update:", count)
+
+count = count + 1
+print("After second update:", count)
+</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="status">
+            <span class="dot"></span><span class="status-text">Ready</span>
+          </div>
+        </section>
+
+        <div class="box box-warn">
+          <span class="box-title">Important distinction</span>
+          <ul>
+            <li><code>=</code> in Python is <strong>assignment</strong>: “put this value into that variable”.</li>
+            <li><code>==</code> is <strong>comparison</strong>: “are these two values equal?”</li>
+          </ul>
+          Mixing them up is a very common beginner error.
+        </div>
+
+        <!-- 4. CHOOSING GOOD VARIABLE NAMES -->
+        <h2 id="naming">4. Choosing Good Variable Names</h2>
+
+        <p>
+          Variables are for humans as much as they are for the computer. The computer does not care
+          whether you call a variable <code>x</code> or <code>total_price_with_tax</code>, but a human
+          reader will find the second one much easier to understand.
+        </p>
+
+        <h3>4.1 Rules for names</h3>
+        <p>
+          In Python, a variable name:
+        </p>
+        <ul>
+          <li>Can use letters (a–z, A–Z), digits (0–9), and underscores (<code>_</code>).</li>
+          <li>Cannot start with a digit.</li>
+          <li>Is case-sensitive: <code>total</code>, <code>Total</code>, and <code>TOTAL</code> are different.</li>
+          <li>Cannot be a reserved keyword like <code>if</code>, <code>for</code>, <code>True</code>, etc.</li>
+        </ul>
+
+        <p>Legal names (syntactically correct):</p>
+        <ul>
+          <li><code>age</code>, <code>total_price</code>, <code>student_count</code></li>
+          <li><code>_private_value</code>, <code>number2</code></li>
+        </ul>
+
+        <p>Illegal names (will cause errors):</p>
+        <ul>
+          <li><code>2nd_place</code> (starts with a digit)</li>
+          <li><code>my-name</code> (contains a hyphen)</li>
+          <li><code>class</code>, <code>if</code>, <code>for</code> (keywords)</li>
+        </ul>
+
+        <h3>4.2 Style: making code readable</h3>
+        <p>
+          Beyond the strict rules, there are style conventions that make code more readable:
+        </p>
+        <ul>
+          <li>Use <strong>lowercase_with_underscores</strong> (called “snake_case”).</li>
+          <li>Choose descriptive names: <code>hours_worked</code>, <code>hourly_rate</code>, <code>pay</code>.</li>
+          <li>Avoid one-letter names, except for very short-lived values in simple examples.</li>
+        </ul>
+
+        <section class="card" id="ex-3">
+          <div class="card-head">
+            <div class="file-name">Example 3.3 – Bad vs Good Names</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+# Example 3.3: Comparing naming styles
+
+# Hard to understand:
+a = 8
+b = 15
+c = a * b
+print("Result:", c)
+
+# Easier to understand:
+hours_worked = 8
+hourly_rate = 15
+daily_pay = hours_worked * hourly_rate
+print("Daily pay:", daily_pay, "euro")
+</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="status">
+            <span class="dot"></span><span class="status-text">Ready</span>
+          </div>
+        </section>
+
+        <p>
+          Both blocks of code compute the same answer. The second version takes a little longer to
+          type but is much easier to read and debug later.
+        </p>
+
+        <!-- 5. TRACING PROGRAMS WITH VARIABLES -->
+        <h2 id="tracing">5. Tracing Programs with Variables</h2>
+
+        <p>
+          When you are learning, a powerful technique is to <strong>trace</strong> a program:
+          follow it line by line, keeping track of the values of variables.
+        </p>
+
+        <p>
+          Tracing helps you answer questions like:
+        </p>
+        <ul>
+          <li>What is the value of each variable after each line?</li>
+          <li>Why does this line print that particular result?</li>
+          <li>Where did a wrong value first appear?</li>
+        </ul>
+
+        <h3>5.1 A small example</h3>
+
+        <section class="card" id="ex-4">
+          <div class="card-head">
+            <div class="file-name">Example 3.4 – Tracing a Simple Script</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+# Example 3.4: Trace this program on paper before running it.
+
+x = 10
+y = 3
+z = x + y
+
+print("x:", x)
+print("y:", y)
+print("z:", z)
+
+x = x + 5
+z = x - y
+
+print("After updates:")
+print("x:", x)
+print("y:", y)
+print("z:", z)
+</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="status">
+            <span class="dot"></span><span class="status-text">Ready</span>
+          </div>
+        </section>
+
+        <h3>5.2 Using a trace table</h3>
+        <p>
+          One way to organise your tracing is to draw a table, with one column per variable and
+          one row per line. For the program above, your table (on paper) might look like:
+        </p>
+
+        <pre class="code-block">
+Line   x      y      z
+-------------------------
+1     10
+2            3
+3                   13
+...
+        </pre>
+
+        <p>
+          Each time a line assigns to a variable, you update that column. Lines that only print do
+          not change the table but let you check your understanding.
+        </p>
+
+        <div class="activity-box">
+          <span class="box-title">Activity – Trace it</span>
+          <ol>
+            <li>Copy the example into your trace table on paper.</li>
+            <li>Fill in the values of <code>x</code>, <code>y</code>, and <code>z</code> after each line.</li>
+            <li>Then run the program and check that the printed values match your table.</li>
+          </ol>
+        </div>
+
+        <h3>5.3 Common mistakes when tracing</h3>
+        <ul>
+          <li>Forgetting that updates like <code>x = x + 5</code> overwrite the old value of <code>x</code>.</li>
+          <li>Using a variable before it has ever been assigned a value.</li>
+          <li>Assuming that printing something changes its value (it doesn’t).</li>
+        </ul>
+
+        <!-- 6. VARIABLES AND TYPES -->
+        <h2 id="variables-types">6. Variables and Types</h2>
+
+        <p>
+          A variable doesn’t just store “something”; it stores a value of a particular
+          <strong>type</strong>. The type comes from the value currently inside the box.
+        </p>
+
+        <p>
+          For example:
+        </p>
+        <ul>
+          <li><code>age = 21</code> → <code>age</code> holds an <code>int</code>.</li>
+          <li><code>pi = 3.14159</code> → <code>pi</code> holds a <code>float</code>.</li>
+          <li><code>name = "Ada"</code> → <code>name</code> holds a <code>str</code>.</li>
+          <li><code>is_student = True</code> → <code>is_student</code> holds a <code>bool</code>.</li>
+        </ul>
+
+        <p>
+          The <code>type()</code> function still works, but now we can pass it variables instead of
+          literal values:
+        </p>
+
+        <section class="card" id="ex-5">
+          <div class="card-head">
+            <div class="file-name">Example 3.5 – Types of Variables</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+# Example 3.5: Variables and their types
+
+age = 21
+pi = 3.14159
+name = "Ada"
+is_student = True
+
+print("age:", age, "Type:", type(age))
+print("pi:", pi, "Type:", type(pi))
+print("name:", name, "Type:", type(name))
+print("is_student:", is_student, "Type:", type(is_student))
+</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="status">
+            <span class="dot"></span><span class="status-text">Ready</span>
+          </div>
+        </section>
+
+        <h3>6.1 Changing what a variable holds</h3>
+        <p>
+          Python will let you reuse the same variable name for a different type of value,
+          although doing this too often can make programs confusing. For example:
+        </p>
+
+        <section class="card" id="ex-6">
+          <div class="card-head">
+            <div class="file-name">Example 3.6 – Reassigning Variables</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+# Example 3.6: A variable can be reassigned to a new value (even of a different type)
+
+value = 10
+print("value:", value, "Type:", type(value))
+
+value = 10.5
+print("value:", value, "Type:", type(value))
+
+value = "ten point five"
+print("value:", value, "Type:", type(value))
+</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="status">
+            <span class="dot"></span><span class="status-text">Ready</span>
+          </div>
+        </section>
+
+        <p>
+          For small examples this is fine, but in larger programs it is usually better to keep
+          each variable name associated with one kind of thing, to avoid surprises.
+        </p>
+
+        <div class="box box-info">
+          <span class="box-title">Good practice</span>
+          Decide what a variable represents (e.g. a count, a price, a name) and try to keep
+          the <em>type</em> consistent with that idea throughout your program.
+        </div>
+
+        <!-- 7. PREVIEW: COUNTERS & ACCUMULATORS -->
+        <h2 id="preview">7. Preview: Counters &amp; Accumulators</h2>
+
+        <p>
+          Many programs use the same update patterns over and over. Two of the most important are:
+        </p>
+
+        <ul>
+          <li>
+            <strong>Counter:</strong> a variable that increases by 1 each time something happens.
+            <br>
+            Example idea: counting how many numbers have been processed.
+          </li>
+          <li>
+            <strong>Accumulator:</strong> a variable that keeps a running total.
+            <br>
+            Example idea: summing up all exam scores.
+          </li>
+        </ul>
+
+        <p>
+          In code, these patterns look like:
+        </p>
+
+        <pre class="code-block">
+# Counter pattern (concept)
+count = 0      # start from zero
+count = count + 1   # one more item
+count = count + 1   # one more item
+        </pre>
+
+        <pre class="code-block">
+# Accumulator pattern (concept)
+total = 0
+total = total + 5
+total = total + 10
+        </pre>
+
+        <section class="card" id="ex-7">
+          <div class="card-head">
+            <div class="file-name">Example 3.7 – Simple Counter &amp; Accumulator</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+# Example 3.7: Counter and accumulator without loops (yet)
+
+count = 0
+print("Initial count:", count)
+
+count = count + 1
+count = count + 1
+print("Final count:", count)
+
+total = 0
+print("Initial total:", total)
+
+total = total + 5
+total = total + 10
+print("Final total:", total)
+</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="status">
+            <span class="dot"></span><span class="status-text">Ready</span>
+          </div>
+        </section>
+
+        <p>
+          Later, when we introduce loops, you’ll use these patterns inside a loop body to process
+          many items with very little code.
+        </p>
+
+        <!-- 8. RECAP & SELF-CHECK -->
+        <h2 id="recap">8. Recap &amp; Self-check</h2>
+
+        <h3>8.1 Key ideas from Week 3</h3>
+        <ul>
+          <li>A variable is a <strong>name</strong> that refers to a value stored in memory.</li>
+          <li>Think of memory as <strong>boxes with labels</strong>; the content can change over time.</li>
+          <li>An assignment <code>name = expression</code> first evaluates the expression, then stores the result in the variable.</li>
+          <li><code>=</code> means <em>assignment</em>, while <code>==</code> means <em>comparison</em>.</li>
+          <li>Good variable names follow Python’s rules and are descriptive and readable.</li>
+          <li>Tracing helps you understand how variables change as the program runs.</li>
+          <li>Variables store values of specific types (<code>int</code>, <code>float</code>, <code>str</code>, <code>bool</code>).</li>
+          <li>Counters and accumulators are common patterns based on updating variables.</li>
+        </ul>
+
+        <h3>8.2 Concept quiz</h3>
+        <div class="quiz">
+          <ol>
+            <li>
+              For the code:
+<pre class="code-block">
+x = 2
+y = 3
+x = x + y
+y = x - 1
+</pre>
+              What are the final values of <code>x</code> and <code>y</code>?
+              <details>
+                <summary>Show answer</summary>
+                <div class="callout callout-idea">
+                  After <code>x = x + y</code>, <code>x</code> becomes <code>5</code>.  
+                  After <code>y = x - 1</code>, <code>y</code> becomes <code>4</code>.  
+                  Final values: <code>x = 5</code>, <code>y = 4</code>.
+                </div>
+              </details>
+            </li>
+            <li>
+              Which of the following are legal Python variable names?
+              <ol type="a">
+                <li><code>2students</code></li>
+                <li><code>student_count</code></li>
+                <li><code>my-name</code></li>
+                <li><code>totalPrice</code></li>
+              </ol>
+              <details>
+                <summary>Show answer</summary>
+                <div class="callout callout-idea">
+                  <ul>
+                    <li><code>2students</code> – illegal (starts with a digit).</li>
+                    <li><code>student_count</code> – legal and good style.</li>
+                    <li><code>my-name</code> – illegal (contains a hyphen).</li>
+                    <li><code>totalPrice</code> – legal, though we usually prefer <code>total_price</code>.</li>
+                  </ul>
+                </div>
+              </details>
+            </li>
+            <li>
+              Explain in your own words why <code>x = x + 1</code> makes sense in a program but not in a maths equation.
+            </li>
+          </ol>
+        </div>
+
+        <h3>8.3 Reflection</h3>
+        <p>Think for yourself (no need to submit):</p>
+        <ul>
+          <li>What part of variables feels most natural to you: the “box” model, assignment, or tracing?</li>
+          <li>Where do you feel least confident right now?</li>
+          <li>Next time you write a small program, how will you decide what to call your variables?</li>
+        </ul>
+
+        <div class="box box-info">
+          <span class="box-title">Next time</span>
+          In Week 4, we will extend these ideas by letting the user provide values to store in
+          variables, using <code>input()</code>, and start building small interactive programs
+          that respond to user data.
+        </div>
+
+      </main>
+    </div>
+
+    <footer>
+      <p class="copyright"></p>
+      <div class="legal-notice"></div>
+    </footer>
+
+  </div>
+
+  <script src="../theme/footer.js"></script>
+  <script src="../theme/legal.js"></script>
+  <script src="../engine/engine.js"></script>
+  <script>
+    initPlayground('ex-1');
+    initPlayground('ex-2');
+    initPlayground('ex-3');
+    initPlayground('ex-4');
+    initPlayground('ex-5');
+    initPlayground('ex-6');
+    initPlayground('ex-7');
+    applyFooterText();
+    applyLegalNotice();
+  </script>
+</body>
+</html>
