@@ -1,7 +1,7 @@
 // engine/engine.js
 
 // 1. Configuration
-const defaultPlaygroundCode = `# Welcome to the CSC1184 Playground
+const defaultPlaygroundCode = `# Welcome to the CSC1014 Playground
 # This is a real Python environment running in your browser.
 
 def greet(name):
@@ -27,7 +27,7 @@ async function loadPyodideEngine(setStatus) {
         // Initialize Pyodide
         pyodide = await loadPyodide();
         
-        // Optional: Load common packages
+        // Optional: Load common packages. 
         // await pyodide.loadPackage(["numpy", "pandas"]);
         
         setStatus('Python Ready', 'idle');
