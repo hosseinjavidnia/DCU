@@ -15,20 +15,26 @@ for s in students:
 `;
 
 let pyodide = null;
+let pyodideReadyPromise = null;
 
 async function loadPyodideEngine(setStatus) {
     if (pyodide) return pyodide;
+    if (pyodideReadyPromise) return pyodideReadyPromise;
 
-    setStatus('Downloading Python Engine...', 'idle');
-    
-    // Initialize Pyodide
-    pyodide = await loadPyodide();
-    
-    // Optional: Load common packages
-    await pyodide.loadPackage(["numpy", "pandas"]);
-    
-    setStatus('Python Ready', 'idle');
-    return pyodide;
+    pyodideReadyPromise = (async () => {
+        setStatus('Downloading Python Engine...', 'idle');
+        
+        // Initialize Pyodide
+        pyodide = await loadPyodide();
+        
+        // Optional: Load common packages
+        await pyodide.loadPackage(["numpy", "pandas"]);
+        
+        setStatus('Python Ready', 'idle');
+        return pyodide;
+    })();
+
+    return pyodideReadyPromise;
 }
 
 function initPlayground(id) {
