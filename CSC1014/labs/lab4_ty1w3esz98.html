@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Lab 4 | CSC1014</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+
+  <!-- Pyodide & CodeMirror (CDN) -->
+  <script src="https://cdn.jsdelivr.net/pyodide/v0.23.4/full/pyodide.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/eclipse.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/python/python.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/matchbrackets.min.js"></script>
+
+  <!-- Course theme -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../theme/theme.css">
+</head>
+<body class="lecture">
+
+  <div class="wrap wide">
+    
+    <nav>
+      <div class="nav-left">
+        <a href="../index.html" class="back-link">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 12H5m7-7l-7 7 7 7"></path></svg>
+          Back to Course
+        </a>
+        <span style="color:var(--border)">|</span>
+        <h1>Week 4 – Lab</h1>
+      </div>
+      <span class="badge-top">Lab Sheet</span>
+    </nav>
+
+    <div class="lecture-wrap">
+      
+      <aside class="lecture-sidebar">
+        <div class="toc-title">On this page</div>
+        <a href="#intro" class="toc-link active">Introduction</a>
+        <a href="#ex0" class="toc-link">Ex 0 – Printing variants</a>
+        <a href="#ex1" class="toc-link">Ex 1 – Echo input</a>
+        <a href="#ex2" class="toc-link">Ex 2 – Input + conversion</a>
+        <a href="#ex3" class="toc-link">Ex 3 – Two-number calculator</a>
+        <a href="#ex4" class="toc-link">Ex 4 – Word problems</a>
+        <a href="#ex5" class="toc-link">Ex 5 – Formatting output</a>
+        <a href="#ex6" class="toc-link">Ex 6 – Strings vs numbers</a>
+        <a href="#ex7" class="toc-link">Ex 7 – Input errors</a>
+        <a href="#ex8" class="toc-link">Ex 8 – Fill-in mini-scripts</a>
+        <a href="#ex9" class="toc-link">Ex 9 – Profile card</a>
+        <a href="#ex10" class="toc-link">Ex 10 – Bill splitter</a>
+      </aside>
+
+      <main class="lecture-content">
+        
+        <!-- INTRO -->
+        <header id="intro">
+          <h1>Lab 4 – Input, Output &amp; Simple Interactive Programs</h1>
+
+          <p class="lede">
+            In this lab you will practise talking to the user using <code>print()</code> and
+            <code>input()</code>, converting text input to numbers, and building small interactive
+            Python scripts.
+          </p>
+
+          <div class="callout callout-goal">
+            <span class="callout-title">Lab goals</span>
+            <ul>
+              <li>Write your own <code>print()</code> statements (including basic formatting).</li>
+              <li>Use <code>input()</code> to read text from the user.</li>
+              <li>Convert text to numbers with <code>int()</code> and <code>float()</code>.</li>
+              <li>Combine these to create small interactive programs.</li>
+              <li>See how errors like <code>TypeError</code> and <code>ValueError</code> arise with bad types or inputs.</li>
+            </ul>
+          </div>
+        </header>
+
+        <!-- EXERCISE 0 -->
+        <h2 id="ex0">Exercise 0 – Warm-up: Printing Variants</h2>
+        <p>
+          Practise writing different forms of <code>print()</code>. For each sub-task, write the
+          full <code>print()</code> line yourself, then run and check the output.
+        </p>
+
+        <section class="card" id="ex-0">
+          <div class="card-head">
+            <div class="file-name">Ex 0 – print() practice</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+# Ex 0(a)
+# Write a print() call that prints exactly:
+# Hello, world!
+# Then run to check.
+
+# TODO: your code here
+
+
+# Ex 0(b)
+# Write a print() that prints name and age on one line
+# with nice spacing, for example:
+# Name: Ada Age: 21
+# Use two variables: name and age.
+
+# TODO: define name and age variables
+# name = ...
+# age = ...
+
+# TODO: print them in one line with labels
+
+
+# Ex 0(c)
+# Write a print() that uses sep and end parameters.
+# For example, you might want output like:
+# A - B - C!
+# using sep=" - " and end="!".
+
+# TODO: write a print() call using sep and end
+</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="status"><span class="dot"></span><span class="status-text">Ready</span></div>
+        </section>
+
+        <!-- EXERCISE 1 -->
+        <h2 id="ex1">Exercise 1 – Echo Input (Strings Only)</h2>
+        <p>
+          Write small programs that ask the user for some text and print a message that uses that
+          text. Do not convert to numbers yet.
+        </p>
+
+        <section class="card" id="ex-1">
+          <div class="card-head">
+            <div class="file-name">Ex 1 – Echo user input (strings)</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+# Ex 1(a)
+# Ask the user for their name and then greet them.
+# Example interaction:
+#   What is your name? Ada
+#   Hello Ada
+
+# TODO: write your program here
+
+
+# Ex 1(b)
+# Ask the user for their favourite colour and print
+# a message like:
+#   Your favourite colour is blue.
+
+# TODO: write your program here
+
+
+# Ex 1(c)
+# Ask for a city and a country, and print a sentence
+# using both values, e.g.:
+#   You live in Dublin, Ireland.
+
+# TODO: write your program here
+</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="status"><span class="dot"></span><span class="status-text">Ready</span></div>
+        </section>
+
+        <!-- EXERCISE 2 -->
+        <h2 id="ex2">Exercise 2 – Input + Simple Conversion</h2>
+        <p>
+          Use <code>input()</code> to read text, convert to numbers, and perform simple arithmetic.
+        </p>
+
+        <section class="card" id="ex-2">
+          <div class="card-head">
+            <div class="file-name">Ex 2 – Input with int() / float()</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+# Ex 2(a)
+# Ask the user for their age, convert it to an int,
+# then print how old they will be next year.
+#
+# Example:
+#   Enter your age: 20
+#   Next year you will be 21.
+
+# TODO: write your program here
+
+
+# Ex 2(b)
+# Ask the user for a number of minutes, convert to int,
+# then print how many seconds that is.
+#
+# Example:
+#   Enter minutes: 3
+#   That is 180 seconds.
+
+# TODO: write your program here
+
+
+# Ex 2(c)
+# Design your own small conversion (you choose the meaning).
+# Suggestions:
+#   - hours to minutes
+#   - days to hours
+#   - kilometres to metres
+#
+# Use good variable names and print a clear message.
+
+# TODO: write your program here
+</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="status"><span class="dot"></span><span class="status-text">Ready</span></div>
+        </section>
+
+        <!-- EXERCISE 3 -->
+        <h2 id="ex3">Exercise 3 – Two-Number Calculator</h2>
+        <p>
+          Write a small calculator that reads two numbers from the user, converts them to integers,
+          and prints the result of several operations.
+        </p>
+
+        <section class="card" id="ex-3">
+          <div class="card-head">
+            <div class="file-name">Ex 3 – Simple two-number calculator</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+# Ex 3: Two-number calculator
+#
+# 1. Ask the user for two integers.
+# 2. Convert both inputs using int().
+# 3. Compute:
+#    - sum
+#    - difference (first minus second)
+#    - product
+# 4. Print all results with labels, e.g.:
+#    Sum: ...
+#    Difference: ...
+#    Product: ...
+
+# TODO: write your program here
+</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="status"><span class="dot"></span><span class="status-text">Ready</span></div>
+        </section>
+
+        <!-- EXERCISE 4 -->
+        <h2 id="ex4">Exercise 4 – Simple Word Problems with Input</h2>
+        <p>
+          Turn short word problems into interactive programs. Use <code>input()</code>, numeric
+          conversion, arithmetic, and clear output.
+        </p>
+
+        <section class="card" id="ex-4">
+          <div class="card-head">
+            <div class="file-name">Ex 4 – Word problems with input()</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+# Ex 4(a) – Daily pay calculator
+#
+# Write a program that:
+#   1. Asks for hours worked (float).
+#   2. Asks for hourly rate (float).
+#   3. Computes daily pay.
+#   4. Prints a message like:
+#      You earned 96.0 euro today.
+#
+# TODO: write your program here
+
+
+# Ex 4(b) – Temperature converter
+#
+# Write a program that:
+#   1. Asks for a temperature in Celsius (float).
+#   2. Converts to Fahrenheit using:
+#        F = C * 9/5 + 32
+#   3. Prints a sentence showing both values.
+#
+# TODO: write your program here
+</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="status"><span class="dot"></span><span class="status-text">Ready</span></div>
+        </section>
+
+        <!-- EXERCISE 5 -->
+        <h2 id="ex5">Exercise 5 – Formatting Output with f-Strings</h2>
+        <p>
+          Use f-strings to create more polished output. Focus on readable messages rather than just
+          printing raw numbers.
+        </p>
+
+        <section class="card" id="ex-5">
+          <div class="card-head">
+            <div class="file-name">Ex 5 – f-string formatting practice</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+# Ex 5(a)
+# Compute a score percentage and print a message like:
+#   Your score is 78 out of 100 (78.0%).
+#
+# 1. Choose values for score and max_score.
+# 2. Compute the percentage.
+# 3. Use an f-string to print exactly one line in that style.
+
+# TODO: write your program here
+
+
+# Ex 5(b)
+# Compute the area of a circle with radius r:
+#    area = pi * r * r
+# Use pi = 3.14159.
+# Print a message like:
+#   Circle with radius 2.5 has area 19.63
+# rounding the area to 2 decimal places using :.2f.
+#
+# TODO: write your program here
+
+
+# Ex 5(c)
+# Design your own formatted message for some calculation
+# of your choice (e.g. BMI, speed, total price).
+# Use at least one f-string with a value formatted
+# to 2 decimal places.
+
+# TODO: write your program here
+</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="status"><span class="dot"></span><span class="status-text">Ready</span></div>
+        </section>
+
+        <!-- EXERCISE 6 -->
+        <h2 id="ex6">Exercise 6 – Strings vs Numbers: Type Confusion</h2>
+        <p>
+          See what happens when you mix strings and numbers incorrectly, and learn how to fix it.
+        </p>
+
+        <section class="card" id="ex-6">
+          <div class="card-head">
+            <div class="file-name">Ex 6 – Type errors and fixes</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+# Ex 6(a)
+# Consider this expression:
+#   "5" + 3
+# 1. Predict: will it work or give an error?
+# 2. Write a tiny program that tries it.
+# 3. Run and observe the error message (if any).
+# 4. Write a corrected version using either int("5") or str(3).
+
+# TODO: write your experiment and fix here
+
+
+# Ex 6(b)
+# Consider converting text to int:
+#   int("123")   vs   int("hello")
+# 1. Write a tiny program that calls each one.
+# 2. Predict which will work and which will error.
+# 3. Run and observe the messages.
+# 4. For the one that errors, write a short comment (one line)
+#    explaining why, in your own words.
+
+# TODO: write your experiment here
+
+
+# Ex 6(c)
+# Design a short example where you correctly:
+#   - convert user input to a number for arithmetic, OR
+#   - build a string using str() to avoid TypeError.
+#
+# TODO: write your own example here
+</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="status"><span class="dot"></span><span class="status-text">Ready</span></div>
+        </section>
+
+        <!-- EXERCISE 7 -->
+        <h2 id="ex7">Exercise 7 – Input Errors (ValueError Awareness)</h2>
+        <p>
+          Explore what happens when the user enters invalid text for a numeric conversion.
+          You will not fix the error yet; just observe and describe it.
+        </p>
+
+        <section class="card" id="ex-7">
+          <div class="card-head">
+            <div class="file-name">Ex 7 – Input and ValueError exploration</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+# Ex 7: Input validation
+#
+# 1. Write a program that:
+#    - Asks for an age using input().
+#    - Converts it to int.
+#    - Prints the age.
+#
+# 2. Run it with valid input (e.g. 21).
+# 3. Run it again with invalid input (e.g. "abc").
+# 4. Copy the error message as a comment and answer:
+#    - Which line caused the error?
+#    - Which function was being called?
+#    - Which value was invalid?
+#
+# TODO: write your program and your comments here
+</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="status"><span class="dot"></span><span class="status-text">Ready</span></div>
+        </section>
+
+        <!-- EXERCISE 8 -->
+        <h2 id="ex8">Exercise 8 – Mini-Scripts: Fill in the Blanks</h2>
+        <p>
+          Complete these partially described scripts by writing the missing <code>input()</code>,
+          conversion, arithmetic, and <code>print()</code> lines yourself.
+        </p>
+
+        <section class="card" id="ex-8">
+          <div class="card-head">
+            <div class="file-name">Ex 8 – Fill in rectangle and trip programs</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+# Ex 8(a) – Rectangle area and perimeter
+#
+# Write a program that:
+#   1. Asks for width and height of a rectangle (floats).
+#   2. Computes area and perimeter:
+#        area = width * height
+#        perimeter = 2 * (width + height)
+#   3. Prints both values with labels.
+#
+# TODO: write your program here
+
+
+# Ex 8(b) – Simple trip cost
+#
+# Write a program that:
+#   1. Asks for distance in km (float).
+#   2. Asks for cost per km (float).
+#   3. Computes total cost.
+#   4. Prints a message such as:
+#        A trip of 120.0 km costs 18.00 euro.
+#      (You can format to 2 decimal places if you like.)
+#
+# TODO: write your program here
+</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="status"><span class="dot"></span><span class="status-text">Ready</span></div>
+        </section>
+
+        <!-- EXERCISE 9 -->
+        <h2 id="ex9">Exercise 9 – Tiny Profile Card Program</h2>
+        <p>
+          Build a mini “profile card” by asking the user several questions and printing a
+          formatted summary.
+        </p>
+
+        <section class="card" id="ex-9">
+          <div class="card-head">
+            <div class="file-name">Ex 9 – Profile card with multiple inputs</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+# Ex 9: Profile card
+#
+# Write a program that:
+#   1. Asks for:
+#        - name (string)
+#        - age (int)
+#        - city (string)
+#        - favourite programming language (string)
+#   2. Prints a profile card, for example:
+#
+#      --- Profile ---
+#      Name  : Alice
+#      Age   : 21
+#      City  : Dublin
+#      Likes : Python
+#
+# Use good variable names and print statements or f-strings.
+
+# TODO: write your program here
+</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="status"><span class="dot"></span><span class="status-text">Ready</span></div>
+        </section>
+
+        <!-- EXERCISE 10 -->
+        <h2 id="ex10">Exercise 10 – Challenge: Simple Bill Splitter</h2>
+        <p>
+          Combine input, conversion, arithmetic, and formatting into a single small program that
+          splits a bill between several people.
+        </p>
+
+        <section class="card" id="ex-10">
+          <div class="card-head">
+            <div class="file-name">Ex 10 – Bill splitter challenge</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+# Ex 10: Bill splitter
+#
+# Write a program that:
+#   1. Asks for the total bill amount (float).
+#   2. Asks for the number of people (int).
+#   3. Computes the equal share per person.
+#   4. Prints:
+#        - total bill
+#        - number of people
+#        - share per person (rounded to 2 decimal places)
+#
+# Example style:
+#   Total bill: 52.00 euro
+#   People    : 3
+#   Each pays : 17.33 euro
+#
+# Optional extension:
+#   - Also ask for a service charge percentage and
+#     include it in the total before splitting.
+
+# TODO: write your program here
+</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="status"><span class="dot"></span><span class="status-text">Ready</span></div>
+        </section>
+
+      </main>
+    </div>
+
+    <footer>
+      <p class="copyright"></p>
+      <div class="legal-notice"></div>
+    </footer>
+
+  </div>
+
+  <script src="../theme/footer.js"></script>
+  <script src="../theme/legal.js"></script>
+  <script src="../engine/engine.js"></script>
+  <script>
+    // Init all playgrounds in this lab
+    initPlayground('ex-0');
+    initPlayground('ex-1');
+    initPlayground('ex-2');
+    initPlayground('ex-3');
+    initPlayground('ex-4');
+    initPlayground('ex-5');
+    initPlayground('ex-6');
+    initPlayground('ex-7');
+    initPlayground('ex-8');
+    initPlayground('ex-9');
+    initPlayground('ex-10');
+
+    applyFooterText();
+    applyLegalNotice();
+  </script>
+</body>
+</html>

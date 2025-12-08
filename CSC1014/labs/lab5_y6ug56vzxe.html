@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Lab 5 | CSC1014</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+
+  <!-- Pyodide & CodeMirror (CDN) -->
+  <script src="https://cdn.jsdelivr.net/pyodide/v0.23.4/full/pyodide.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/eclipse.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/python/python.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/matchbrackets.min.js"></script>
+
+  <!-- Course theme -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../theme/theme.css">
+</head>
+<body class="lecture">
+
+  <div class="wrap wide">
+    
+    <nav>
+      <div class="nav-left">
+        <a href="../index.html" class="back-link">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 12H5m7-7l-7 7 7 7"></path></svg>
+          Back to Course
+        </a>
+        <span style="color:var(--border)">|</span>
+        <h1>Week 5 – Lab</h1>
+      </div>
+      <span class="badge-top">Lab Sheet</span>
+    </nav>
+
+    <div class="lecture-wrap">
+      
+      <aside class="lecture-sidebar">
+        <div class="toc-title">On this page</div>
+        <a href="#intro" class="toc-link active">Introduction</a>
+        <a href="#ex0" class="toc-link">Ex 0 – Boolean warm-up</a>
+        <a href="#ex1" class="toc-link">Ex 1 – One-way if warm-up</a>
+        <a href="#ex2" class="toc-link">Ex 2 – Two-way decisions</a>
+        <a href="#ex3" class="toc-link">Ex 3 – Multi-way if-elif-else</a>
+        <a href="#ex4" class="toc-link">Ex 4 – Combining conditions</a>
+        <a href="#ex5" class="toc-link">Ex 5 – Debugging conditionals</a>
+        <a href="#ex6" class="toc-link">Ex 6 – Small decision programs</a>
+        <a href="#ex7" class="toc-link">Ex 7 – Grade + feedback</a>
+        <a href="#ex8" class="toc-link">Ex 8 – Number classifier</a>
+        <a href="#ex9" class="toc-link">Ex 9 – Simple menu</a>
+        <a href="#ex10" class="toc-link">Ex 10 – Unit converter</a>
+      </aside>
+
+      <main class="lecture-content">
+        
+        <!-- INTRO -->
+        <header id="intro">
+          <h1>Lab 5 – Making Decisions with if Statements</h1>
+
+          <p class="lede">
+            In this lab you will practise writing Boolean expressions and using
+            <code>if</code>, <code>if-else</code>, and <code>if-elif-else</code> to make decisions
+            in your programs.
+          </p>
+
+          <div class="callout callout-goal">
+            <span class="callout-title">Lab goals</span>
+            <ul>
+              <li>Write and test Boolean expressions using comparison and logical operators.</li>
+              <li>Use one-way, two-way, and multi-way conditionals.</li>
+              <li>Combine simple conditions with <code>and</code>, <code>or</code>, and <code>not</code>.</li>
+              <li>Debug common conditional mistakes (missing colons, <code>=</code> vs <code>==</code>, etc.).</li>
+              <li>Build small decision-based scripts from informal descriptions.</li>
+            </ul>
+          </div>
+
+          <div class="box box-info">
+            <span class="box-title">Allowed tools in this lab</span>
+            <ul>
+              <li>Variables, expressions, and types from earlier weeks.</li>
+              <li>Input/output: <code>input()</code>, <code>print()</code>, f-strings, <code>int()</code>, <code>float()</code>.</li>
+              <li>Comparisons: <code>==</code>, <code>!=</code>, <code>&lt;</code>, <code>&lt;=</code>, <code>&gt;</code>, <code>&gt;=</code>.</li>
+              <li>Logical operators: <code>and</code>, <code>or</code>, <code>not</code>.</li>
+              <li>Conditionals: <code>if</code>, <code>if-else</code>, <code>if-elif-else</code>.</li>
+            </ul>
+          </div>
+        </header>
+
+        <!-- EXERCISE 0 -->
+        <h2 id="ex0">Exercise 0 – Boolean Warm-up</h2>
+        <p>
+          This warm-up is pre-filled to remind you what Boolean expressions look like.
+          First run the code, then <strong>add</strong> at least three of your own Boolean tests.
+        </p>
+
+        <section class="card" id="ex-0">
+          <div class="card-head">
+            <div class="file-name">Ex 0 – Boolean expressions warm-up</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+# Ex 0: Boolean warm-up
+
+age = 20
+score = 55
+x = 3
+y = 7
+
+print("age >= 18:", age >= 18)
+print("score == 100:", score == 100)
+print("x < y and y < 10:", x < y and y < 10)
+
+# TODO:
+# 1. Add at least three more print() lines below using
+#    different comparison and logical operators.
+#    For example:
+#      - score != 0
+#      - age < 18 or score > 50
+#      - not (x == 3)
+
+# Your extra Boolean tests here:
+</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="status"><span class="dot"></span><span class="status-text">Ready</span></div>
+        </section>
+
+        <!-- EXERCISE 1 -->
+        <h2 id="ex1">Exercise 1 – One-way if Warm-up</h2>
+        <p>
+          This warm-up shows one complete example. Then you will write two one-way
+          <code>if</code> statements yourself.
+        </p>
+
+        <section class="card" id="ex-1">
+          <div class="card-head">
+            <div class="file-name">Ex 1 – One-way if practice</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+# Ex 1: One-way if warm-up
+
+temperature = 32.0
+
+if temperature > 30.0:
+    print("It's hot today.")
+
+# TODO 1:
+# Write a program that:
+#   - asks the user for an exam score (0-100)
+#   - if score is at least 40, prints "You passed."
+#   - otherwise prints nothing.
+#
+# You must write the whole program (input, conversion, if).
+
+# TODO: your code for exam pass check here
+
+
+# TODO 2:
+# Write a program that:
+#   - asks the user for a number (float)
+#   - if the number is greater than 100, prints "Large number!"
+#   - otherwise prints nothing.
+
+# TODO: your code for large number check here
+</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="status"><span class="dot"></span><span class="status-text">Ready</span></div>
+        </section>
+
+        <!-- EXERCISE 2 -->
+        <h2 id="ex2">Exercise 2 – Two-way Decisions with if-else</h2>
+        <p>
+          Now you will write full two-way decision programs using <code>if-else</code>.
+        </p>
+
+        <section class="card" id="ex-2">
+          <div class="card-head">
+            <div class="file-name">Ex 2 – Two-way decisions (if-else)</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+# Ex 2(a) – Pass / fail
+#
+# Write a program that:
+#   1. Asks the user for a score (0-100).
+#   2. Converts it to int.
+#   3. If score >= 40, prints "Pass".
+#      Otherwise prints "Fail".
+
+# TODO: write your pass/fail program here
+
+
+# Ex 2(b) – Even / odd
+#
+# Write a program that:
+#   1. Asks for an integer.
+#   2. Uses % 2 to decide if it is even or odd.
+#   3. Prints either "Even" or "Odd".
+
+# TODO: write your even/odd program here
+
+
+# Ex 2(c) – Sign check
+#
+# Write a program that:
+#   1. Asks for an integer.
+#   2. If number > 0, prints "Positive".
+#      Otherwise prints "Zero or negative".
+
+# TODO: write your sign-check program here
+</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="status"><span class="dot"></span><span class="status-text">Ready</span></div>
+        </section>
+
+        <!-- EXERCISE 3 -->
+        <h2 id="ex3">Exercise 3 – Multi-way Decisions with if-elif-else</h2>
+        <p>
+          Use <code>if-elif-else</code> to choose between more than two options.
+          Pay attention to the order of conditions.
+        </p>
+
+        <section class="card" id="ex-3">
+          <div class="card-head">
+            <div class="file-name">Ex 3 – Multi-way decisions (if-elif-else)</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+# Ex 3(a) – Grade bands
+#
+# Write a program that:
+#   1. Asks for a score (0-100, assume valid).
+#   2. Prints:
+#        "A" for 70-100
+#        "B" for 60-69
+#        "C" for 50-59
+#        "D" for 40-49
+#        "F" for below 40
+#   Use an if-elif-else chain.
+
+# TODO: write your grade band program here
+
+
+# Ex 3(b) – Age categories
+#
+# Write a program that:
+#   1. Asks for an age (int).
+#   2. Prints:
+#        "Child"    if age < 13
+#        "Teenager" if 13-17
+#        "Adult"    if 18-64
+#        "Senior"   if 65 or more
+
+# TODO: write your age category program here
+</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="status"><span class="dot"></span><span class="status-text">Ready</span></div>
+        </section>
+
+        <!-- EXERCISE 4 -->
+        <h2 id="ex4">Exercise 4 – Combining Conditions (and / or / not)</h2>
+        <p>
+          Write conditions that combine simpler tests using <code>and</code>, <code>or</code>,
+          and <code>not</code>.
+        </p>
+
+        <section class="card" id="ex-4">
+          <div class="card-head">
+            <div class="file-name">Ex 4 – Combined conditions practice</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+# Ex 4(a) – Teenager check
+#
+# Write a program that:
+#   1. Asks for an age (int).
+#   2. Uses one Boolean expression with and to test
+#      if the age is between 13 and 19 inclusive.
+#   3. Prints either True or False for the teenager test.
+
+# TODO: write your teenager check program here
+
+
+# Ex 4(b) – Discount eligibility
+#
+# A person gets a discount if they are:
+#   - under 18, OR
+#   - a student.
+#
+# Write a program that:
+#   1. Asks for age (int).
+#   2. Asks if the person is a student (answer "yes" or "no").
+#   3. Uses and/or to decide if they get a discount.
+#   4. Prints "Discount: yes" or "Discount: no".
+
+# TODO: write your discount program here
+
+
+# Ex 4(c) – Outside range
+#
+# Write a program that:
+#   1. Asks for a number x (float).
+#   2. Prints "Outside 0-100" if x is less than 0 or greater than 100.
+#      Otherwise prints "Inside 0-100".
+#
+# You may use or, or not, or both.
+
+# TODO: write your outside-range program here
+</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="status"><span class="dot"></span><span class="status-text">Ready</span></div>
+        </section>
+
+        <!-- EXERCISE 5 -->
+        <h2 id="ex5">Exercise 5 – Debugging Conditionals</h2>
+        <p>
+          The snippets below contain common mistakes with conditionals. Your job is to
+          explain and fix them.
+        </p>
+
+        <section class="card" id="ex-5">
+          <div class="card-head">
+            <div class="file-name">Ex 5 – Debugging if statements</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+# Ex 5(a) – Missing colon
+#
+# The code below is broken. Copy it, run it, read the error,
+# then fix it. Add a comment explaining the problem.
+
+# if 10 > 5
+#     print("Ten is greater than five")
+
+# TODO: rewrite the fixed version below and add a short comment
+
+
+# Ex 5(b) – = vs ==
+#
+# The code below is intended to check if password equals "secret",
+# but it is wrong. Copy and fix it.
+
+# password = input("Password: ")
+# if password = "secret":
+#     print("Access granted")
+# else:
+#     print("Access denied")
+
+# TODO: write the corrected version here and comment on the mistake
+
+
+# Ex 5(c) – Wrong comparison
+#
+# The code below tries to compare age (int) with a string "18".
+# It won't behave as intended.
+
+# age = int(input("Age: "))
+# if age == "18":
+#     print("Exactly 18")
+# else:
+#     print("Not 18")
+
+# TODO: fix the comparison and add a comment describing the bug
+</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="status"><span class="dot"></span><span class="status-text">Ready</span></div>
+        </section>
+
+        <!-- EXERCISE 6 -->
+        <h2 id="ex6">Exercise 6 – Small Decision Programs</h2>
+        <p>
+          Turn these short specifications into complete decision-based programs.
+          Write at least two of them; do the third if you have time.
+        </p>
+
+        <section class="card" id="ex-6">
+          <div class="card-head">
+            <div class="file-name">Ex 6 – Decision-based mini programs</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+# Ex 6(a) – Ticket price calculator
+#
+# Write a program that:
+#   1. Asks for age (int).
+#   2. Asks if the person is a student ("yes"/"no").
+#   3. Sets a ticket price based on age and student status, e.g.:
+#        - child (under 12): free
+#        - teenager (12-17): 5 euro
+#        - adult (18-64): 10 euro (8 if student)
+#        - senior (65+): 6 euro
+#   4. Prints the final price.
+
+# TODO: write your ticket price program here
+
+
+# Ex 6(b) – Minimum of three numbers
+#
+# Write a program that:
+#   1. Asks the user for three integers.
+#   2. Uses if/elif/else to find the smallest value.
+#   3. Prints the smallest value.
+
+# TODO: write your minimum-of-three program here
+
+
+# Ex 6(c) – Simple login check
+#
+# Write a program that:
+#   1. Stores a correct username and password in variables.
+#   2. Asks the user to enter a username and password.
+#   3. If both match, prints "Access granted".
+#      Otherwise prints "Access denied".
+
+# TODO: write your login check program here
+</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="status"><span class="dot"></span><span class="status-text">Ready</span></div>
+        </section>
+
+        <!-- EXERCISE 7 -->
+        <h2 id="ex7">Exercise 7 – Challenge: Grade + Feedback</h2>
+        <p>
+          Build a slightly larger script that computes a grade and prints feedback.
+        </p>
+
+        <section class="card" id="ex-7">
+          <div class="card-head">
+            <div class="file-name">Ex 7 – Grade and feedback challenge</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+# Ex 7: Grade + feedback
+#
+# Write a program that:
+#   1. Asks for a score between 0 and 100 (assume valid).
+#   2. Computes a grade (A/B/C/D/F), similar to Ex 3.
+#   3. Prints both the grade and a short feedback message.
+#      For example:
+#        A -> "Excellent"
+#        B -> "Very good"
+#        C -> "Good"
+#        D -> "Needs improvement"
+#        F -> "Fail – please review the material"
+#
+# Use:
+#   - at least one if-elif-else chain
+#   - at least one f-string in the final output
+
+# TODO: write your grade + feedback program here
+</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="status"><span class="dot"></span><span class="status-text">Ready</span></div>
+        </section>
+
+        <!-- EXERCISE 8 -->
+        <h2 id="ex8">Exercise 8 – Number Classifier (Sign + Parity)</h2>
+        <p>
+          Classify a number based on both its sign (negative, zero, positive)
+          and whether it is even or odd.
+        </p>
+
+        <section class="card" id="ex-8">
+          <div class="card-head">
+            <div class="file-name">Ex 8 – Combined number classification</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+# Ex 8: Number classifier
+#
+# Write a program that:
+#   1. Asks for an integer n.
+#   2. Prints exactly one of these messages:
+#        "Negative even"
+#        "Negative odd"
+#        "Zero"
+#        "Positive even"
+#        "Positive odd"
+#
+# Hints:
+#   - First decide if n is less than, equal to, or greater than 0.
+#   - Inside the positive/negative branches, use % 2 to decide even/odd.
+#   - You can use nested if statements or a single if-elif-else chain.
+
+# TODO: write your number classifier program here
+</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="status"><span class="dot"></span><span class="status-text">Ready</span></div>
+        </section>
+
+        <!-- EXERCISE 9 -->
+        <h2 id="ex9">Exercise 9 – Simple Menu</h2>
+        <p>
+          Create a small text menu that lets the user choose an option and responds differently for each choice.
+        </p>
+
+        <section class="card" id="ex-9">
+          <div class="card-head">
+            <div class="file-name">Ex 9 – Menu with if-elif-else</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+# Ex 9: Simple menu
+#
+# Write a program that:
+#   1. Prints a menu, for example:
+#        1) Show help
+#        2) Start new game
+#        3) Quit
+#   2. Asks the user to enter 1, 2 or 3.
+#   3. Uses if-elif-else to:
+#        - Print "Showing help..." for 1
+#        - Print "Starting game..." for 2
+#        - Print "Goodbye!" for 3
+#        - Print "Invalid choice" for any other input.
+
+# TODO: write your menu program here
+</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="status"><span class="dot"></span><span class="status-text">Ready</span></div>
+        </section>
+
+        <!-- EXERCISE 10 -->
+        <h2 id="ex10">Exercise 10 – Unit Converter with Choice</h2>
+        <p>
+          Build a simple unit converter that behaves differently depending on the user’s choice of conversion.
+        </p>
+
+        <section class="card" id="ex-10">
+          <div class="card-head">
+            <div class="file-name">Ex 10 – Unit converter with if-elif-else</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+# Ex 10: Unit converter
+#
+# Write a program that:
+#   1. Prints a small menu of conversions, e.g.:
+#        1) Celsius -> Fahrenheit
+#        2) Kilometres -> Miles
+#   2. Asks the user to choose 1 or 2.
+#   3. Asks for the value to convert (float).
+#   4. Uses if-elif-else to:
+#        - perform the chosen conversion
+#        - print the result with a clear message
+#        - if the choice is invalid, print an error message.
+#
+# Use formulas such as:
+#   F = C * 9/5 + 32
+#   miles = km * 0.621371
+
+# TODO: write your unit converter program here
+</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="status"><span class="dot"></span><span class="status-text">Ready</span></div>
+        </section>
+
+      </main>
+    </div>
+
+    <footer>
+      <p class="copyright"></p>
+      <div class="legal-notice"></div>
+    </footer>
+
+  </div>
+
+  <script src="../theme/footer.js"></script>
+  <script src="../theme/legal.js"></script>
+  <script src="../engine/engine.js"></script>
+  <script>
+    // Init all playgrounds in this lab
+    initPlayground('ex-0');
+    initPlayground('ex-1');
+    initPlayground('ex-2');
+    initPlayground('ex-3');
+    initPlayground('ex-4');
+    initPlayground('ex-5');
+    initPlayground('ex-6');
+    initPlayground('ex-7');
+    initPlayground('ex-8');
+    initPlayground('ex-9');
+    initPlayground('ex-10');
+
+    applyFooterText();
+    applyLegalNotice();
+  </script>
+</body>
+</html>

@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Lab 3 | CSC1014</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+
+  <!-- Pyodide & CodeMirror (CDN) -->
+  <script src="https://cdn.jsdelivr.net/pyodide/v0.23.4/full/pyodide.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/eclipse.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/python/python.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/matchbrackets.min.js"></script>
+
+  <!-- Course theme -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../theme/theme.css">
+</head>
+<body class="lecture">
+
+  <div class="wrap wide">
+    
+    <nav>
+      <div class="nav-left">
+        <a href="../index.html" class="back-link">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 12H5m7-7l-7 7 7 7"></path></svg>
+          Back to Course
+        </a>
+        <span style="color:var(--border)">|</span>
+        <h1>Week 3 – Lab</h1>
+      </div>
+      <span class="badge-top">Lab Sheet</span>
+    </nav>
+
+    <div class="lecture-wrap">
+      
+      <aside class="lecture-sidebar">
+        <div class="toc-title">On this page</div>
+        <a href="#intro" class="toc-link active">Introduction</a>
+        <a href="#ex0" class="toc-link">Ex 0 – Warm-up</a>
+        <a href="#ex1" class="toc-link">Ex 1 – Trace the Boxes</a>
+        <a href="#ex2" class="toc-link">Ex 2 – Story to Variables</a>
+        <a href="#ex3" class="toc-link">Ex 3 – Legal Names</a>
+        <a href="#ex4" class="toc-link">Ex 4 – Better Names</a>
+        <a href="#ex5" class="toc-link">Ex 5 – Counter Pattern</a>
+        <a href="#ex6" class="toc-link">Ex 6 – Accumulator Pattern</a>
+        <a href="#ex7" class="toc-link">Ex 7 – Variables &amp; Types</a>
+        <a href="#ex8" class="toc-link">Ex 8 – Reassigning Variables</a>
+        <a href="#ex9" class="toc-link">Ex 9 – Bug: Too Soon</a>
+        <a href="#ex10" class="toc-link">Ex 10 – Trace a Script</a>
+        <a href="#ex11" class="toc-link">Ex 11 – Swapping Values</a>
+        <a href="#ex12" class="toc-link">Ex 12 – Weekly Pay</a>
+        <a href="#ex13" class="toc-link">Ex 13 – State Snapshot</a>
+      </aside>
+
+      <main class="lecture-content">
+        
+        <!-- INTRO -->
+        <header id="intro">
+          <h1>Lab 3 – Variables &amp; State</h1>
+
+          <p class="lede">
+            In this lab you will practise using variables as “named boxes”, understand assignment
+            and re-assignment, trace how values change, and use simple counter and accumulator patterns.
+          </p>
+
+          <div class="callout callout-goal">
+            <span class="callout-title">Lab goals</span>
+            <ul>
+              <li>Define and update variables to model simple situations.</li>
+              <li>Trace variable values step by step through a small script.</li>
+              <li>Use the counter and accumulator patterns (without loops yet).</li>
+              <li>Choose good variable names and recognise illegal ones.</li>
+              <li>Understand common mistakes like using a variable before assignment.</li>
+            </ul>
+          </div>
+        </header>
+
+        <!-- EXERCISE 0 -->
+        <h2 id="ex0">Exercise 0 – Warm-up: What Is in the Box?</h2>
+        <p>
+          For each snippet below, write down what you think gets printed <strong>before</strong> you run it.
+          Then run it in the editor and check your prediction.
+        </p>
+
+        <section class="card" id="ex-0">
+          <div class="card-head">
+            <div class="file-name">Ex 0(a) – Simple arithmetic with variables</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+# Ex 0(a)
+# Predict the output, then run.
+
+x = 5
+y = 2 * x
+print(x)
+print(y)
+</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="status"><span class="dot"></span><span class="status-text">Ready</span></div>
+        </section>
+
+        <section class="card" id="ex-0b">
+          <div class="card-head">
+            <div class="file-name">Ex 0(b) – Updating a variable</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+# Ex 0(b)
+# Predict the final value of a, then run.
+
+a = 10
+a = a + 3
+a = a * 2
+print(a)
+</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="status"><span class="dot"></span><span class="status-text">Ready</span></div>
+        </section>
+
+        <section class="card" id="ex-0c">
+          <div class="card-head">
+            <div class="file-name">Ex 0(c) – Total with tax</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+# Ex 0(c)
+# Predict the two printed values, then run.
+
+price = 20
+tax_rate = 0.23
+total = price * (1 + tax_rate)
+print(price, total)
+</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="status"><span class="dot"></span><span class="status-text">Ready</span></div>
+        </section>
+
+        <!-- EXERCISE 1 -->
+        <h2 id="ex1">Exercise 1 – Trace the Boxes</h2>
+        <p>
+          For each program, trace it <strong>line by line</strong> on paper using a table with columns
+          for each variable and one row per line. Then run the program and compare your final row
+          with what Python prints.
+        </p>
+
+        <section class="card" id="ex-1a">
+          <div class="card-head">
+            <div class="file-name">Ex 1(a) – Trace x, y, z</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <p>Create a table with columns x, y, z and fill it in after each line.</p>
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+# Ex 1(a)
+# Trace this on paper, then run.
+
+x = 2
+y = 3
+z = x + y
+x = z - 1
+y = x + y
+print(x, y, z)
+</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="status"><span class="dot"></span><span class="status-text">Ready</span></div>
+        </section>
+
+        <section class="card" id="ex-1b">
+          <div class="card-head">
+            <div class="file-name">Ex 1(b) – Trace a, b, c</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <p>Create a table with columns a, b, c and fill it in after each line.</p>
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+# Ex 1(b)
+# Trace this on paper, then run.
+
+a = 1
+b = a + 2
+c = b * 3
+b = c - a
+print(a, b, c)
+</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="status"><span class="dot"></span><span class="status-text">Ready</span></div>
+        </section>
+
+        <!-- EXERCISE 2 -->
+        <h2 id="ex2">Exercise 2 – From Story to Variables</h2>
+        <p>
+          Model this shopping scenario with variables:
+        </p>
+        <ul>
+          <li>One notebook costs €4.50.</li>
+          <li>Three pens cost €1.20 each.</li>
+          <li>There is a fixed €2.00 delivery fee.</li>
+        </ul>
+        <p>
+          Create your own variable names and:
+        </p>
+        <ul>
+          <li>store each value in a variable,</li>
+          <li>compute the total cost,</li>
+          <li>print a sentence explaining the total.</li>
+        </ul>
+
+        <section class="card" id="ex-2">
+          <div class="card-head">
+            <div class="file-name">Ex 2 – Shopping total with variables</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+# Ex 2: Shopping scenario
+# 1. Define variables for notebook price, pen price, number of pens, delivery fee.
+# 2. Compute a total cost variable.
+# 3. Print a sentence such as:
+#    "Total cost is ... euro"
+
+# Write your code below:
+</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="status"><span class="dot"></span><span class="status-text">Ready</span></div>
+        </section>
+
+        <!-- EXERCISE 3 -->
+        <h2 id="ex3">Exercise 3 – Legal or Illegal Names?</h2>
+        <p>
+          Decide whether each of these is a legal Python variable name. If it is illegal,
+          write a fixed version in a comment.
+        </p>
+        <ul>
+          <li><code>2nd_place</code></li>
+          <li><code>total-price</code></li>
+          <li><code>student_count</code></li>
+          <li><code>TotalScore</code></li>
+          <li><code>class</code></li>
+          <li><code>_hidden_value</code></li>
+          <li><code>number1</code></li>
+        </ul>
+        <p>
+          Then pick three legal names and write a short comment explaining what kind of value
+          you would store in them.
+        </p>
+
+        <section class="card" id="ex-3">
+          <div class="card-head">
+            <div class="file-name">Ex 3 – Legal vs illegal variable names</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+# Ex 3: Work with comments only; you don't have to run this.
+# For each name, mark as legal/illegal, and if illegal, fix it.
+
+# 2nd_place      -> ?
+# total-price    -> ?
+# student_count  -> ?
+# TotalScore     -> ?
+# class          -> ?
+# _hidden_value  -> ?
+# number1        -> ?
+
+# Then pick three legal names and describe their meaning:
+# student_count: ...
+# ...
+</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="status"><span class="dot"></span><span class="status-text">Optional</span></div>
+        </section>
+
+        <!-- EXERCISE 4 -->
+        <h2 id="ex4">Exercise 4 – Improving Variable Names</h2>
+        <p>
+          The following program works, but the names are not helpful. Rewrite it using descriptive
+          variable names and add a comment explaining what the program does.
+        </p>
+
+        <section class="card" id="ex-4">
+          <div class="card-head">
+            <div class="file-name">Ex 4 – Rename variables for clarity</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+# Ex 4: Rewrite this with better variable names.
+# Add a comment at the top describing what it does.
+
+a = 8
+b = 15
+c = a * b
+
+print("Result:", c)
+
+# Now rewrite below with better names and a comment.
+</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="status"><span class="dot"></span><span class="status-text">Ready</span></div>
+        </section>
+
+        <!-- EXERCISE 5 -->
+        <h2 id="ex5">Exercise 5 – Counter Pattern without Loops</h2>
+        <p>
+          Practise the counter pattern: start from zero and increase a variable by 1 for each event.
+        </p>
+
+        <section class="card" id="ex-5">
+          <div class="card-head">
+            <div class="file-name">Ex 5 – Simple counter pattern</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+# Ex 5: Counter pattern
+#
+# 1. Create a variable called count and set it to 0.
+# 2. Pretend that five "events" happen. After each event,
+#    update count using the pattern:
+#       count = count + 1
+# 3. At the end, print the final count.
+#
+# 4. Then design your own counter variable (e.g. tasks_done)
+#    and repeat the pattern for 4 tasks.
+
+# Write your code below:
+</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="status"><span class="dot"></span><span class="status-text">Ready</span></div>
+        </section>
+
+        <!-- EXERCISE 6 -->
+        <h2 id="ex6">Exercise 6 – Accumulator Pattern without Loops</h2>
+        <p>
+          Practise the accumulator pattern: start from 0 and keep adding values to a running total.
+        </p>
+
+        <section class="card" id="ex-6">
+          <div class="card-head">
+            <div class="file-name">Ex 6 – Simple accumulator pattern</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+# Ex 6: Accumulator pattern
+#
+# 1. Create a variable total and set it to 0.
+# 2. Add at least five item prices to total using:
+#       total = total + <some price>
+# 3. At the end, print the final total with a clear message, e.g.:
+#       "The total shopping cost is ... euro"
+#
+# Choose your own prices (integers or floats).
+
+# Write your code below:
+</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="status"><span class="dot"></span><span class="status-text">Ready</span></div>
+        </section>
+
+        <!-- EXERCISE 7 -->
+        <h2 id="ex7">Exercise 7 – Variables and Types</h2>
+        <p>
+          Work with different types stored in variables and check them with <code>type()</code>.
+        </p>
+
+        <section class="card" id="ex-7">
+          <div class="card-head">
+            <div class="file-name">Ex 7 – Types of variables</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+# Ex 7: Predict the types, then run.
+
+age = 21
+pi = 3.14159
+name = "Ada"
+is_student = True
+
+# 1. Before running, guess type(age), type(pi), type(name), type(is_student).
+# 2. Add print statements to check your guesses, e.g.:
+#    print("age:", age, "Type:", type(age))
+
+# 3. After running, answer for yourself:
+#    What decides the type of a variable in Python:
+#    the variable name, or the value stored in it?
+
+# Write your print() lines below:
+</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="status"><span class="dot"></span><span class="status-text">Ready</span></div>
+        </section>
+
+        <!-- EXERCISE 8 -->
+        <h2 id="ex8">Exercise 8 – Reassigning Variables</h2>
+        <p>
+          See what happens when you reassign a variable multiple times, including changing its type.
+        </p>
+
+        <section class="card" id="ex-8">
+          <div class="card-head">
+            <div class="file-name">Ex 8 – Reassignment and type changes</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+# Ex 8: Predict the three printed values, then run.
+
+value = 10
+print(value)
+
+value = value + 5
+print(value)
+
+value = "fifteen"
+print(value)
+
+# 1. After running, add a final line:
+#    print(type(value))
+#
+# 2. In your own words (1–2 sentences, as a comment),
+#    explain what happened to 'value' over time.
+#
+# 3. Is it a good idea in larger programs to keep changing
+#    a variable's type like this? Why or why not?
+</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="status"><span class="dot"></span><span class="status-text">Ready</span></div>
+        </section>
+
+        <!-- EXERCISE 9 -->
+        <h2 id="ex9">Exercise 9 – Find the Bug: Using a Variable Too Soon</h2>
+        <p>
+          This program has a common error: it tries to use a variable before it has been defined.
+          Predict the error, then run and fix it.
+        </p>
+
+        <section class="card" id="ex-9">
+          <div class="card-head">
+            <div class="file-name">Ex 9 – Using a variable before assignment</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+# Ex 9: Predict the error, then run.
+
+total = price + 5
+price = 20
+print("Total:", total)
+
+# 1. What error message do you expect?
+# 2. Run and read the actual error.
+# 3. Explain (as a comment) what is wrong in terms of the "box" model:
+#    which box is missing when we compute total?
+
+# 4. Now fix the code so that:
+#    - price is created first,
+#    - then total is computed,
+#    - then both are printed.
+#
+# Write your fixed version below:
+</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="status"><span class="dot"></span><span class="status-text">Ready</span></div>
+        </section>
+
+        <!-- EXERCISE 10 -->
+        <h2 id="ex10">Exercise 10 – Tracing a Small Script</h2>
+        <p>
+          Trace this script on paper using a table for <code>x</code>, <code>y</code>, and
+          <code>z</code>, then run to check your work.
+        </p>
+
+        <section class="card" id="ex-10">
+          <div class="card-head">
+            <div class="file-name">Ex 10 – Trace x, y, z again</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+# Ex 10: Trace this program.
+
+x = 3
+y = x + 4
+z = y - 2
+x = z * 2
+y = x + y
+print(x, y, z)
+
+# 1. Make a table with columns x, y, z.
+# 2. For each line, update the table.
+# 3. Write down the final row.
+# 4. Run the program and compare with the printed output.
+</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="status"><span class="dot"></span><span class="status-text">Ready</span></div>
+        </section>
+
+        <!-- EXERCISE 11 -->
+        <h2 id="ex11">Exercise 11 – Swapping Values</h2>
+        <p>
+          Learn why swapping two values needs a temporary variable when using basic assignment.
+        </p>
+
+        <section class="card" id="ex-11">
+          <div class="card-head">
+            <div class="file-name">Ex 11 – Swapping with a temporary variable</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+# Ex 11: Swapping values
+
+a = 5
+b = 10
+
+# 1. First, try this "swap" and see what happens:
+#    a = b
+#    b = a
+#    print(a, b)
+#    (You can temporarily uncomment these lines.)
+
+# 2. Now perform a correct swap using a temporary variable temp:
+
+a = 5
+b = 10
+
+# TODO: swap a and b using a temporary variable
+# temp = ...
+# a = ...
+# b = ...
+
+print(a, b)
+
+# After you get the swap working, explain in a comment
+# why the temporary variable is necessary using the "box" model.
+</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="status"><span class="dot"></span><span class="status-text">Ready</span></div>
+        </section>
+
+        <!-- EXERCISE 12 -->
+        <h2 id="ex12">Exercise 12 – Designing a Tiny Program: Weekly Pay</h2>
+        <p>
+          Design a small program to compute and display someone’s weekly pay. Store example data in variables.
+        </p>
+        <ul>
+          <li>Create variables for:
+            <ul>
+              <li>hourly rate</li>
+              <li>hours worked</li>
+              <li>tax rate (e.g. <code>0.20</code> for 20%)</li>
+            </ul>
+          </li>
+          <li>Then compute:
+            <ul>
+              <li>gross pay (before tax)</li>
+              <li>tax amount</li>
+              <li>net pay (after tax)</li>
+            </ul>
+          </li>
+        </ul>
+
+        <section class="card" id="ex-12">
+          <div class="card-head">
+            <div class="file-name">Ex 12 – Weekly pay calculation with variables</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+# Ex 12: Weekly pay program
+# 1. Define variables for hourly_rate, hours_worked, tax_rate.
+# 2. Compute gross_pay, tax_amount, net_pay using expressions.
+# 3. Print all three with clear labels.
+
+# Write your program below:
+</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="status"><span class="dot"></span><span class="status-text">Ready</span></div>
+        </section>
+
+        <!-- EXERCISE 13 -->
+        <h2 id="ex13">Exercise 13 – Challenge: State Snapshot</h2>
+        <p>
+          Imagine you are debugging a larger program and want to print a snapshot of the current
+          state of several variables.
+        </p>
+        <p>Your task:</p>
+        <ul>
+          <li>Create at least five variables representing different things:
+            <ul>
+              <li>an integer</li>
+              <li>a float</li>
+              <li>a string</li>
+              <li>a Boolean</li>
+              <li>one more of any type</li>
+            </ul>
+          </li>
+          <li>Assign meaningful example values.</li>
+          <li>Print a neat “state report” showing each name and value on its own line.</li>
+        </ul>
+
+        <section class="card" id="ex-13">
+          <div class="card-head">
+            <div class="file-name">Ex 13 – State snapshot report</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+# Ex 13: State snapshot
+# Create at least five variables of different types and print
+# a tidy "Current state" report.
+
+# Example of the desired style (you can design your own layout):
+# Current state:
+#   attempts        : 3
+#   success_rate    : 0.75
+#   username        : alice
+#   is_logged_in    : True
+#   last_error_code : 0
+
+# 1. Define your variables here (choose your own names/values):
+
+# 2. Print the state snapshot, one variable per line.
+
+# Write your version below:
+</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="status"><span class="dot"></span><span class="status-text">Ready</span></div>
+        </section>
+
+      </main>
+    </div>
+
+    <footer>
+      <p class="copyright"></p>
+      <div class="legal-notice"></div>
+    </footer>
+
+  </div>
+
+  <script src="../theme/footer.js"></script>
+  <script src="../theme/legal.js"></script>
+  <script src="../engine/engine.js"></script>
+  <script>
+    // Init all playgrounds in this lab
+    initPlayground('ex-0');
+    initPlayground('ex-0b');
+    initPlayground('ex-0c');
+    initPlayground('ex-1a');
+    initPlayground('ex-1b');
+    initPlayground('ex-2');
+    initPlayground('ex-3');
+    initPlayground('ex-4');
+    initPlayground('ex-5');
+    initPlayground('ex-6');
+    initPlayground('ex-7');
+    initPlayground('ex-8');
+    initPlayground('ex-9');
+    initPlayground('ex-10');
+    initPlayground('ex-11');
+    initPlayground('ex-12');
+    initPlayground('ex-13');
+
+    applyFooterText();
+    applyLegalNotice();
+  </script>
+</body>
+</html>
