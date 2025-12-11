@@ -45,112 +45,116 @@
       
       <aside class="lecture-sidebar">
         <div class="toc-title">Lab Menu</div>
-        <a href="#setup" class="toc-link active">1. Setup & Downloads</a>
+        <a href="#setup" class="toc-link active">1. Setup &amp; Downloads</a>
         <a href="#warmup" class="toc-link">2. Warm-up (Browser)</a>
         <a href="#more-dicts" class="toc-link">3. Dict Practice</a>
         <a href="#more-funcs" class="toc-link">4. Function Practice</a>
         <a href="#local-loader" class="toc-link">5. The CSV Loader (Local)</a>
-        <a href="#robustness" class="toc-link">6. Handling Errors</a>
+        <a href="#dirty-data" class="toc-link">6. Handling Dirty Data</a>
         <a href="#challenge" class="toc-link">7. Final Challenge</a>
       </aside>
 
       <main class="lecture-content">
         
         <header id="setup">
-          <h1>Lab 2: Data Structures &amp; File Loading</h1>
+          <h1>Lab 2: Dictionaries &amp; File Loading</h1>
           <p class="lead">
-            Today is a deep dive into Dictionaries, Functions, and File I/O. 
-            We will start with intensive practice in the browser to master the syntax, then move to your local machine to build a robust CSV loader.
+            Today you will practise two key Week-2 skills:
+            <strong>dictionaries with labels</strong> and <strong>loading CSV data into Python</strong>.
+            We start in the browser for quick feedback, then move to your local machine to build a small CSV loader.
           </p>
         </header>
 
-        <h2 id="setup">1. Setup & Downloads</h2>
+        <h2 id="setup">1. Setup &amp; Downloads</h2>
         
         <div class="box box-info">
-            <span class="box-title">Step 1: Download Data</span>
-            <p>Download these 3 files and save them into a folder named <code>lab2_data</code> on your computer.</p>
-            
-            <div class="download-group">
-                <a href="lab_data/students_clean.csv" class="btn btn-primary">
-                    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
-                    students_clean.csv
-                </a>
-                <a href="lab_data/students_messy.csv" class="btn btn-primary">
-                    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
-                    students_messy.csv
-                </a>
-                <a href="lab_data/sales_data.csv" class="btn btn-primary">
-                    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
-                    sales_data.csv
-                </a>
-            </div>
+          <span class="box-title">Step 1: Download Data</span>
+          <p>Download these 3 files and save them into a folder named <code>lab2_data</code> on your computer.</p>
+          
+          <div class="download-group">
+            <a href="lab_data/students_clean.csv" class="btn btn-primary">
+              <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+              students_clean.csv
+            </a>
+            <a href="lab_data/students_messy.csv" class="btn btn-primary">
+              <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+              students_messy.csv
+            </a>
+            <a href="lab_data/sales_data.csv" class="btn btn-primary">
+              <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+              sales_data.csv
+            </a>
+          </div>
         </div>
 
         <div class="box box-warn">
-            <span class="box-title">Step 2: Create Script</span>
-            <p>Create a new Python file named <code>analysis.py</code> inside that same folder.</p>
+          <span class="box-title">Step 2: Create Script</span>
+          <p>Create a new Python file named <code>analysis.py</code> inside that same folder.</p>
         </div>
 
         <h2 id="warmup">2. Warm-up (Browser)</h2>
         <p>
-            Let's start by reinforcing how to build dictionaries from lists.
+          We start by reinforcing the idea that dictionaries can label values and
+          that <code>zip()</code> lets us pair two lists element by element.
         </p>
 
         <section class="card" id="ex-1">
-            <div class="card-head">
-              <div class="file-name">Ex 1: Lists to Dicts</div>
-              <div class="toolbar">
-                <button class="btn btn-primary run">Run ▸</button>
-                <button class="btn reset">Reset</button>
-              </div>
+          <div class="card-head">
+            <div class="file-name">Ex 1: Lists to Dicts</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn reset">Reset</button>
             </div>
-            <div class="card-body">
-              <div class="lecture-stack">
-                <div class="editor-pane">
+          </div>
+          <div class="card-body">
+            <div class="lecture-stack">
+              <div class="editor-pane">
 <textarea class="code" spellcheck="false">
 names = ["Alice", "Bob", "Charlie", "David"]
 scores = [85, 42, 90, 30]
 
 # TODO 1: Use zip() and dict() to create a dictionary 
 # named 'gradebook' mapping names to scores.
-gradebook = {} 
+gradebook = {}
 
 # TODO 2: Loop through the dictionary items.
 # Print "{Name} passed" if score >= 40
 # Print "{Name} failed" if score < 40
+
 print("--- Results ---")
 </textarea>
-                </div>
-                <div class="output-pane">
-                  <div class="output-label">Output</div>
-                  <pre class="output-box" aria-live="polite"></pre>
-                </div>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
               </div>
             </div>
-            <div class="status"><span class="dot"></span><span class="status-text">Ready</span></div>
+          </div>
+          <div class="status"><span class="dot"></span><span class="status-text">Ready</span></div>
         </section>
 
-        <h2 id="more-dicts">3. Deep Dive: Dictionary Logic</h2>
+        <h2 id="more-dicts">3. Dict Practice</h2>
         <p>
-            Data analysis often involves counting categories or navigating complex data structures.
+          These exercises reuse basic dictionary operations from the lecture: 
+          creating dicts, checking membership, and building row dictionaries with <code>zip</code>.
         </p>
 
         <div class="activity-box">
-            <span class="box-title">Ex 2: Frequency Counter</span>
-            <p>Given a list of fruit, create a dictionary where keys are the fruit name and values are the count.</p>
+          <span class="box-title">Ex 2: Frequency Counter</span>
+          <p>Given a list of fruit, create a dictionary where keys are the fruit name and values are the counts.</p>
         </div>
 
         <section class="card" id="ex-2">
-            <div class="card-head">
-              <div class="file-name">Ex 2: Frequency Counter</div>
-              <div class="toolbar">
-                <button class="btn btn-primary run">Run ▸</button>
-                <button class="btn reset">Reset</button>
-              </div>
+          <div class="card-head">
+            <div class="file-name">Ex 2: Frequency Counter</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn reset">Reset</button>
             </div>
-            <div class="card-body">
-              <div class="lecture-stack">
-                <div class="editor-pane">
+          </div>
+          <div class="card-body">
+            <div class="lecture-stack">
+              <div class="editor-pane">
 <textarea class="code" spellcheck="false">
 basket = ["apple", "banana", "apple", "orange", "banana", "apple"]
 counts = {}
@@ -162,97 +166,34 @@ counts = {}
 print(counts) 
 # Expected: {'apple': 3, 'banana': 2, 'orange': 1}
 </textarea>
-                </div>
-                <div class="output-pane">
-                  <div class="output-label">Output</div>
-                  <pre class="output-box" aria-live="polite"></pre>
-                </div>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
               </div>
             </div>
-            <div class="status"><span class="dot"></span><span class="status-text">Ready</span></div>
+          </div>
+          <div class="status"><span class="dot"></span><span class="status-text">Ready</span></div>
         </section>
 
         <div class="activity-box">
-            <span class="box-title">Ex 3: Nested Data</span>
-            <p>Real APIs return nested data. Practice accessing deep keys.</p>
+          <span class="box-title">Ex 3: Zipping Headers to Rows</span>
+          <p>
+            This mirrors the lecture example: header line + data row → dictionary with labels.
+          </p>
         </div>
 
         <section class="card" id="ex-3">
-            <div class="card-head">
-              <div class="file-name">Ex 3: Nested Dictionaries</div>
-              <div class="toolbar">
-                <button class="btn btn-primary run">Run ▸</button>
-                <button class="btn reset">Reset</button>
-              </div>
+          <div class="card-head">
+            <div class="file-name">Ex 3: Zipping Headers to Rows</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn reset">Reset</button>
             </div>
-            <div class="card-body">
-              <div class="lecture-stack">
-                <div class="editor-pane">
-<textarea class="code" spellcheck="false">
-student = {
-    "id": 101,
-    "name": "Sarah",
-    "contact": {
-        "email": "sarah@tcd.ie",
-        "phone": "089-123-4567"
-    },
-    "grades": [80, 90, 85]
-}
-
-# TODO 1: Print Sarah's email
-# TODO 2: Print Sarah's second grade (90)
-</textarea>
-                </div>
-                <div class="output-pane">
-                  <div class="output-label">Output</div>
-                  <pre class="output-box" aria-live="polite"></pre>
-                </div>
-              </div>
-            </div>
-            <div class="status"><span class="dot"></span><span class="status-text">Ready</span></div>
-        </section>
-
-        <section class="card" id="ex-3b">
-            <div class="card-head">
-              <div class="file-name">Ex 4: Dictionary Methods</div>
-              <div class="toolbar">
-                <button class="btn btn-primary run">Run ▸</button>
-                <button class="btn reset">Reset</button>
-              </div>
-            </div>
-            <div class="card-body">
-              <div class="lecture-stack">
-                <div class="editor-pane">
-<textarea class="code" spellcheck="false">
-student = {"id": 42, "name": "Ravi", "programme": "CS", "exam_score": 58}
-
-# TODO 1: Use get() to safely read "labs_attended" with a default of 0
-# TODO 2: Use update() to add {"labs_attended": 6}
-# TODO 3: Use pop() to remove "programme" and store it in removed_prog
-# TODO 4: Print the final dictionary and removed_prog
-
-</textarea>
-                </div>
-                <div class="output-pane">
-                  <div class="output-label">Output</div>
-                  <pre class="output-box" aria-live="polite"></pre>
-                </div>
-              </div>
-            </div>
-            <div class="status"><span class="dot"></span><span class="status-text">Ready</span></div>
-        </section>
-
-        <section class="card" id="ex-3c">
-            <div class="card-head">
-              <div class="file-name">Ex 5: Zipping Headers to Rows</div>
-              <div class="toolbar">
-                <button class="btn btn-primary run">Run ▸</button>
-                <button class="btn reset">Reset</button>
-              </div>
-            </div>
-            <div class="card-body">
-              <div class="lecture-stack">
-                <div class="editor-pane">
+          </div>
+          <div class="card-body">
+            <div class="lecture-stack">
+              <div class="editor-pane">
 <textarea class="code" spellcheck="false">
 header = ["id", "name", "exam_score", "labs_attended"]
 row1 = ["101", "Amal", "72", "7"]
@@ -261,33 +202,38 @@ row2 = ["102", "Grace", "64", "5"]
 # TODO: Use zip() + dict() to convert each row into a dictionary.
 # Cast exam_score and labs_attended to int inside the dict construction.
 
+students = []
+
 print(students)
 </textarea>
-                </div>
-                <div class="output-pane">
-                  <div class="output-label">Output</div>
-                  <pre class="output-box" aria-live="polite"></pre>
-                </div>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
               </div>
             </div>
-            <div class="status"><span class="dot"></span><span class="status-text">Ready</span></div>
+          </div>
+          <div class="status"><span class="dot"></span><span class="status-text">Ready</span></div>
         </section>
 
-        <h2 id="more-funcs">4. Deep Dive: Functions</h2>
+        <h2 id="more-funcs">4. Function Practice</h2>
         
-        <p>Functions allow us to write logic once and reuse it. Let's practice return values and arguments.</p>
+        <p>
+          In the lecture, we wrapped patterns into small functions (like a loader or a summary).
+          These exercises give you practice with return values and a simple default argument.
+        </p>
 
         <section class="card" id="ex-4">
-            <div class="card-head">
-              <div class="file-name">Ex 6: Multiple Returns (Tuples)</div>
-              <div class="toolbar">
-                <button class="btn btn-primary run">Run ▸</button>
-                <button class="btn reset">Reset</button>
-              </div>
+          <div class="card-head">
+            <div class="file-name">Ex 4: Returning More Than One Value</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn reset">Reset</button>
             </div>
-            <div class="card-body">
-              <div class="lecture-stack">
-                <div class="editor-pane">
+          </div>
+          <div class="card-body">
+            <div class="lecture-stack">
+              <div class="editor-pane">
 <textarea class="code" spellcheck="false">
 def get_stats(numbers):
     # TODO: Calculate min and max of the list
@@ -295,31 +241,31 @@ def get_stats(numbers):
     pass
 
 data = [10, 5, 20, 2, 15]
-low, high = get_stats(data) # Unpacking
+low, high = get_stats(data)  # Unpacking
 
 print(f"Lowest: {low}, Highest: {high}")
 </textarea>
-                </div>
-                <div class="output-pane">
-                  <div class="output-label">Output</div>
-                  <pre class="output-box" aria-live="polite"></pre>
-                </div>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
               </div>
             </div>
-            <div class="status"><span class="dot"></span><span class="status-text">Ready</span></div>
+          </div>
+          <div class="status"><span class="dot"></span><span class="status-text">Ready</span></div>
         </section>
 
         <section class="card" id="ex-5">
-            <div class="card-head">
-              <div class="file-name">Ex 7: Default Arguments</div>
-              <div class="toolbar">
-                <button class="btn btn-primary run">Run ▸</button>
-                <button class="btn reset">Reset</button>
-              </div>
+          <div class="card-head">
+            <div class="file-name">Ex 5: Default Arguments</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn reset">Reset</button>
             </div>
-            <div class="card-body">
-              <div class="lecture-stack">
-                <div class="editor-pane">
+          </div>
+          <div class="card-body">
+            <div class="lecture-stack">
+              <div class="editor-pane">
 <textarea class="code" spellcheck="false">
 # TODO: Write a function 'greet(name, title="Student")'
 # If title is not passed, it defaults to "Student".
@@ -327,154 +273,137 @@ print(f"Lowest: {low}, Highest: {high}")
 # Example: greet("Dr. Bob", "Professor") -> "Hello Professor Dr. Bob"
 
 </textarea>
-                </div>
-                <div class="output-pane">
-                  <div class="output-label">Output</div>
-                  <pre class="output-box" aria-live="polite"></pre>
-                </div>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
               </div>
             </div>
-            <div class="status"><span class="dot"></span><span class="status-text">Ready</span></div>
-        </section>
-
-        <section class="card" id="ex-5b">
-            <div class="card-head">
-              <div class="file-name">Ex 8: Keyword &amp; Variable Arguments</div>
-              <div class="toolbar">
-                <button class="btn btn-primary run">Run ▸</button>
-                <button class="btn reset">Reset</button>
-              </div>
-            </div>
-            <div class="card-body">
-              <div class="lecture-stack">
-                <div class="editor-pane">
-<textarea class="code" spellcheck="false">
-# Write a function that builds a student profile string.
-# Use *args for extra awards, and **kwargs for extra attributes.
-
-def build_profile(name, programme="CS", *awards, **extras):
-    # TODO: Start with f"{name} ({programme})"
-    # TODO: If awards exist, append " | Awards: ..." joined by commas
-    # TODO: If extras exist, append " | Extras: key=value" pairs
-    pass
-
-print(build_profile("Lena", "DS", "Dean's List", city="Dublin"))
-print(build_profile("Sam", activities="Robotics Club"))
-</textarea>
-                </div>
-                <div class="output-pane">
-                  <div class="output-label">Output</div>
-                  <pre class="output-box" aria-live="polite"></pre>
-                </div>
-              </div>
-            </div>
-            <div class="status"><span class="dot"></span><span class="status-text">Ready</span></div>
+          </div>
+          <div class="status"><span class="dot"></span><span class="status-text">Ready</span></div>
         </section>
 
         <h2 id="local-loader">5. The CSV Loader (Local)</h2>
         <p>
-            Now switch to your local VS Code/Editor. Open <code>analysis.py</code>.
+          Now switch to your local VS Code / editor and open <code>analysis.py</code>.
         </p>
         <p>
-            <strong>Goal:</strong> Write a function <code>load_data(filename)</code> that reads a CSV and returns a <strong>list of dictionaries</strong>.
+          <strong>Goal:</strong> Write a function <code>load_data(filename)</code> that reads a CSV and returns a
+          <strong>list of dictionaries</strong>, using the same ideas as the lecture:
         </p>
 
         <div class="callout callout-goal">
-            <span class="callout-title">Function Specification</span>
-            <pre class="pseudo-block">
+          <span class="callout-title">Function Specification</span>
+          <pre class="pseudo-block">
 def load_data(filename):
-    # 1. Open file
-    # 2. Read Header
-    # 3. Loop through rows
-    # 4. ZIP header and row into a Dict
-    # 5. Convert numbers (int/float)
-    # 6. Return list of dicts
-            </pre>
+    # 1. Open file with `with open(...)`
+    # 2. Read header line and split on commas
+    # 3. Loop through remaining lines
+    # 4. Strip and split each line into parts
+    # 5. ZIP header and row into a dict
+    # 6. (For now) convert numeric-looking fields if you wish
+    # 7. Return list of dicts
+          </pre>
         </div>
 
         <pre class="pseudo-block">
-# Starter Code for analysis.py
+# Starter code for analysis.py
 
 def load_data(filename):
     data = []
-    with open(filename, "r") as f:
-        # TODO: Read header
-        # TODO: Loop rows
-        # TODO: Create dict
-        # TODO: Convert types
+    with open(filename, "r", encoding="utf-8") as f:
+        # TODO: Read header line
+        # TODO: Loop through rows
+        # TODO: Create dicts with dict(zip(...))
+        # TODO: Optionally convert some fields to int
         pass
     return data
 
 # Test it with the clean file first
 students = load_data("students_clean.csv")
 print(f"Loaded {len(students)} students.")
-print(students[0]) # Should print the first dictionary
+print(students[0])  # Should print the first dictionary
         </pre>
 
-        <h2 id="robustness">6. Handling Dirty Data</h2>
+        <h2 id="dirty-data">6. Handling Dirty Data (Without Exceptions)</h2>
         <p>
-            Real data is messy. Now try to run your script on <code>students_messy.csv</code>.
-            <br>
-            <strong>What happens?</strong> It should crash with a <code>ValueError</code> because of "N/A" strings.
+          Real data is messy. Try to run your script on <code>students_messy.csv</code>.
+          You may find lines with missing values or non-numeric text such as <code>"N/A"</code>.
         </p>
 
         <div class="activity-box">
-            <span class="box-title">Ex 9: Try/Except</span>
-            Modify your <code>load_data</code> function:
-            <ul>
-                <li>If a row contains bad data (like "N/A"), <strong>catch the error</strong>.</li>
-                <li>Print a warning message: <code>"Skipping bad row: ..."</code>.</li>
-                <li><strong>Do not</strong> add that row to the list.</li>
-                <li>The program must finish successfully without crashing.</li>
-            </ul>
+          <span class="box-title">Ex 6: Skipping Bad Rows (No Crashes)</span>
+          <p>Update <code>load_data</code> so that it can handle the messy file without raising errors.</p>
+          <ul>
+            <li>Skip completely empty lines (you can use <code>if not line.strip(): continue</code>).</li>
+            <li>If a line has the wrong number of columns (doesn’t match the header length), skip it.</li>
+            <li>
+              When converting to <code>int</code>, only do so if the value looks numeric, e.g.
+              <code>if text.isdigit(): value = int(text)</code>. Otherwise, leave it as a string.
+            </li>
+            <li>Optionally print a short message when you skip a clearly bad line.</li>
+          </ul>
+          <p>
+            Re-run your script on both <code>students_clean.csv</code> and <code>students_messy.csv</code>.
+            It should not crash on either.
+          </p>
         </div>
 
         <h2 id="challenge">7. Final Challenge: Reusability</h2>
         <p>
-            You also downloaded <code>sales_data.csv</code>. This file has <strong>completely different columns</strong> (price, quantity) than the student files.
-            If you hard-coded <code>row['exam_score']</code> inside your loader, it will fail on the sales data.
+          You also downloaded <code>sales_data.csv</code>. This file has completely different columns
+          (e.g. <code>product</code>, <code>price</code>, <code>quantity</code>) compared to the student files.
         </p>
 
         <div class="split-row">
-            <div class="split-card">
-                <h4>The Problem</h4>
-                Your loader probably looks like this:
-                <pre style="font-size:12px">row['exam_score'] = int(row['exam_score'])</pre>
-                This crashes if the file doesn't have an exam_score!
-            </div>
-            <div class="split-card">
-                <h4>The Challenge</h4>
-                Make your loader <strong>Generic</strong>.
-                <br>
-                Remove the specific type conversion from the loader. Just return the strings.
-                <br><br>
-                Perform the conversion (String -> Int) <strong>outside</strong> the loader, in your analysis steps.
-            </div>
+          <div class="split-card">
+            <h4>The Problem</h4>
+            <p>
+              If your loader contains hard-coded column names (like <code>row["exam_score"]</code>),
+              it will break when used with a different dataset.
+            </p>
+            <p>
+              For a generic loader, keep it responsible only for:
+              <strong>"turn lines into labelled dictionaries"</strong>.
+            </p>
+          </div>
+          <div class="split-card">
+            <h4>The Challenge</h4>
+            <p>
+              Make your <code>load_data</code> function generic:
+            </p>
+            <ul>
+              <li>Do not hard-code column names into the loader.</li>
+              <li>Return strings for each field.</li>
+              <li>Do dataset-specific conversions (e.g. string → number) in your analysis code.</li>
+            </ul>
+          </div>
         </div>
 
         <section class="card" id="ex-7">
-            <div class="card-head">
-              <div class="file-name">Ex 9: Final Generic Analysis</div>
-              <div class="toolbar">
-                <button class="btn btn-primary run">Run ▸</button>
-                <button class="btn reset">Reset</button>
-              </div>
+          <div class="card-head">
+            <div class="file-name">Ex 7: Total Sales (Generic Analysis)</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn reset">Reset</button>
             </div>
-            <div class="card-body">
-              <div class="lecture-stack">
-                <div class="editor-pane">
+          </div>
+          <div class="card-body">
+            <div class="lecture-stack">
+              <div class="editor-pane">
 <textarea class="code" spellcheck="false">
-# NOTE: This code runs in browser for testing, 
-# but you should implement it in your local 'analysis.py'
+# NOTE: This code runs in the browser for practice.
+# In your local 'analysis.py', you should call your real load_data("sales_data.csv")
+# and then perform similar logic.
 
 def calculate_total_sales(sales_data):
     total = 0
-    # TODO: Loop through sales_data
-    # TODO: Convert 'price' and 'quantity' to int/float manually here
+    # TODO: Loop through sales_data (list of dicts)
+    # TODO: Convert 'price' and 'quantity' to numbers for each row
     # TODO: Add (price * quantity) to total
     return total
 
-# Example Data (Mocking what your loader returns)
+# Example data (mocking what your loader returns)
 sales = [
     {'product': 'Laptop', 'price': '1200', 'quantity': '1'},
     {'product': 'Mouse', 'price': '25', 'quantity': '2'}
@@ -482,14 +411,14 @@ sales = [
 
 print("Total Revenue:", calculate_total_sales(sales))
 </textarea>
-                </div>
-                <div class="output-pane">
-                  <div class="output-label">Output</div>
-                  <pre class="output-box" aria-live="polite"></pre>
-                </div>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
               </div>
             </div>
-            <div class="status"><span class="dot"></span><span class="status-text">Ready</span></div>
+          </div>
+          <div class="status"><span class="dot"></span><span class="status-text">Ready</span></div>
         </section>
 
       </main>
@@ -510,11 +439,8 @@ print("Total Revenue:", calculate_total_sales(sales))
     initPlayground('ex-1');
     initPlayground('ex-2');
     initPlayground('ex-3');
-    initPlayground('ex-3b');
-    initPlayground('ex-3c');
     initPlayground('ex-4');
     initPlayground('ex-5');
-    initPlayground('ex-5b');
     initPlayground('ex-7');
 
     applyFooterText();

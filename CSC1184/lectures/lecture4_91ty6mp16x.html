@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Lecture 4 | CSC1184</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+
+  <!-- Pyodide + CodeMirror (same stack as other lectures) -->
+  <script src="https://cdn.jsdelivr.net/pyodide/v0.23.4/full/pyodide.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/eclipse.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/python/python.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/matchbrackets.min.js"></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../theme/theme.css">
+</head>
+<body class="lecture">
+
+  <div class="wrap wide">
+    
+    <nav>
+      <div class="nav-left">
+        <a href="../index.html" class="back-link">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path d="M19 12H5m7-7l-7 7 7 7"></path>
+          </svg>
+          Back to Course
+        </a>
+        <span style="color:var(--border)">|</span>
+        <h1>Week 4</h1>
+      </div>
+      <span class="badge-top">Lecture Note</span>
+    </nav>
+
+    <div class="lecture-wrap">
+      
+      <aside class="lecture-sidebar">
+        <div class="toc-title">On this page</div>
+        <a href="#intro" class="toc-link active">Introduction</a>
+        <a href="#recap" class="toc-link">1. Where We Are &amp; Why pandas</a>
+        <a href="#mental-model" class="toc-link">2. Series &amp; DataFrames</a>
+        <a href="#constructing" class="toc-link">3. From Python Structures to DataFrames</a>
+        <a href="#overview" class="toc-link">4. First Look: head/info/describe</a>
+        <a href="#selecting" class="toc-link">5. Selecting Columns &amp; Rows</a>
+        <a href="#filtering" class="toc-link">6. Boolean Filtering</a>
+        <a href="#new-columns" class="toc-link">7. Adding New Columns</a>
+        <a href="#mini-walkthrough" class="toc-link">8. Mini Walkthrough</a>
+        <a href="#recap-end" class="toc-link">9. Recap &amp; Self-check</a>
+      </aside>
+
+      <main class="lecture-content">
+        
+        <!-- INTRO -->
+        <header id="intro">
+          <h1>Week 4 – pandas: Series, DataFrames &amp; Basic Indexing</h1>
+
+          <p class="lede">
+            This week we meet <strong>pandas</strong>, a library built on top of NumPy that gives us a first-class way
+            to work with <em>tabular data</em> – the kind of rows-and-columns tables you see in CSV, Excel, and databases.
+            The goal is to spend less time hand-writing loops and more time asking questions of the data.
+          </p>
+
+          <div class="callout callout-goal">
+            <span class="callout-title">By the end of this lecture, you should be able to:</span>
+            <ul>
+              <li>Explain what a <strong>Series</strong> and a <strong>DataFrame</strong> are in plain language.</li>
+              <li>Create a small DataFrame from Python lists/dicts and (conceptually) from a CSV file.</li>
+              <li>Use <code>head</code>, <code>info</code>, and <code>describe</code> to get a quick overview of a dataset.</li>
+              <li>Select and filter rows and columns using basic label/position indexing.</li>
+              <li>Add simple derived columns (pass/fail flags, normalised scores) to enrich the table.</li>
+            </ul>
+          </div>
+        </header>
+
+        <!-- 1. RECAP & MOTIVATION -->
+        <h2 id="recap">1. Where We Are &amp; Why pandas</h2>
+
+        <p>
+          So far, we have been gradually building up our tools:
+        </p>
+
+        <ul>
+          <li><strong>Week 1:</strong> Tiny datasets as lists; built-ins like <code>len</code>, <code>sum</code>, <code>min</code>, <code>max</code>.</li>
+          <li><strong>Week 2:</strong> Data in files; manual CSV parsing into <strong>list-of-dicts</strong>.</li>
+          <li><strong>Week 3:</strong> NumPy arrays and boolean masks for fast numeric operations.</li>
+        </ul>
+
+        <p>
+          In many real projects, data arrives as <strong>tables</strong>:
+        </p>
+
+        <ul>
+          <li>CSV exports from systems.</li>
+          <li>Sheets from Excel or Google Sheets.</li>
+          <li>Query results from databases.</li>
+        </ul>
+
+        <p>
+          We <em>can</em> represent tables as list-of-dicts or dict-of-lists, but it becomes awkward when the dataset has:
+        </p>
+
+        <ul>
+          <li>Many columns (difficult to keep track of indices or keys).</li>
+          <li>Many rows (loops everywhere).</li>
+          <li>Repeated patterns (filtering, adding columns, computing summaries).</li>
+        </ul>
+
+        <div class="box box-info">
+          <span class="box-title">Where pandas fits</span>
+          <p>
+            <strong>pandas</strong> gives us:
+          </p>
+          <ul>
+            <li><strong>Series</strong> – a labelled 1D array (one column with an index).</li>
+            <li><strong>DataFrame</strong> – a table: rows (observations) × columns (variables), built on top of NumPy arrays.</li>
+          </ul>
+          <p>
+            It does the “table plumbing” for us so we can focus on <strong>questions</strong>, not loop mechanics.
+          </p>
+        </div>
+
+        <div class="box box-info">
+          <span class="box-title">Reminder: imports and aliases</span>
+          <p>
+            In Week 3 you saw <code>import numpy as np</code>. The pattern:
+          </p>
+          <pre class="pseudo-block">
+import some_library as short_name
+          </pre>
+          <p>
+            means: “load this library and, inside my code, refer to it using a shorter nickname”.
+            For pandas we follow the standard convention:
+          </p>
+          <pre class="pseudo-block">
+import pandas as pd
+          </pre>
+          <p>
+            So when you see <code>pd.DataFrame(...)</code>, read it as “use the <code>DataFrame</code> function from pandas”.
+          </p>
+        </div>
+
+        <!-- 2. SERIES & DATAFRAMES -->
+        <h2 id="mental-model">2. Series &amp; DataFrames – Mental Model</h2>
+
+        <p>
+          Before diving into code, we need a clear mental picture of pandas’ two core objects:
+        </p>
+
+        <ul>
+          <li>
+            A <strong>Series</strong> is like a NumPy array with labels.
+            Each value has both a <strong>position</strong> and an <strong>index label</strong>.
+          </li>
+          <li>
+            A <strong>DataFrame</strong> is like a whole table.
+            Each column is a Series, all sharing the same set of row labels (index).
+          </li>
+        </ul>
+
+        <p>
+          You can keep using the vocabulary from Week 1:
+        </p>
+
+        <ul>
+          <li>Rows &rarr; observations (students, transactions, matches…)</li>
+          <li>Columns &rarr; variables (exam_score, programme, price, date…)</li>
+        </ul>
+
+        <section class="card" id="ex-series-basic">
+          <div class="card-head">
+            <div class="file-name">Example – A Simple Series</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+import pandas as pd
+
+# A list of exam scores
+scores = [55, 62, 71, 48]
+
+# Turn it into a Series with a name
+s = pd.Series(scores, name="exam_score")
+
+print("Series contents:")
+print(s)
+
+print("\nValues as a list:", list(s.values))
+print("Index labels:", list(s.index))
+print("Type:", type(s))
+</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="status"><span class="dot"></span><span class="status-text">Ready</span></div>
+        </section>
+
+        <div class="box box-info">
+          <span class="box-title">What are <code>values</code> and <code>index</code>?</span>
+          <ul>
+            <li><code>s.values</code> &rarr; the underlying data as a NumPy array (just the numbers, no labels).</li>
+            <li>
+              <code>s.index</code> &rarr; the labels for each row in the Series.  
+              By default, pandas uses <code>0, 1, 2, ...</code>, but later we can change this (e.g. to student IDs, dates).
+            </li>
+          </ul>
+          <p>
+            So you can read the Series as: “for each <strong>index label</strong>, store this <strong>value</strong>”.
+          </p>
+        </div>
+
+        <div class="box box-info">
+          <span class="box-title">pandas features used in this lecture</span>
+          <ul>
+            <li><code>pd.Series(...)</code> – create a labelled 1D array.</li>
+            <li><code>pd.DataFrame(...)</code> – create a table from dict-of-lists or list-of-dicts.</li>
+            <li><code>pd.read_csv(...)</code> – read a CSV file into a DataFrame (conceptual in this lecture).</li>
+            <li><code>.head()</code>, <code>.info()</code>, <code>.describe()</code> – quick overview of a DataFrame.</li>
+            <li><code>.shape</code> – attribute giving <code>(number_of_rows, number_of_columns)</code>.</li>
+            <li><code>.columns</code> – attribute listing the column names.</li>
+            <li><code>.index</code> – attribute listing the row labels.</li>
+            <li><code>.values</code> – underlying values as a NumPy array.</li>
+            <li><code>df["col"]</code>, <code>df[["col1", "col2"]]</code> – select one or more columns.</li>
+            <li><code>df.loc[rows, cols]</code> – select by labels (row index labels, column names).</li>
+            <li><code>df.iloc[rows, cols]</code> – select by integer positions (0-based).</li>
+            <li><code>df[condition]</code> – filter rows using a boolean condition.</li>
+            <li><code>df["new_col"] = ...</code> – add a derived column.</li>
+            <li><code>df.groupby(...)</code> – group rows by a column, then aggregate (e.g. mean).</li>
+          </ul>
+        </div>
+
+        <!-- 3. FROM PYTHON STRUCTURES TO DATAFRAMES -->
+        <h2 id="constructing">3. From Python Structures to DataFrames</h2>
+
+        <p>
+          In Week 2 we represented a tiny student dataset as a <strong>list of dictionaries</strong>:
+        </p>
+
+        <pre class="pseudo-block">
+students = [
+    {"id": 1, "name": "Ana",   "programme": "CS", "exam_score": 55},
+    {"id": 2, "name": "Bob",   "programme": "CS", "exam_score": 62},
+    {"id": 3, "name": "Ciara", "programme": "DS", "exam_score": 71},
+]
+        </pre>
+
+        <p>
+          pandas can turn this list-of-dicts into a DataFrame in one go. Column names come from the dictionary keys, and
+          each row is one observation.
+        </p>
+
+        <section class="card" id="ex-df-from-dicts">
+          <div class="card-head">
+            <div class="file-name">Example – DataFrame from List of Dicts</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+import pandas as pd
+
+students = [
+    {"id": 1, "name": "Ana",   "programme": "CS", "exam_score": 55},
+    {"id": 2, "name": "Bob",   "programme": "CS", "exam_score": 62},
+    {"id": 3, "name": "Ciara", "programme": "DS", "exam_score": 71},
+    {"id": 4, "name": "Dan",   "programme": "DS", "exam_score": 48},
+]
+
+df = pd.DataFrame(students)
+
+print("DataFrame:")
+print(df)
+
+print("\nShape (rows, columns):", df.shape)
+print("Column names:", list(df.columns))
+print("Index labels:", list(df.index))
+</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="status"><span class="dot"></span><span class="status-text">Ready</span></div>
+        </section>
+
+        <p>
+          We can also create the same DataFrame from a <strong>dict-of-lists</strong> – one list per column:
+        </p>
+
+        <section class="card" id="ex-df-from-dict-of-lists">
+          <div class="card-head">
+            <div class="file-name">Example – DataFrame from Dict of Lists</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+import pandas as pd
+
+data = {
+    "id":         [1, 2, 3, 4],
+    "name":       ["Ana", "Bob", "Ciara", "Dan"],
+    "programme":  ["CS", "CS", "DS", "DS"],
+    "exam_score": [55, 62, 71, 48],
+}
+
+df = pd.DataFrame(data)
+
+print("DataFrame from dict-of-lists:")
+print(df)
+</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="status"><span class="dot"></span><span class="status-text">Ready</span></div>
+        </section>
+
+        <div class="box box-info">
+          <span class="box-title">Reading from CSV (conceptual)</span>
+          <p>
+            In Week 2 you manually opened a file, split lines, and built list-of-dicts. In pandas, the same idea is:
+          </p>
+          <pre class="pseudo-block">
+import pandas as pd
+
+df = pd.read_csv("students.csv")   # One line to build the DataFrame
+          </pre>
+          <p>
+            In labs you will use <code>pd.read_csv</code> with real files on disk. For now, focus on what you can do
+            <em>once the table is loaded</em>.
+          </p>
+        </div>
+
+        <!-- 4. FIRST LOOK -->
+        <h2 id="overview">4. First Look: head, info, describe</h2>
+
+        <p>
+          Whenever you load a new dataset, your first few commands are almost always the same. They are your “get to
+          know the table” toolkit:
+        </p>
+
+        <ul>
+          <li><code>df.head()</code> – peek at the first few rows.</li>
+          <li><code>df.shape</code> – number of rows and columns.</li>
+          <li><code>df.columns</code> – list of column names (variables).</li>
+          <li><code>df.info()</code> – column types and counts of non-missing values.</li>
+          <li><code>df.describe()</code> – numeric summaries (mean, std, quartiles…).</li>
+        </ul>
+
+        <section class="card" id="ex-df-overview">
+          <div class="card-head">
+            <div class="file-name">Example – Quick Overview of a DataFrame</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+import pandas as pd
+
+data = {
+    "id":         [1, 2, 3, 4],
+    "name":       ["Ana", "Bob", "Ciara", "Dan"],
+    "programme":  ["CS", "CS", "DS", "DS"],
+    "exam_score": [55, 62, 71, 48],
+    "labs_attended": [6, 7, 5, 3],
+}
+
+students = pd.DataFrame(data)
+
+print("Head (first few rows):")
+print(students.head())
+
+print("\nShape (rows, columns):", students.shape)
+print("Columns:", list(students.columns))
+
+print("\nInfo:")
+students.info()
+
+print("\nDescribe numeric columns:")
+print(students.describe())
+</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="status"><span class="dot"></span><span class="status-text">Ready</span></div>
+        </section>
+
+        <!-- 5. SELECTING COLUMNS & ROWS -->
+        <h2 id="selecting">5. Selecting Columns &amp; Rows</h2>
+
+        <p>
+          Once you trust the table, the next step is to pull out the pieces you care about. There are two dimensions:
+        </p>
+
+        <ul>
+          <li><strong>Columns</strong> – which variables?</li>
+          <li><strong>Rows</strong> – which observations?</li>
+        </ul>
+
+        <p>
+          For columns:
+        </p>
+        <ul>
+          <li><code>students["exam_score"]</code> &rarr; one column as a Series.</li>
+          <li><code>students[["name", "exam_score"]]</code> &rarr; smaller DataFrame with those two columns.</li>
+        </ul>
+
+        <p>
+          For rows, pandas offers two main views:
+        </p>
+        <ul>
+          <li><strong><code>.loc</code></strong> – select by <em>labels</em> (row index labels and column names).</li>
+          <li><strong><code>.iloc</code></strong> – select by <em>positions</em> (0-based integer positions).</li>
+        </ul>
+
+        <div class="box box-info">
+          <span class="box-title">Mental model for <code>loc</code> vs <code>iloc</code></span>
+          <ul>
+            <li>
+              Imagine the numbers down the left-hand side of the table are <strong>row labels</strong>.  
+              With the default index, those labels are <code>0, 1, 2, ...</code>.
+            </li>
+            <li>
+              <code>.loc</code> cares about those labels:
+              <code>students.loc[1:3]</code> means “rows with labels from 1 to 3” (end <strong>inclusive</strong>).
+            </li>
+            <li>
+              <code>.iloc</code> cares only about positions:
+              <code>students.iloc[1:3]</code> means “the 2nd and 3rd rows” (end <strong>exclusive</strong>, like normal Python slices).
+            </li>
+          </ul>
+          <p>
+            When you use the default index, <code>loc</code> and <code>iloc</code> often look similar,
+            but they are conceptually different: <code>loc</code> = by <strong>label</strong>, <code>iloc</code> = by <strong>position</strong>.
+          </p>
+        </div>
+
+        <section class="card" id="ex-df-select">
+          <div class="card-head">
+            <div class="file-name">Example – Selecting Columns and Rows</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+import pandas as pd
+
+data = {
+    "id":         [1, 2, 3, 4],
+    "name":       ["Ana", "Bob", "Ciara", "Dan"],
+    "programme":  ["CS", "CS", "DS", "DS"],
+    "exam_score": [55, 62, 71, 48],
+    "labs_attended": [6, 7, 5, 3],
+}
+
+students = pd.DataFrame(data)
+
+print("Full table:")
+print(students)
+
+print("\nSingle column (Series) – exam_score:")
+print(students["exam_score"])
+
+print("\nTwo columns (DataFrame) – name and exam_score:")
+print(students[["name", "exam_score"]])
+
+# Row selection by position with iloc
+print("\nFirst two rows (by position, iloc):")
+print(students.iloc[0:2])
+
+# Row and column selection by label with loc
+print("\nRows with labels 1..3, columns name and exam_score (loc):")
+print(students.loc[1:3, ["name", "exam_score"]])
+</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="status"><span class="dot"></span><span class="status-text">Ready</span></div>
+        </section>
+
+        <!-- 6. BOOLEAN FILTERING -->
+        <h2 id="filtering">6. Boolean Filtering – Rows That Match a Condition</h2>
+
+        <p>
+          Filtering rows in pandas reuses the idea of <strong>masks</strong> from NumPy:
+        </p>
+
+        <ol>
+          <li>Build a condition that is <code>True</code> or <code>False</code> for each row.</li>
+          <li>Use that condition to keep only the rows where it is <code>True</code>.</li>
+        </ol>
+
+        <p>
+          For example:
+        </p>
+        <ul>
+          <li>Students with <code>exam_score ≥ 60</code>.</li>
+          <li>Students in a particular programme.</li>
+        </ul>
+
+        <section class="card" id="ex-df-filter">
+          <div class="card-head">
+            <div class="file-name">Example – Filtering with a Boolean Mask</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+import pandas as pd
+
+data = {
+    "id":         [1, 2, 3, 4],
+    "name":       ["Ana", "Bob", "Ciara", "Dan"],
+    "programme":  ["CS", "CS", "DS", "DS"],
+    "exam_score": [55, 62, 71, 48],
+    "labs_attended": [6, 7, 5, 3],
+}
+
+students = pd.DataFrame(data)
+
+threshold = 60
+
+# Condition: True for rows where exam_score >= threshold
+mask = students["exam_score"] >= threshold
+
+print("Mask (exam_score >= 60):")
+print(mask)
+
+# Use the mask to filter rows
+passed = students[mask]
+
+print("\nStudents who passed (exam_score >= 60):")
+print(passed)
+
+# How many passed? What proportion?
+num_passing = len(passed)
+num_total = len(students)
+pass_rate = (num_passing / num_total) * 100
+
+print("\nPassing:", num_passing, "out of", num_total)
+print("Pass rate (%):", round(pass_rate, 1))
+</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="status"><span class="dot"></span><span class="status-text">Ready</span></div>
+        </section>
+
+        <p>
+          You can combine conditions in a similar way to NumPy masks, for example:
+        </p>
+
+        <ul>
+          <li>programme is CS <em>and</em> exam_score ≥ 60.</li>
+          <li>labs_attended &lt; 4 <em>or</em> exam_score &lt; 50.</li>
+        </ul>
+
+        (We will come back to multi-condition filters in later examples and labs.)
+
+        <!-- 7. ADDING NEW COLUMNS -->
+        <h2 id="new-columns">7. Adding New Columns – Derived Variables</h2>
+
+        <p>
+          One of the biggest advantages of a DataFrame is how easy it is to add new columns that store derived information:
+        </p>
+
+        <ul>
+          <li>Pass/fail labels based on exam score.</li>
+          <li>Normalised scores (0–1 or 0–100 scale).</li>
+          <li>Total marks calculated from multiple components.</li>
+        </ul>
+
+        <p>
+          Conceptually, think of it as: <em>“take the existing table and enrich it with an extra column”.</em>
+        </p>
+
+        <section class="card" id="ex-df-newcols">
+          <div class="card-head">
+            <div class="file-name">Example – Pass/Fail and Normalised Score Columns</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+import pandas as pd
+
+data = {
+    "id":         [1, 2, 3, 4],
+    "name":       ["Ana", "Bob", "Ciara", "Dan"],
+    "programme":  ["CS", "CS", "DS", "DS"],
+    "exam_score": [55, 62, 71, 48],
+    "labs_attended": [6, 7, 5, 3],
+}
+
+students = pd.DataFrame(data)
+
+# New boolean column: did this student pass?
+students["passed"] = students["exam_score"] >= 60
+
+# New numeric column: exam score normalised to 0..1
+max_score = students["exam_score"].max()
+students["score_normalised"] = students["exam_score"] / max_score
+
+print("Enriched table with new columns:")
+print(students)
+
+print("\nAverage normalised score:", students["score_normalised"].mean())
+print("Number of students who passed:", students["passed"].sum())
+</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="status"><span class="dot"></span><span class="status-text">Ready</span></div>
+        </section>
+
+        <!-- 8. MINI WALKTHROUGH -->
+        <h2 id="mini-walkthrough">8. Mini Walkthrough – From Table to Simple Insights</h2>
+
+        <p>
+          Let’s chain together the main ideas in a tiny end-to-end flow:
+        </p>
+
+        <ol>
+          <li>Create a small DataFrame representing students.</li>
+          <li>Get a quick overview (shape, head, describe).</li>
+          <li>Add a pass/fail column.</li>
+          <li>Filter to CS students only.</li>
+          <li>Compute a couple of simple summaries.</li>
+        </ol>
+
+        <section class="card" id="ex-df-pipeline">
+          <div class="card-head">
+            <div class="file-name">Example – Mini Analysis Pipeline</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+import pandas as pd
+
+data = {
+    "id":         [1, 2, 3, 4, 5],
+    "name":       ["Ana", "Bob", "Ciara", "Dan", "Ella"],
+    "programme":  ["CS", "CS", "DS", "CS", "DS"],
+    "exam_score": [55, 62, 71, 48, 83],
+    "labs_attended": [6, 7, 5, 2, 8],
+}
+
+students = pd.DataFrame(data)
+
+print("Head:")
+print(students.head())
+
+print("\nDescribe numeric columns:")
+print(students.describe())
+
+# Add pass/fail flag
+students["passed"] = students["exam_score"] >= 60
+
+# Filter to CS students only
+cs_students = students[students["programme"] == "CS"]
+
+print("\nCS students only (with pass flag):")
+print(cs_students)
+
+# Simple summaries
+overall_pass_rate = students["passed"].mean() * 100
+cs_pass_rate = cs_students["passed"].mean() * 100
+
+print("\nOverall pass rate (%):", round(overall_pass_rate, 1))
+print("CS pass rate (%):", round(cs_pass_rate, 1))
+
+print("\nAverage exam score by programme (quick and dirty):")
+print(students.groupby("programme")["exam_score"].mean())
+</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="status"><span class="dot"></span><span class="status-text">Ready</span></div>
+        </section>
+
+        <div class="box box-info">
+          <span class="box-title">Looking ahead</span>
+          <p>
+            The final line above uses <code>groupby</code> to compute average exam scores per programme.
+            <code>groupby("programme")</code> groups rows that share the same programme value, then
+            <code>["exam_score"].mean()</code> computes the mean within each group.
+            In the next lecture we will slow down and study grouped aggregations and joins properly.
+          </p>
+        </div>
+
+        <!-- 9. RECAP -->
+        <h2 id="recap-end">9. Recap &amp; Self-check</h2>
+
+        <h3>9.1 Key points</h3>
+        <ul>
+          <li>A <strong>Series</strong> is a labelled 1D array; a <strong>DataFrame</strong> is a table of Series.</li>
+          <li>You can build a DataFrame from list-of-dicts, dict-of-lists, or a CSV file via <code>pd.read_csv</code>.</li>
+          <li>First steps with any dataset: <code>head</code>, <code>shape</code>, <code>columns</code>, <code>info</code>, <code>describe</code>.</li>
+          <li>Column and row selection lets you say “which variables?” and “which observations?” clearly.</li>
+          <li>Boolean filters implement questions like “students who passed”, “rows from programme X”.</li>
+          <li>New columns let you store derived information (pass flags, normalised values) directly in the table.</li>
+        </ul>
+
+        <h3>9.2 Self-check prompts</h3>
+        <ul>
+          <li>How would you explain a DataFrame to a friend without using the word “DataFrame”?</li>
+          <li>What do <code>.head()</code>, <code>.info()</code>, and <code>.describe()</code> tell you about a dataset?</li>
+          <li>Given a table of students, how would you get “just CS students who passed”?</li>
+          <li>What useful derived columns could you add for a dataset of your choice?</li>
+        </ul>
+
+      </main>
+    </div>
+
+    <footer>
+      <p class="copyright"></p>
+      <div class="legal-notice"></div>
+    </footer>
+
+  </div>
+
+  <script src="../theme/footer.js"></script>
+  <script src="../theme/legal.js"></script>
+  <script src="../engine/engine.js"></script>
+  <script>
+    initPlayground('ex-series-basic');
+    initPlayground('ex-df-from-dicts');
+    initPlayground('ex-df-from-dict-of-lists');
+    initPlayground('ex-df-overview');
+    initPlayground('ex-df-select');
+    initPlayground('ex-df-filter');
+    initPlayground('ex-df-newcols');
+    initPlayground('ex-df-pipeline');
+
+    applyFooterText();
+    applyLegalNotice();
+  </script>
+</body>
+</html>

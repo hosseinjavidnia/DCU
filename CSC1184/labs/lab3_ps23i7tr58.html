@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Lab 3 | CSC1184</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+
+  <!-- Same stack as lectures -->
+  <script src="https://cdn.jsdelivr.net/pyodide/v0.23.4/full/pyodide.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/eclipse.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/python/python.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/matchbrackets.min.js"></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../theme/theme.css">
+</head>
+<body class="lecture">
+
+  <div class="wrap wide">
+    <nav>
+      <div class="nav-left">
+        <a href="../index.html" class="back-link">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path d="M19 12H5m7-7l-7 7 7 7"></path>
+          </svg>
+          Back to Course
+        </a>
+        <span style="color:var(--border)">|</span>
+        <h1>Lab 3 – NumPy Arrays &amp; Vectorised Operations</h1>
+      </div>
+      <span class="badge-top">2 hours</span>
+    </nav>
+
+    <div class="lecture-wrap">
+      <aside class="lecture-sidebar">
+        <div class="toc-title">On this page</div>
+        <a href="#goals" class="toc-link active">Goals & Schedule</a>
+        <a href="#setup" class="toc-link">Setup</a>
+        <a href="#ex0" class="toc-link">Ex 0 – NumPy Sanity Check</a>
+        <a href="#ex1" class="toc-link">Ex 1 – Lists → Arrays</a>
+        <a href="#ex2" class="toc-link">Ex 2 – Constructors</a>
+        <a href="#ex3" class="toc-link">Ex 3 – Indexing & Slicing</a>
+        <a href="#ex4" class="toc-link">Ex 4 – Masks & Filtering</a>
+        <a href="#ex5" class="toc-link">Ex 5 – Bands with Masks</a>
+        <a href="#ex6" class="toc-link">Ex 6 – Curving Scores</a>
+        <a href="#ex7" class="toc-link">Ex 7 – From Dicts to Arrays</a>
+        <a href="#ex8" class="toc-link">Ex 8 – Comparing Groups</a>
+        <a href="#ex9" class="toc-link">Ex 9 – Tiny Simulation</a>
+      </aside>
+
+      <main class="lecture-content">
+
+        <!-- Goals -->
+        <section id="goals">
+          <h2>Goals &amp; Suggested Schedule</h2>
+          <div class="split-row">
+            <div class="split-card">
+              <h4>Learning goals</h4>
+              <ul>
+                <li>Create NumPy arrays from Python lists and simple constructors.</li>
+                <li>Inspect arrays (length, shape, dtype).</li>
+                <li>Use indexing, slicing, and boolean masks to select elements.</li>
+                <li>Apply vectorised operations and basic summaries (mean, min, max, std).</li>
+                <li>Move from a list-of-dicts (Week 2) to arrays for numeric analysis.</li>
+                <li>Use masks to compare simple groups and run a tiny simulation.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="box box-info">
+            <span class="box-title">Suggested flow (2 hours)</span>
+            <ul>
+              <li><strong>Part 1 (40 min):</strong> Ex 0–3 – creating, inspecting, and slicing arrays.</li>
+              <li><strong>Part 2 (40 min):</strong> Ex 4–6 – masks, bands, and curving scores.</li>
+              <li><strong>Part 3 (40 min):</strong> Ex 7–9 – list-of-dicts → arrays, group comparison, simulation.</li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- Setup -->
+        <section id="setup">
+          <h2>Setup</h2>
+          <ul>
+            <li>Use the browser playground blocks below (same engine as lectures).</li>
+            <li>If you prefer, you can mirror the code in a local <code>.py</code> file; keep content identical.</li>
+            <li>All exercises assume <code>import numpy as np</code> at the top.</li>
+          </ul>
+        </section>
+
+        <!-- Exercise 0 -->
+        <section id="ex0">
+          <h2>Ex 0 – NumPy Sanity Check</h2>
+          <p>
+            <strong>Purpose.</strong> Confirm that NumPy imports correctly and that the playground is working.
+          </p>
+
+          <section class="card" id="ex-lab3-0">
+            <div class="card-head">
+              <div class="file-name">Ex 0 – Import &amp; Version</div>
+              <div class="toolbar">
+                <button class="btn btn-primary run">Run ▸</button>
+                <button class="btn clear">Clear</button>
+                <button class="btn reset">Reset</button>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="lecture-stack">
+                <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+import numpy as np
+
+print("CSC1184 – Lab 3 (NumPy)")
+print("NumPy version:", np.__version__)
+
+a = np.array([1, 2, 3])
+print("Simple array:", a)
+print("Type:", type(a))
+</textarea>
+                </div>
+                <div class="output-pane">
+                  <div class="output-label">Terminal Output</div>
+                  <pre class="output-box" aria-live="polite"></pre>
+                </div>
+              </div>
+            </div>
+            <div class="status"><span class="dot"></span><span class="status-text">Ready</span></div>
+          </section>
+        </section>
+
+        <!-- Exercise 1 -->
+        <section id="ex1">
+          <h2>Ex 1 – From Lists to Arrays</h2>
+          <p>
+            <strong>What you’ll practise.</strong> Turning lists into arrays and inspecting them.  
+            <strong>Why it matters.</strong> This is the most common way you’ll create arrays in this module.
+          </p>
+
+          <section class="card" id="ex-lab3-1">
+            <div class="card-head">
+              <div class="file-name">Ex 1 – Lists → Arrays</div>
+              <div class="toolbar">
+                <button class="btn btn-primary run">Run ▸</button>
+                <button class="btn clear">Clear</button>
+                <button class="btn reset">Reset</button>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="lecture-stack">
+                <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+import numpy as np
+
+# A tiny dataset of exam scores and study hours
+scores_list = [59, 63, 71, 88, 42, 95, 77, 68]
+hours_list  = [5,  6,  4,  9,  3,  10, 7,  6]
+
+print("Scores list:", scores_list)
+print("Hours list:", hours_list)
+
+# TODO 1: Convert both lists to NumPy arrays named 'scores' and 'hours'
+# scores = ...
+# hours = ...
+
+# TODO 2: Print each array, its length (len), shape, and dtype
+# Hint: use len(scores), scores.shape, scores.dtype
+
+print("\nScores array:", scores)
+print("Length:", ..., "Shape:", ..., "dtype:", ...)
+
+print("\nHours array:", hours)
+print("Length:", ..., "Shape:", ..., "dtype:", ...)
+</textarea>
+                </div>
+                <div class="output-pane">
+                  <div class="output-label">Terminal Output</div>
+                  <pre class="output-box" aria-live="polite"></pre>
+                </div>
+              </div>
+            </div>
+            <div class="status"><span class="dot"></span><span class="status-text">Ready</span></div>
+          </section>
+        </section>
+
+        <!-- Exercise 2 -->
+        <section id="ex2">
+          <h2>Ex 2 – Array Constructors</h2>
+          <p>
+            <strong>What you’ll practise.</strong> Creating arrays from scratch using constructors.  
+            <strong>Why it matters.</strong> Useful for initialising models, simulations, or placeholder data.
+          </p>
+
+          <section class="card" id="ex-lab3-2">
+            <div class="card-head">
+              <div class="file-name">Ex 2 – Constructors</div>
+              <div class="toolbar">
+                <button class="btn btn-primary run">Run ▸</button>
+                <button class="btn clear">Clear</button>
+                <button class="btn reset">Reset</button>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="lecture-stack">
+                <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+import numpy as np
+
+# TODO 1: Create an array called 'zeros_10' with 10 zeros using np.zeros
+# zeros_10 = ...
+
+# TODO 2: Create an array called 'ones_5' with 5 ones using np.ones
+# ones_5 = ...
+
+# TODO 3: Create an array called 'evens' with even numbers from 0 up to (but not including) 20
+# Hint: use np.arange(start, stop, step)
+# evens = ...
+
+print("zeros_10:", zeros_10)
+print("ones_5:", ones_5)
+print("evens:", evens)
+
+# Optional: check their shapes and dtypes
+print("zeros_10 shape:", zeros_10.shape, "dtype:", zeros_10.dtype)
+print("evens shape:", evens.shape, "dtype:", evens.dtype)
+</textarea>
+                </div>
+                <div class="output-pane">
+                  <div class="output-label">Terminal Output</div>
+                  <pre class="output-box" aria-live="polite"></pre>
+                </div>
+              </div>
+            </div>
+            <div class="status"><span class="dot"></span><span class="status-text">Ready</span></div>
+          </section>
+        </section>
+
+        <!-- Exercise 3 -->
+        <section id="ex3">
+          <h2>Ex 3 – Indexing &amp; Slicing</h2>
+          <p>
+            <strong>What you’ll practise.</strong> Accessing individual elements and ranges by position.  
+            <strong>Why it matters.</strong> Everything else (masks, transforms) builds on basic indexing.
+          </p>
+
+          <section class="card" id="ex-lab3-3">
+            <div class="card-head">
+              <div class="file-name">Ex 3 – Indexing &amp; Slicing</div>
+              <div class="toolbar">
+                <button class="btn btn-primary run">Run ▸</button>
+                <button class="btn clear">Clear</button>
+                <button class="btn reset">Reset</button>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="lecture-stack">
+                <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+import numpy as np
+
+scores = np.array([55, 62, 71, 48, 90, 77, 68, 82])
+print("Scores:", scores)
+
+# TODO 1: Print the first score (position 0)
+# TODO 2: Print the last score (use negative indexing)
+# TODO 3: Print the first 3 scores (slice)
+# TODO 4: Print scores from position 2 up to (but excluding) position 6
+# TODO 5: Print every second score (use a step in the slice)
+
+first = ...
+last = ...
+first_three = ...
+middle_slice = ...
+every_second = ...
+
+print("First:", first)
+print("Last:", last)
+print("First three:", first_three)
+print("Positions 2..5:", middle_slice)
+print("Every second value:", every_second)
+</textarea>
+                </div>
+                <div class="output-pane">
+                  <div class="output-label">Terminal Output</div>
+                  <pre class="output-box" aria-live="polite"></pre>
+                </div>
+              </div>
+            </div>
+            <div class="status"><span class="dot"></span><span class="status-text">Ready</span></div>
+          </section>
+        </section>
+
+        <!-- Exercise 4 -->
+        <section id="ex4">
+          <h2>Ex 4 – Masks &amp; Filtering</h2>
+          <p>
+            <strong>What you’ll practise.</strong> Building boolean masks and using them to filter arrays.  
+            <strong>Why it matters.</strong> “Give me only the values that satisfy this condition” is core to data analysis.
+          </p>
+
+          <section class="card" id="ex-lab3-4">
+            <div class="card-head">
+              <div class="file-name">Ex 4 – Basic Mask</div>
+              <div class="toolbar">
+                <button class="btn btn-primary run">Run ▸</button>
+                <button class="btn clear">Clear</button>
+                <button class="btn reset">Reset</button>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="lecture-stack">
+                <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+import numpy as np
+
+scores = np.array([55, 62, 71, 48, 90, 77, 68, 82])
+threshold = 60
+
+print("Scores:", scores)
+print("Threshold:", threshold)
+
+# TODO 1: Build a boolean mask for scores >= threshold
+# mask = ...
+
+# TODO 2: Use the mask to create a new array 'passing'
+# passing = ...
+
+# TODO 3: Print the mask and the passing scores
+print("Mask (scores >= threshold):", ...)
+print("Passing scores:", ...)
+
+# TODO 4: Compute and print how many passed and the pass rate (%)
+# Hint: len(passing), len(scores)
+num_passing = ...
+num_total = ...
+pass_rate = ...  # (num_passing / num_total) * 100
+
+print("Passing:", num_passing, "out of", num_total)
+print("Pass rate (%):", round(pass_rate, 1))
+</textarea>
+                </div>
+                <div class="output-pane">
+                  <div class="output-label">Terminal Output</div>
+                  <pre class="output-box" aria-live="polite"></pre>
+                </div>
+              </div>
+            </div>
+            <div class="status"><span class="dot"></span><span class="status-text">Ready</span></div>
+          </section>
+        </section>
+
+        <!-- Exercise 5 -->
+        <section id="ex5">
+          <h2>Ex 5 – Score Bands with Masks</h2>
+          <p>
+            <strong>What you’ll practise.</strong> Using masks to count how many values fall into several ranges.  
+            <strong>Why it matters.</strong> Binning into bands is a simple form of exploratory data analysis.
+          </p>
+
+          <section class="card" id="ex-lab3-5">
+            <div class="card-head">
+              <div class="file-name">Ex 5 – Bands via Masks</div>
+              <div class="toolbar">
+                <button class="btn btn-primary run">Run ▸</button>
+                <button class="btn clear">Clear</button>
+                <button class="btn reset">Reset</button>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="lecture-stack">
+                <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+import numpy as np
+
+scores = np.array([12, 38, 41, 59, 60, 73, 88, 95, 39, 58])
+print("Scores:", scores)
+
+# Define bands: 0–39, 40–59, 60–100 (inclusive)
+# TODO: Build masks for each band using comparisons (& for "and")
+# band_0_39_mask = ...
+# band_40_59_mask = ...
+# band_60_100_mask = ...
+
+band_0_39 = scores[band_0_39_mask]
+band_40_59 = scores[band_40_59_mask]
+band_60_100 = scores[band_60_100_mask]
+
+print("[0–39]:", band_0_39, "Count:", len(band_0_39))
+print("[40–59]:", band_40_59, "Count:", len(band_40_59))
+print("[60–100]:", band_60_100, "Count:", len(band_60_100))
+
+# Optional: check that counts add up
+total_count = len(scores)
+sum_counts = len(band_0_39) + len(band_40_59) + len(band_60_100)
+print("Total:", total_count, "Sum of band counts:", sum_counts)
+</textarea>
+                </div>
+                <div class="output-pane">
+                  <div class="output-label">Terminal Output</div>
+                  <pre class="output-box" aria-live="polite"></pre>
+                </div>
+              </div>
+            </div>
+            <div class="status"><span class="dot"></span><span class="status-text">Ready</span></div>
+          </section>
+        </section>
+
+        <!-- Exercise 6 -->
+        <section id="ex6">
+          <h2>Ex 6 – Curving Scores with Vectorised Operations</h2>
+          <p>
+            <strong>What you’ll practise.</strong> Applying the same transformation to all values and comparing summaries.  
+            <strong>Why it matters.</strong> Many analyses do “original → transform → compare”.
+          </p>
+
+          <section class="card" id="ex-lab3-6">
+            <div class="card-head">
+              <div class="file-name">Ex 6 – Curve &amp; Clip</div>
+              <div class="toolbar">
+                <button class="btn btn-primary run">Run ▸</button>
+                <button class="btn clear">Clear</button>
+                <button class="btn reset">Reset</button>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="lecture-stack">
+                <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+import numpy as np
+
+scores = np.array([55, 62, 71, 48, 90, 77, 68, 82])
+print("Original scores:", scores)
+
+# TODO 1: Create 'curved' scores by adding 5 points to every score
+# curved = ...
+
+# TODO 2: Use np.clip to cap scores between 0 and 100 (just in case)
+# curved = np.clip(curved, 0, 100)
+
+# TODO 3: Print original and curved summaries: mean, min, max, std
+print("\nOriginal stats:")
+print("  Mean:", ...)
+print("  Min:", ...)
+print("  Max:", ...)
+print("  Std dev:", ...)
+
+print("\nCurved stats:")
+print("  Mean:", ...)
+print("  Min:", ...)
+print("  Max:", ...)
+print("  Std dev:", ...)
+</textarea>
+                </div>
+                <div class="output-pane">
+                  <div class="output-label">Terminal Output</div>
+                  <pre class="output-box" aria-live="polite"></pre>
+                </div>
+              </div>
+            </div>
+            <div class="status"><span class="dot"></span><span class="status-text">Ready</span></div>
+          </section>
+        </section>
+
+        <!-- Exercise 7 -->
+        <section id="ex7">
+          <h2>Ex 7 – From List-of-Dicts to Array</h2>
+          <p>
+            <strong>What you’ll practise.</strong> Connecting Week 2 (CSV → list-of-dicts) with Week 3 (NumPy arrays).  
+            <strong>Why it matters.</strong> Real data often arrives as rows (dicts) that you then convert into numeric columns.
+          </p>
+
+          <section class="card" id="ex-lab3-7">
+            <div class="card-head">
+              <div class="file-name">Ex 7 – Dicts → Array</div>
+              <div class="toolbar">
+                <button class="btn btn-primary run">Run ▸</button>
+                <button class="btn clear">Clear</button>
+                <button class="btn reset">Reset</button>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="lecture-stack">
+                <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+import numpy as np
+
+# Imagine this list came from your CSV loader in Week 2
+students = [
+    {"id": "1", "name": "Ana",   "programme": "CS", "exam_score": "55"},
+    {"id": "2", "name": "Bob",   "programme": "CS", "exam_score": "62"},
+    {"id": "3", "name": "Ciara", "programme": "DS", "exam_score": "71"},
+    {"id": "4", "name": "Dan",   "programme": "DS", "exam_score": "48"},
+    {"id": "5", "name": "Eli",   "programme": "CS", "exam_score": "90"},
+]
+
+# TODO 1: Build a plain Python list of integers called exam_scores_list
+# Hint: loop over students, read row["exam_score"], convert to int, append.
+
+exam_scores_list = []
+
+# TODO: your loop here
+
+print("Exam scores list:", exam_scores_list)
+
+# TODO 2: Convert exam_scores_list into a NumPy array called exam_scores
+# exam_scores = ...
+
+print("Exam scores array:", exam_scores)
+print("Mean:", exam_scores.mean())
+print("Scores >= 60:", exam_scores[exam_scores >= 60])
+</textarea>
+                </div>
+                <div class="output-pane">
+                  <div class="output-label">Terminal Output</div>
+                  <pre class="output-box" aria-live="polite"></pre>
+                </div>
+              </div>
+            </div>
+            <div class="status"><span class="dot"></span><span class="status-text">Ready</span></div>
+          </section>
+        </section>
+
+        <!-- Exercise 8 -->
+        <section id="ex8">
+          <h2>Ex 8 – Comparing Groups with Masks</h2>
+          <p>
+            <strong>What you’ll practise.</strong> Using masks to compare two groups (e.g. programmes) on a numeric column.  
+            <strong>Why it matters.</strong> Group comparisons are everywhere in data analysis.
+          </p>
+
+          <section class="card" id="ex-lab3-8">
+            <div class="card-head">
+              <div class="file-name">Ex 8 – CS vs DS (Mean Scores)</div>
+              <div class="toolbar">
+                <button class="btn btn-primary run">Run ▸</button>
+                <button class="btn clear">Clear</button>
+                <button class="btn reset">Reset</button>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="lecture-stack">
+                <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+import numpy as np
+
+students = [
+    {"id": "1", "name": "Ana",   "programme": "CS", "exam_score": "55"},
+    {"id": "2", "name": "Bob",   "programme": "CS", "exam_score": "62"},
+    {"id": "3", "name": "Ciara", "programme": "DS", "exam_score": "71"},
+    {"id": "4", "name": "Dan",   "programme": "DS", "exam_score": "48"},
+    {"id": "5", "name": "Eli",   "programme": "CS", "exam_score": "90"},
+]
+
+# Step 1: Build arrays for programmes and scores
+programmes = []
+scores_list = []
+
+for row in students:
+    programmes.append(row["programme"])
+    scores_list.append(int(row["exam_score"]))
+
+programmes = np.array(programmes)   # array of strings
+scores = np.array(scores_list)      # array of ints
+
+print("Programmes:", programmes)
+print("Scores:", scores)
+
+# TODO 1: Build masks for CS and DS rows
+# mask_cs = ...
+# mask_ds = ...
+
+# TODO 2: Use masks to create arrays cs_scores and ds_scores
+cs_scores = ...
+ds_scores = ...
+
+print("\nCS scores:", cs_scores)
+print("DS scores:", ds_scores)
+
+# TODO 3: Compute and print the mean score for each group
+cs_mean = ...
+ds_mean = ...
+
+print("\nMean CS score:", cs_mean)
+print("Mean DS score:", ds_mean)
+</textarea>
+                </div>
+                <div class="output-pane">
+                  <div class="output-label">Terminal Output</div>
+                  <pre class="output-box" aria-live="polite"></pre>
+                </div>
+              </div>
+            </div>
+            <div class="status"><span class="dot"></span><span class="status-text">Ready</span></div>
+          </section>
+        </section>
+
+        <!-- Exercise 9 -->
+        <section id="ex9">
+          <h2>Ex 9 – Tiny Simulation (Optional but Recommended)</h2>
+          <p>
+            <strong>What you’ll practise.</strong> Using <code>np.random</code> to simulate many values and summarise them.  
+            <strong>Why it matters.</strong> Simulation is a useful way to build intuition about distributions and averages.
+          </p>
+
+          <section class="card" id="ex-lab3-9">
+            <div class="card-head">
+              <div class="file-name">Ex 9 – Simulated Exam Scores</div>
+              <div class="toolbar">
+                <button class="btn btn-primary run">Run ▸</button>
+                <button class="btn clear">Clear</button>
+                <button class="btn reset">Reset</button>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="lecture-stack">
+                <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+import numpy as np
+
+# TODO 1: Set a random seed so results are repeatable (pick any integer)
+# np.random.seed(...)
+
+# TODO 2: Simulate 1000 exam scores between 40 and 100
+# Hint: np.random.random(1000) gives values between 0 and 1
+# You can then scale and shift them: 40 + 60 * np.random.random(1000)
+# sim_scores = ...
+
+print("First 10 simulated scores:", sim_scores[:10])
+
+# TODO 3: Compute and print mean and standard deviation
+mean = ...
+std = ...
+print("Mean:", round(mean, 2))
+print("Std dev:", round(std, 2))
+
+# TODO 4: What percentage of students score at least 60?
+mask = ...
+fraction_passing = ...
+print("Percentage with score >= 60:", round(fraction_passing, 1), "%")
+</textarea>
+                </div>
+                <div class="output-pane">
+                  <div class="output-label">Terminal Output</div>
+                  <pre class="output-box" aria-live="polite"></pre>
+                </div>
+              </div>
+            </div>
+            <div class="status"><span class="dot"></span><span class="status-text">Ready</span></div>
+          </section>
+        </section>
+
+      </main>
+    </div>
+
+    <footer>
+      <p class="copyright"></p>
+      <div class="legal-notice"></div>
+    </footer>
+  </div>
+
+  <script src="../theme/footer.js"></script>
+  <script src="../theme/legal.js"></script>
+  <script src="../engine/engine.js"></script>
+  <script>
+    // Init all playground blocks for Lab 3
+    initPlayground('ex-lab3-0');
+    initPlayground('ex-lab3-1');
+    initPlayground('ex-lab3-2');
+    initPlayground('ex-lab3-3');
+    initPlayground('ex-lab3-4');
+    initPlayground('ex-lab3-5');
+    initPlayground('ex-lab3-6');
+    initPlayground('ex-lab3-7');
+    initPlayground('ex-lab3-8');
+    initPlayground('ex-lab3-9');
+
+    applyFooterText();
+    applyLegalNotice();
+  </script>
+</body>
+</html>

@@ -5,6 +5,7 @@
   <title>Lecture 2 | CSC1184</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
 
+  <!-- Pyodide + CodeMirror (same stack as other module) -->
   <script src="https://cdn.jsdelivr.net/pyodide/v0.23.4/full/pyodide.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/eclipse.min.css">
@@ -40,67 +41,153 @@
       <aside class="lecture-sidebar">
         <div class="toc-title">On this page</div>
         <a href="#intro" class="toc-link active">Introduction</a>
-        <a href="#file-basics" class="toc-link">1. File Basics</a>
-        <a href="#csv-anatomy" class="toc-link">2. CSV Anatomy</a>
-        <a href="#manual-parsing" class="toc-link">3. Manual Parsing</a>
-        <a href="#dicts-theory" class="toc-link">4. Dictionaries (Theory)</a>
-        <a href="#dicts-methods" class="toc-link">5. Dictionary Methods</a>
-        <a href="#zip-func" class="toc-link">6. The Zip Function</a>
-        <a href="#funcs-theory" class="toc-link">7. Functions (Theory)</a>
-        <a href="#funcs-args" class="toc-link">8. Function Arguments</a>
-        <a href="#loader-pattern" class="toc-link">9. The Reusable Loader</a>
+        <a href="#why-files" class="toc-link">1. Why Files?</a>
+        <a href="#file-reading" class="toc-link">2. Reading Text Files Safely</a>
+        <a href="#csv-anatomy" class="toc-link">3. What Is CSV?</a>
+        <a href="#from-lines" class="toc-link">4. From Lines to Columns</a>
+        <a href="#dict-basics" class="toc-link">5. Dictionaries Recap</a>
+        <a href="#zip-helper" class="toc-link">6. The <code>zip()</code> Helper</a>
+        <a href="#rows-as-dicts" class="toc-link">7. Rows as Dictionaries</a>
+        <a href="#simple-loader" class="toc-link">8. Building a Simple Loader</a>
+        <a href="#summaries" class="toc-link">9. Summaries from Loaded Data</a>
       </aside>
 
       <main class="lecture-content">
         
+        <!-- INTRO -->
         <header id="intro">
-          <h1>Week 2 – Files, Dictionaries &amp; Functions</h1>
+          <h1>Week 2 – Files, CSVs &amp; Simple Tabular Data</h1>
 
           <p class="lede">
-            In Week 1, we worked with simple lists. To handle real-world data (like CSV files), we need more powerful tools.
-            This week introduces <strong>File I/O</strong> to read data, <strong>Dictionaries</strong> to label that data, 
-            and <strong>Functions</strong> to make our logic reusable.
+            In Week 1 we treated small lists as tiny “columns of data”. In Week 2 we move one step
+            closer to the real world: data usually lives in <strong>files</strong>, often as
+            <strong>CSV</strong> (comma-separated values). Our goal this week is to read a simple
+            CSV file into Python as a list of dictionaries and then reuse the same summary patterns
+            from Week 1.
           </p>
 
           <div class="callout callout-goal">
             <span class="callout-title">By the end of this lecture, you should be able to:</span>
             <ul>
-              <li>Open files safely using the <code>with</code> context manager.</li>
-              <li>Explain the efficiency difference between Lists (Linear) and Dictionaries (Hash Table).</li>
-              <li>Use dictionary methods like <code>get</code>, <code>update</code>, <code>items</code>, and <code>pop</code>.</li>
-              <li>Define functions with default, keyword, and variable arguments (<code>*args</code>).</li>
-              <li>Combine these tools to parse a CSV file into a list of dictionaries.</li>
+              <li>Explain why we store data in files instead of hard-coding lists.</li>
+              <li>Use the <code>with open(...)</code> pattern to read text files safely.</li>
+              <li>Describe the structure of a basic CSV file (header row + data rows).</li>
+              <li>Turn CSV lines into a list of dictionaries with named columns.</li>
+              <li>Write a small reusable loader function that prepares data for analysis.</li>
             </ul>
           </div>
         </header>
 
-        <h2 id="file-basics">1. File Basics &amp; Safety</h2>
+        <!-- 1. WHY FILES -->
+        <h2 id="why-files">1. Why Files?</h2>
+
         <p>
-          Data lives in files, not variables. To use it, we must open a connection to the file system using the <strong>Context Manager</strong> pattern.
+          Hard-coding data directly into Python files is fine for tiny toy examples, but it does
+          not scale. Real projects tend to store data separately:
         </p>
 
+        <ul>
+          <li>Spreadsheets exported as <code>.csv</code>.</li>
+          <li>Logs written as plain text files.</li>
+          <li>Database tables dumped to disk.</li>
+        </ul>
+
+        <p>
+          Separating code and data has two advantages:
+        </p>
+
+        <ul>
+          <li>You can update the data without changing the code.</li>
+          <li>You can reuse the same analysis code on many different files.</li>
+        </ul>
+
         <div class="box box-info">
-            <span class="box-title">The "With" Statement</span>
-            <p>
-                We use the <code>with open(...) as f:</code> syntax. It guarantees the file is closed (returned to the system) even if your code crashes.
-            </p>
+          <span class="box-title">Idea</span>
+          In Week 2 we will still work with very small datasets, but we will pretend they come
+          from “real” CSV files. The patterns we learn here scale up to much larger files later.
         </div>
+
+        <!-- 2. FILE READING -->
+        <h2 id="file-reading">2. Reading Text Files Safely</h2>
+
+        <p>
+          Python reads files through a connection called a <strong>file object</strong>. The safest
+          way to work with a file object is the <code>with</code> statement:
+        </p>
 
         <pre class="pseudo-block">
 with open("data/students.csv", "r", encoding="utf-8") as f:
     # File is open here
-    data = f.read()
-# File is closed here automatically
+    text = f.read()
+# Here the file is automatically closed
         </pre>
 
-        <h2 id="csv-anatomy">2. CSV Anatomy</h2>
         <p>
-          CSV stands for <strong>Comma-Separated Values</strong>. It is the lowest common denominator of data storage. Excel, SQL databases, and web APIs can all export to it.
+          In this environment we will simulate files using multi-line strings, but you should still
+          recognise the real-world pattern with <code>open(...)</code>.
         </p>
+
+        <h3>2.1 Patterns for reading</h3>
+
         <ul>
-            <li><strong>Header Row:</strong> The first line usually contains column names (variables).</li>
-            <li><strong>Data Rows:</strong> Subsequent lines contain observations.</li>
-            <li><strong>Separator:</strong> Columns are separated by a delimiter, usually a comma <code>,</code>.</li>
+          <li><code>f.read()</code> – read the whole file into one big string.</li>
+          <li><code>f.readlines()</code> – read the file into a list of lines.</li>
+          <li><code>for line in f:</code> – process the file line by line in a loop.</li>
+        </ul>
+
+        <section class="card" id="ex-read-patterns">
+          <div class="card-head">
+            <div class="file-name">Example – Simulating file reading with a string</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+# We simulate a small text "file" using a multi-line string.
+text = """line one
+line two
+line three"""
+
+print("Whole text (like f.read()):")
+print(text)
+
+print("\nLines (like f.readlines()):")
+lines = text.splitlines()
+print(lines)
+
+print("\nLooping over lines (like for line in f:):")
+for line in lines:
+    print("->", line)
+</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="status">
+            <span class="dot"></span><span class="status-text">Ready</span>
+          </div>
+        </section>
+
+        <!-- 3. CSV ANATOMY -->
+        <h2 id="csv-anatomy">3. What Is CSV?</h2>
+
+        <p>
+          CSV stands for <strong>Comma-Separated Values</strong>. It is a very simple way to store
+          table-shaped data as plain text. Typical structure:
+        </p>
+
+        <ul>
+          <li>First line: <strong>header row</strong> – column names.</li>
+          <li>Remaining lines: <strong>data rows</strong> – one observation per line.</li>
+          <li>Columns separated by a delimiter, usually a comma <code>,</code>.</li>
         </ul>
 
         <div class="card">
@@ -109,436 +196,498 @@ with open("data/students.csv", "r", encoding="utf-8") as f:
           </div>
           <div class="card-body">
 <pre class="output-box" style="white-space:pre; padding:12px; background:#fff; color:#333;">
-id,name,programme,exam_score <span style="color:#999;">&lt;-- Header</span>
-1,Ana,CS,55                  <span style="color:#999;">&lt;-- Row 1</span>
-2,Bob,CS,62                  <span style="color:#999;">&lt;-- Row 2</span>
+id,name,programme,exam_score,labs_attended  &lt;-- header (column names)
+1,Ana,CS,55,6                              &lt;-- row 1
+2,Bob,CS,62,8                              &lt;-- row 2
+3,Ciara,DS,71,7                            &lt;-- row 3
 </pre>
           </div>
         </div>
 
-        <h2 id="manual-parsing">3. Manual Parsing (The Hard Way)</h2>
+        <!-- 4. FROM LINES TO COLUMNS -->
+        <h2 id="from-lines">4. From Lines to Columns</h2>
+
         <p>
-            A CSV file is just text. Python sees <code>"Ana,CS,55"</code>. If we split this into a list <code>["Ana", "CS", "55"]</code>, we have to remember that index <code>2</code> is the score.
+          A CSV file is just text. Python sees each data row as a single string such as:
+          <code>"1,Ana,CS,55,6"</code>. Our first step is to:
         </p>
+
+        <ol>
+          <li>Strip away the newline characters.</li>
+          <li>Split the line on commas into a list of fields.</li>
+        </ol>
+
+        <section class="card" id="ex-strip-split">
+          <div class="card-head">
+            <div class="file-name">Example – Stripping and splitting a CSV line</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+line = "1,Ana,CS,55,6\n"
+print("Raw line with newline:")
+print(repr(line))
+
+clean = line.strip()  # removes newline at the end
+print("\nAfter strip():")
+print(repr(clean))
+
+parts = clean.split(",")  # split on comma
+print("\nAfter split(','):")
+print(parts)
+
+# Access by numeric index
+print("\nID:", parts[0])
+print("Name:", parts[1])
+print("Programme:", parts[2])
+print("Exam score:", parts[3])
+print("Labs attended:", parts[4])
+</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="status">
+            <span class="dot"></span><span class="status-text">Ready</span>
+          </div>
+        </section>
+
         <p>
-            This is fragile. If the column order changes, our code breaks. We need a structure that uses <strong>Labels</strong> instead of <strong>Indices</strong>.
+          Using numeric indices like <code>parts[3]</code> works, but it is easy to forget which
+          column is which. A more descriptive structure is a dictionary.
         </p>
 
-        <h2 id="dicts-theory">4. Dictionaries (Theory)</h2>
-        
+        <!-- 5. DICTIONARIES RECAP -->
+        <h2 id="dict-basics">5. Dictionaries Recap</h2>
+
         <p>
-            A <strong>Dictionary</strong> is a hashed structure of key-value pairs, also known as a mapping type.
-          Unlike lists, which use integer indices, dictionaries use <strong>Keys</strong> to access <strong>Values</strong>.
+          A <strong>dictionary</strong> in Python stores labelled pairs: <strong>keys</strong> and
+          <strong>values</strong>. You can think of it as a tiny lookup table:
         </p>
 
-        
+        <ul>
+          <li>Keys are usually strings like <code>"name"</code> or <code>"programme"</code>.</li>
+          <li>Values can be numbers, strings, or anything else.</li>
+        </ul>
 
-        <h3>4.1 Comparison: List vs Dictionary</h3>
         <p>
-            The fundamental difference lies in how data is stored and accessed.
-        </p>
-        
-        <div class="box box-info">
-            <span class="box-title">Data Structure Comparison</span>
-            <table style="width:100%; font-size:14px; border-collapse: collapse;">
-                <tr style="border-bottom: 1px solid var(--border);">
-                    <th style="text-align:left; padding:8px;">Feature</th>
-                    <th style="text-align:left; padding:8px;">List <code>[]</code></th>
-                    <th style="text-align:left; padding:8px;">Dictionary <code>{}</code></th>
-                </tr>
-                <tr>
-                    <td style="padding:8px; font-weight:600;">Structure</td>
-                    <td style="padding:8px;">Collection of index-value pairs</td>
-                    <td style="padding:8px;">Hashed structure of key-value pairs</td>
-                </tr>
-                <tr>
-                    <td style="padding:8px; font-weight:600;">Access</td>
-                    <td style="padding:8px;">Via Integer Index (0, 1, 2...)</td>
-                    <td style="padding:8px;">Via Keys (Strings, Numbers, etc.)</td>
-                </tr>
-                <tr>
-                    <td style="padding:8px; font-weight:600;">Order</td>
-                    <td style="padding:8px;">Strictly maintained</td>
-                    <td style="padding:8px;">Insertion order (Python 3.6+)</td>
-                </tr>
-                <tr>
-                    <td style="padding:8px; font-weight:600;">Time Complexity</td>
-                    <td style="padding:8px;">O(n) - Linear Time</td>
-                    <td style="padding:8px;">O(1) - Constant Time</td>
-                </tr>
-            </table>
-        </div>
-
-        <p style="font-size: 14px; color: var(--muted); margin-top: 10px;">
-            <em>Note: The "Big-O" notation indicates that dictionary lookups remain fast regardless of size, whereas list lookups get slower as data grows.</em>
+          Syntax (curly braces with <code>key: value</code> pairs):
         </p>
 
-        <h3>4.2 Creating Dictionaries</h3>
-        <p>There are two main ways to create a dictionary:</p>
         <pre class="pseudo-block">
-# 1. Using Curly Braces (Literal)
-eng2num = {'one': 1, 'two': 2}
-
-# 2. Using the dict() Constructor
-eng2num = dict(one=1, two=2)
+student = {
+    "id": 1,
+    "name": "Ana",
+    "programme": "CS",
+    "exam_score": 55
+}
         </pre>
 
-        <h2 id="dicts-methods">5. Dictionary Methods</h2>
-        
         <p>
-            Dictionaries have specific built-in methods for accessing, modifying, and looping through data.
+          We access values by key, not by numeric index:
         </p>
+
+        <ul>
+          <li><code>student["name"]</code> → <code>"Ana"</code></li>
+          <li><code>student["exam_score"]</code> → <code>55</code></li>
+        </ul>
+
+        <section class="card" id="ex-dict-basics">
+          <div class="card-head">
+            <div class="file-name">Example – A tiny student dictionary</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+student = {
+    "id": 1,
+    "name": "Ana",
+    "programme": "CS",
+    "exam_score": 55
+}
+
+print("Whole dictionary:")
+print(student)
+
+print("\nAccess by key:")
+print("Name:", student["name"])
+print("Programme:", student["programme"])
+print("Exam score:", student["exam_score"])
+
+# You can also change values:
+student["exam_score"] = 60
+print("\nAfter updating exam_score:")
+print(student)
+</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="status">
+            <span class="dot"></span><span class="status-text">Ready</span>
+          </div>
+        </section>
 
         <div class="box box-info">
-          <span class="box-title">Dictionary operations – what they do (before coding)</span>
-          <ul>
-            <li><code>get(key)</code> – Returns the corresponding value for the given key. Safer than <code>[]</code>.</li>
-            <li><code>update(other)</code> – Updates the dictionary with the key/value pairs.</li>
-            <li><code>copy()</code> – Returns a shallow copy of the dictionary.</li>
-            <li><code>values()</code> – Returns all the values of the dictionary.</li>
-            <li><code>items()</code> – Returns a list of (key, value) tuples.</li>
-            <li><code>pop(key)</code> – Removes the item associated with the input key and returns its value.</li>
-            <li><code>clear()</code> – Removes all the items in a dictionary.</li>
-            <li><code>del dict[key]</code> – Deletes the dictionary item.</li>
-            <li><code>key in dict</code> – Checks whether a key exists in a dictionary or not (Boolean).</li>
-          </ul>
+          <span class="box-title">Connection to data tables</span>
+          One row of a dataset (one student, one transaction, one match) fits naturally into
+          one dictionary. Later we will store many rows as a <code>list</code> of dictionaries.
         </div>
 
-        <section class="card" id="ex-dict-basic">
-            <div class="card-head">
-              <div class="file-name">Example – Basic Operations (get, update, in)</div>
-              <div class="toolbar">
-                <button class="btn btn-primary run">Run ▸</button>
-                <button class="btn clear">Clear</button>
-                <button class="btn reset">Reset</button>
-              </div>
-            </div>
-            <div class="card-body">
-              <div class="lecture-stack">
-                <div class="editor-pane">
-<textarea class="code" spellcheck="false">
-eng2num = {'one': 1, 'two': 2}
+        <!-- 6. ZIP HELPER -->
+        <h2 id="zip-helper">6. The <code>zip()</code> Helper</h2>
 
-# 1. 'in' Operator
-print("Is 'one' a key?", 'one' in eng2num)
-
-# 2. get() vs []
-print("Value of two:", eng2num.get('two'))
-print("Value of missing:", eng2num.get('ten')) # Returns None
-
-# 3. update()
-eng2num.update({'three': 3, 'four': 4})
-print("After update:", eng2num)
-</textarea>
-                </div>
-                <div class="output-pane">
-                  <div class="output-label">Terminal Output</div>
-                  <pre class="output-box" aria-live="polite"></pre>
-                </div>
-              </div>
-            </div>
-            <div class="status"><span class="dot"></span><span class="status-text">Ready</span></div>
-        </section>
-
-        <section class="card" id="ex-dict-loops">
-            <div class="card-head">
-              <div class="file-name">Example – Looping (items, keys, values)</div>
-              <div class="toolbar">
-                <button class="btn btn-primary run">Run ▸</button>
-                <button class="btn clear">Clear</button>
-                <button class="btn reset">Reset</button>
-              </div>
-            </div>
-            <div class="card-body">
-              <div class="lecture-stack">
-                <div class="editor-pane">
-<textarea class="code" spellcheck="false">
-eng2num = {'one': 1, 'two': 2, 'three': 3}
-
-print("--- Just Keys (Default) ---")
-for k in eng2num:
-    print(k)
-
-print("\n--- Just Values ---")
-for v in eng2num.values():
-    print(v)
-
-print("\n--- Items (Key, Value) Tuples ---")
-# items() allows us to unpack k, v in one go
-for k, v in eng2num.items():
-    print(f"Key: {k} -> Val: {v}")
-</textarea>
-                </div>
-                <div class="output-pane">
-                  <div class="output-label">Terminal Output</div>
-                  <pre class="output-box" aria-live="polite"></pre>
-                </div>
-              </div>
-            </div>
-            <div class="status"><span class="dot"></span><span class="status-text">Ready</span></div>
-        </section>
-
-        <section class="card" id="ex-dict-modify">
-            <div class="card-head">
-              <div class="file-name">Example – Modify (pop, clear, del)</div>
-              <div class="toolbar">
-                <button class="btn btn-primary run">Run ▸</button>
-                <button class="btn clear">Clear</button>
-                <button class="btn reset">Reset</button>
-              </div>
-            </div>
-            <div class="card-body">
-              <div class="lecture-stack">
-                <div class="editor-pane">
-<textarea class="code" spellcheck="false">
-data = {'a': 100, 'b': 200, 'c': 300}
-
-# 1. pop() - removes and returns
-val = data.pop('b')
-print(f"Popped: {val}")
-print(f"Remaining: {data}")
-
-# 2. del - just removes (no return)
-del data['a']
-print(f"After del: {data}")
-
-# 3. clear() - empty everything
-data.clear()
-print(f"After clear: {data}")
-</textarea>
-                </div>
-                <div class="output-pane">
-                  <div class="output-label">Terminal Output</div>
-                  <pre class="output-box" aria-live="polite"></pre>
-                </div>
-              </div>
-            </div>
-            <div class="status"><span class="dot"></span><span class="status-text">Ready</span></div>
-        </section>
-
-        <h2 id="zip-func">6. The Zip Function</h2>
         <p>
-            The <code>zip()</code> function takes one or more iterables (lists, tuples) and returns a zip object of paired tuples. This is the essential bridge between our CSV Header and Data rows.
+          The built-in function <code>zip()</code> pairs up elements from two (or more) lists:
         </p>
 
-        
+        <pre class="pseudo-block">
+numbers = [1, 2, 3]
+words   = ["one", "two", "three"]
 
-        <section class="card" id="ex-zip">
-            <div class="card-head">
-              <div class="file-name">Example – zip()</div>
-              <div class="toolbar">
-                <button class="btn btn-primary run">Run ▸</button>
-                <button class="btn clear">Clear</button>
-                <button class="btn reset">Reset</button>
-              </div>
+pairs = list(zip(numbers, words))
+# pairs is now [(1, "one"), (2, "two"), (3, "three")]
+        </pre>
+
+        <p>
+          We will use <code>zip</code> to pair:
+        </p>
+
+        <ul>
+          <li>column names from the header row, and</li>
+          <li>field values from each data row,</li>
+        </ul>
+
+        <p>
+          so that we can build a dictionary for each row.
+        </p>
+
+        <section class="card" id="ex-zip-helper">
+          <div class="card-head">
+            <div class="file-name">Example – Basic <code>zip()</code> usage</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
             </div>
-            <div class="card-body">
-              <div class="lecture-stack">
-                <div class="editor-pane">
+          </div>
+          <div class="card-body">
+            <div class="lecture-stack">
+              <div class="editor-pane">
 <textarea class="code" spellcheck="false">
 numbers = [1, 2, 3]
-names = ['one', 'two', 'three']
+words = ["one", "two", "three"]
 
-# Create an iterator of tuples
-zipped = zip(numbers, names)
-print("Zipped object:", list(zipped))
+z = zip(numbers, words)
 
-# Convert to dictionary directly
-d = dict(zip(names, numbers))
-print("As Dict:", d)
+print("Pairs from zip:")
+for pair in z:
+    print(pair)
+
+# We can also go straight to a dictionary:
+d = dict(zip(words, numbers))
+print("\nDictionary from zip(words, numbers):")
+print(d)
+
+print("\nAccess 'two':", d["two"])
 </textarea>
-                </div>
-                <div class="output-pane">
-                  <div class="output-label">Terminal Output</div>
-                  <pre class="output-box" aria-live="polite"></pre>
-                </div>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
               </div>
             </div>
-            <div class="status"><span class="dot"></span><span class="status-text">Ready</span></div>
+          </div>
+          <div class="status">
+            <span class="dot"></span><span class="status-text">Ready</span>
+          </div>
         </section>
 
-        <h2 id="funcs-theory">7. Functions (Theory)</h2>
-        <p>
-            A function is a block of statements that encapsulates a specific task.
-        </p>
-        
-        <div class="split-row">
-            <div class="split-card">
-                <h4>Syntax</h4>
-                <pre class="pseudo-block" style="margin:0;">
-def name(arguments):
-    statements
-    return value
-                </pre>
-                <ul style="font-size:14px; margin-top:10px;">
-                    <li><strong>def:</strong> Keyword to define function.</li>
-                    <li><strong>Header:</strong> Name + Arguments + Colon <code>:</code>.</li>
-                    <li><strong>Body:</strong> Indented block of code.</li>
-                </ul>
-            </div>
-            <div class="split-card">
-                <h4>Scope</h4>
-                <p style="font-size:14px;">
-                    <strong>Local Variables:</strong> Defined inside a function body. Accessible only there.
-                    <br><br>
-                    <strong>Global Variables:</strong> Defined outside function body. Accessible by all functions.
-                </p>
-            </div>
-        </div>
+        <!-- 7. ROWS AS DICTS -->
+        <h2 id="rows-as-dicts">7. Rows as Dictionaries</h2>
 
         <p>
-            <strong>Functional Decomposition</strong> is the process of breaking down a large task into multiple sub-tasks (smaller functions).
+          We now combine the ideas:
         </p>
 
-        <h2 id="funcs-args">8. Function Arguments</h2>
-        <p>
-            Python functions support five distinct types of arguments.
-        </p>
+        <ul>
+          <li>Use <code>split</code> on the header line to get column names.</li>
+          <li>Use <code>split</code> on each data line to get field values.</li>
+          <li>Use <code>zip</code> to pair them.</li>
+          <li>Use <code>dict</code> to build a dictionary for that row.</li>
+        </ul>
+
+        <section class="card" id="ex-row-dict">
+          <div class="card-head">
+            <div class="file-name">Example – Turning one CSV row into a dictionary</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+header_line = "id,name,programme,exam_score,labs_attended\n"
+data_line = "1,Ana,CS,55,6\n"
+
+# Prepare header and parts
+header = header_line.strip().split(",")
+parts = data_line.strip().split(",")
+
+print("Header:", header)
+print("Parts:", parts)
+
+# Pair them up and build a dictionary
+row = dict(zip(header, parts))
+print("\nRow as dict:")
+print(row)
+
+print("\nAccess by label:")
+print("Name:", row["name"])
+print("Exam score:", row["exam_score"])
+print("Labs attended:", row["labs_attended"])
+</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="status">
+            <span class="dot"></span><span class="status-text">Ready</span>
+          </div>
+        </section>
 
         <div class="box box-info">
-          <span class="box-title">Argument Types – what they do</span>
-          <ul>
-            <li><strong>Required Arguments:</strong> Must be passed during the function call in precisely the right order.</li>
-            <li><strong>Default Arguments:</strong> Have a default value (e.g., <code>b=15</code>). Used if no value is passed.</li>
-            <li><strong>Keyword Arguments:</strong> Allow switching the order of inputs by using parameter names (e.g. <code>func(b=10, a=2)</code>).</li>
-            <li><strong>*args:</strong> Accepts a variable number of arguments. Accessed as a <strong>Tuple</strong>.</li>
-            <li><strong>**kwargs:</strong> Accepts a variable number of keyword arguments. Accessed as a <strong>Dictionary</strong>.</li>
-          </ul>
+          <span class="box-title">Key idea</span>
+          We want a <strong>list of dictionaries</strong>:
+          <code>[row1, row2, row3, ...]</code>. Each dictionary represents one student. This is
+          close to the way pandas will represent tables later.
         </div>
 
-        <section class="card" id="ex-func-basics">
-            <div class="card-head">
-              <div class="file-name">Example – Required, Default &amp; Keyword</div>
-              <div class="toolbar">
-                <button class="btn btn-primary run">Run ▸</button>
-                <button class="btn clear">Clear</button>
-                <button class="btn reset">Reset</button>
-              </div>
-            </div>
-            <div class="card-body">
-              <div class="lecture-stack">
-                <div class="editor-pane">
-<textarea class="code" spellcheck="false">
-# b has a default value of 15
-def sum_numbers(a, b=15):
-    c = a + b
-    return c
+        <!-- 8. SIMPLE LOADER -->
+        <h2 id="simple-loader">8. Building a Simple Loader Function</h2>
 
-print("Default:", sum_numbers(2))       # 2 + 15
-print("Required:", sum_numbers(2, 10))  # 2 + 10
-print("Keyword:", sum_numbers(b=5, a=4)) # 4 + 5
-</textarea>
-                </div>
-                <div class="output-pane">
-                  <div class="output-label">Terminal Output</div>
-                  <pre class="output-box" aria-live="polite"></pre>
-                </div>
-              </div>
-            </div>
-            <div class="status"><span class="dot"></span><span class="status-text">Ready</span></div>
-        </section>
-
-        <section class="card" id="ex-func-variable">
-            <div class="card-head">
-              <div class="file-name">Example – *args and **kwargs</div>
-              <div class="toolbar">
-                <button class="btn btn-primary run">Run ▸</button>
-                <button class="btn clear">Clear</button>
-                <button class="btn reset">Reset</button>
-              </div>
-            </div>
-            <div class="card-body">
-              <div class="lecture-stack">
-                <div class="editor-pane">
-<textarea class="code" spellcheck="false">
-# *args collects extra positional args into a Tuple
-# **kwargs collects extra keyword args into a Dict
-def versatile_func(*args, **kwargs):
-    print("Args (Tuple):", args)
-    print("Kwargs (Dict):", kwargs)
-
-# Call with multiple inputs
-versatile_func(1, 2, 3, mode="fast", color="red")
-
-# Example using built-in sum() on args
-def sum_all(*args):
-    return sum(args)
-
-print("Sum:", sum_all(1, 4, 5, 7, 9))
-</textarea>
-                </div>
-                <div class="output-pane">
-                  <div class="output-label">Terminal Output</div>
-                  <pre class="output-box" aria-live="polite"></pre>
-                </div>
-              </div>
-            </div>
-            <div class="status"><span class="dot"></span><span class="status-text">Ready</span></div>
-        </section>
-
-        <h2 id="loader-pattern">9. The Reusable Loader</h2>
         <p>
-            We now combine everything: File I/O, Dictionaries (via Zip), and Functions (with error handling).
+          We now wrap the pattern into a reusable function. Our function will:
         </p>
 
-        <section class="card" id="ex-final">
-            <div class="card-head">
-              <div class="file-name">loader.py</div>
-              <div class="toolbar">
-                <button class="btn btn-primary run">Run ▸</button>
-                <button class="btn clear">Clear</button>
-                <button class="btn reset">Reset</button>
-              </div>
+        <ol>
+          <li>Take CSV text as input (later this text will come from a real file).</li>
+          <li>Split into lines.</li>
+          <li>Use the first line as the header.</li>
+          <li>Loop over remaining lines, turning each into a dictionary.</li>
+          <li>Convert obvious numeric fields from strings to integers.</li>
+        </ol>
+
+        <p>
+          We will:
+        </p>
+
+        <ul>
+          <li>Skip completely empty lines.</li>
+          <li>Skip lines with the wrong number of columns.</li>
+          <li>Only convert to <code>int</code> when the text looks like a number (using <code>isdigit()</code>).</li>
+        </ul>
+
+        <section class="card" id="ex-loader">
+          <div class="card-head">
+            <div class="file-name">Example – A simple CSV loader (string version)</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
             </div>
-            <div class="card-body">
-              <div class="lecture-stack">
-                <div class="editor-pane">
+          </div>
+          <div class="card-body">
+            <div class="lecture-stack">
+              <div class="editor-pane">
 <textarea class="code" spellcheck="false">
-# Simulated CSV File
-csv_content = """name,programme,score
-Ana,CS,55
-Bob,CS,62
-BadRow,NoScore
-Ciara,DS,71"""
+# Simulated contents of students.csv
+csv_text = """id,name,programme,exam_score,labs_attended
+1,Ana,CS,55,6
+2,Bob,CS,62,8
+3,Ciara,DS,71,7
+4,Dave,CS,48,3
+"""
 
-def load_data(raw_text):
-    lines = raw_text.splitlines()
-    header = lines[0].split(",")
-    dataset = [] # Local variable
-    
+def load_students_from_text(text):
+    lines = text.splitlines()
+    if not lines:
+        return []
+
+    # Step 1: header row
+    header_line = lines[0].strip()
+    header = [name.strip() for name in header_line.split(",")]
+
+    students = []
+
+    # Step 2: loop over data rows
     for line in lines[1:]:
-        if not line.strip(): continue
-        parts = line.split(",")
-        
-        # Validation
-        if len(parts) != len(header):
-            print(f"Skipping bad line: {line}")
+        line = line.strip()
+        if not line:
+            # skip completely empty lines
             continue
-            
-        try:
-            # 1. Zip to Dict
-            row = dict(zip(header, parts))
-            # 2. Convert Type
-            row['score'] = int(row['score'])
-            dataset.append(row)
-        except ValueError:
-            print(f"Skipping bad math: {line}")
-            
-    return dataset
 
-# Main execution (Global Scope)
-results = load_data(csv_content)
-print("\nFinal Results:", results)
+        parts = [part.strip() for part in line.split(",")]
+
+        # If the row does not match the header in length, skip it
+        if len(parts) != len(header):
+            print("Skipping line with wrong number of columns:", line)
+            continue
+
+        row = dict(zip(header, parts))
+
+        # Convert some fields to int if they look like numbers
+        if row.get("exam_score", "").isdigit():
+            row["exam_score"] = int(row["exam_score"])
+
+        if row.get("labs_attended", "").isdigit():
+            row["labs_attended"] = int(row["labs_attended"])
+
+        students.append(row)
+
+    return students
+
+students = load_students_from_text(csv_text)
+print("Loaded students:")
+for s in students:
+    print(s)
 </textarea>
-                </div>
-                <div class="output-pane">
-                  <div class="output-label">Terminal Output</div>
-                  <pre class="output-box" aria-live="polite"></pre>
-                </div>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
               </div>
             </div>
-            <div class="status"><span class="dot"></span><span class="status-text">Ready</span></div>
+          </div>
+          <div class="status">
+            <span class="dot"></span><span class="status-text">Ready</span>
+          </div>
         </section>
+
+        <!-- 9. SUMMARIES FROM LOADED DATA -->
+        <h2 id="summaries">9. Summaries from Loaded Data</h2>
+
+        <p>
+          Once we have a list of dictionaries, we can reuse the Week-1 patterns: collect a list of
+          scores, compute an average, count how many pass a threshold, and so on.
+        </p>
+
+        <section class="card" id="ex-summaries">
+          <div class="card-head">
+            <div class="file-name">Example – Summaries on a list of dicts</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+csv_text = """id,name,programme,exam_score,labs_attended
+1,Ana,CS,55,6
+2,Bob,CS,62,8
+3,Ciara,DS,71,7
+4,Dave,CS,48,3
+"""
+
+def load_students_from_text(text):
+    lines = text.splitlines()
+    if not lines:
+        return []
+
+    header = [name.strip() for name in lines[0].strip().split(",")]
+    students = []
+
+    for line in lines[1:]:
+        line = line.strip()
+        if not line:
+            continue
+
+        parts = [part.strip() for part in line.split(",")]
+        if len(parts) != len(header):
+            continue
+
+        row = dict(zip(header, parts))
+
+        if row.get("exam_score", "").isdigit():
+            row["exam_score"] = int(row["exam_score"])
+
+        if row.get("labs_attended", "").isdigit():
+            row["labs_attended"] = int(row["labs_attended"])
+
+        students.append(row)
+
+    return students
+
+def average_exam_score(students):
+    scores = [s["exam_score"] for s in students]
+    return sum(scores) / len(scores)
+
+def count_passing(students, threshold=60):
+    count = 0
+    for s in students:
+        if s["exam_score"] >= threshold:
+            count += 1
+    return count
+
+students = load_students_from_text(csv_text)
+
+print("Students:", students)
+print()
+
+print("Average exam score:", average_exam_score(students))
+print("Number passing (>= 60):", count_passing(students, threshold=60))
+print("Number passing (>= 70):", count_passing(students, threshold=70))
+</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="status">
+            <span class="dot"></span><span class="status-text">Ready</span>
+          </div>
+        </section>
+
+        <div class="box box-info">
+          <span class="box-title">Where we are in the module</span>
+          At the end of Week 2 you should be comfortable moving between three levels:
+          <ol>
+            <li>CSV file as plain text.</li>
+            <li>List of dictionaries in Python.</li>
+            <li>Simple summary functions that answer questions about the data.</li>
+          </ol>
+          In Week 3 we will start moving numeric columns into NumPy arrays so that calculations
+          become shorter and faster.
+        </div>
 
       </main>
     </div>
@@ -554,18 +703,13 @@ print("\nFinal Results:", results)
   <script src="../theme/legal.js"></script>
   <script src="../engine/engine.js"></script>
   <script>
-    // Dictionary Examples
-    initPlayground('ex-dict-basic');
-    initPlayground('ex-dict-loops');
-    initPlayground('ex-dict-modify');
-    initPlayground('ex-zip');
-    
-    // Function Examples
-    initPlayground('ex-func-basics');
-    initPlayground('ex-func-variable');
-    
-    // Final Demo
-    initPlayground('ex-final');
+    initPlayground('ex-read-patterns');
+    initPlayground('ex-strip-split');
+    initPlayground('ex-dict-basics');
+    initPlayground('ex-zip-helper');
+    initPlayground('ex-row-dict');
+    initPlayground('ex-loader');
+    initPlayground('ex-summaries');
 
     applyFooterText();
     applyLegalNotice();

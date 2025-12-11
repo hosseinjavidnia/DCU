@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Lab 4 | CSC1184</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+
+  <!-- Same stack as lectures -->
+  <script src="https://cdn.jsdelivr.net/pyodide/v0.23.4/full/pyodide.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/eclipse.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/python/python.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/matchbrackets.min.js"></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../theme/theme.css">
+</head>
+<body class="lecture">
+
+  <div class="wrap wide">
+    <nav>
+      <div class="nav-left">
+        <a href="../index.html" class="back-link">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path d="M19 12H5m7-7l-7 7 7 7"></path>
+          </svg>
+          Back to Course
+        </a>
+        <span style="color:var(--border)">|</span>
+        <h1>Lab 4 – pandas: Series &amp; DataFrames</h1>
+      </div>
+      <span class="badge-top">2 hours</span>
+    </nav>
+
+    <div class="lecture-wrap">
+      <aside class="lecture-sidebar">
+        <div class="toc-title">On this page</div>
+        <a href="#goals" class="toc-link active">Goals &amp; Schedule</a>
+        <a href="#setup" class="toc-link">Setup</a>
+        <a href="#ex0" class="toc-link">Ex 0 – Sanity Check &amp; Imports</a>
+        <a href="#ex1" class="toc-link">Ex 1 – Build a Tiny Table</a>
+        <a href="#ex2" class="toc-link">Ex 2 – First Look: head/info/describe</a>
+        <a href="#ex3" class="toc-link">Ex 3 – Selecting Columns</a>
+        <a href="#ex4" class="toc-link">Ex 4 – Selecting Rows (loc/iloc)</a>
+        <a href="#ex5" class="toc-link">Ex 5 – Filtering: Pass/Fail</a>
+        <a href="#ex6" class="toc-link">Ex 6 – Adding New Columns</a>
+        <a href="#ex7" class="toc-link">Ex 7 – Combining Filters</a>
+        <a href="#ex8" class="toc-link">Ex 8 – Grouped Averages</a>
+        <a href="#ex9" class="toc-link">Ex 9 – Mini Analysis Pipeline</a>
+      </aside>
+
+      <main class="lecture-content">
+
+        <!-- Goals -->
+        <section id="goals">
+          <h2>Goals &amp; Suggested Schedule</h2>
+          <div class="split-row">
+            <div class="split-card">
+              <h4>Learning goals</h4>
+              <ul>
+                <li>Practise building small <code>DataFrame</code> tables from Python data.</li>
+                <li>Use <code>head</code>, <code>info</code>, and <code>describe</code> to get a quick overview.</li>
+                <li>Select columns and rows using <code>[]</code>, <code>.loc</code>, and <code>.iloc</code>.</li>
+                <li>Filter rows with boolean conditions (e.g. “students who passed”).</li>
+                <li>Add simple derived columns (pass flags, normalised scores).</li>
+                <li>Do one small grouped average by programme.</li>
+              </ul>
+            </div>
+            <div class="split-card">
+              <h4>Suggested plan (2 hours)</h4>
+              <ul>
+                <li>Ex 0–3 – Warm-up (about 30–40 minutes).</li>
+                <li>Ex 4–6 – Core selection &amp; new columns (about 40 minutes).</li>
+                <li>Ex 7–8 – Combined filters &amp; grouped summaries (about 25 minutes).</li>
+                <li>Ex 9 – Mini pipeline (use remaining time).</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="box box-info">
+            <span class="box-title">Reminder: pandas imports &amp; aliases</span>
+            <p>
+              In this lab, we will follow the standard convention:
+            </p>
+            <pre class="pseudo-block">
+import pandas as pd
+            </pre>
+            <p>
+              Read <code>pd.DataFrame(...)</code> as “use the <code>DataFrame</code> function from pandas”.
+            </p>
+          </div>
+        </section>
+
+        <!-- Setup -->
+        <section id="setup">
+          <h2>Setup</h2>
+          <ul>
+            <li>Use the browser playground blocks below (same engine as lectures).</li>
+            <li>You can also mirror each exercise into a local <code>.py</code> file if you prefer stepping through code in your own editor.</li>
+          </ul>
+        </section>
+
+        <!-- Exercise 0 -->
+        <section id="ex0">
+          <h2>Ex 0 – Sanity Check &amp; Imports</h2>
+          <p><strong>Purpose.</strong> Make sure the playground runs Python and that the basic pandas import pattern is clear.</p>
+
+          <section class="card" id="ex-lab4-0">
+            <div class="card-head">
+              <div class="file-name">Ex 0 – Import pandas</div>
+              <div class="toolbar">
+                <button class="btn btn-primary run">Run ▸</button>
+                <button class="btn clear">Clear</button>
+                <button class="btn reset">Reset</button>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="lecture-stack">
+                <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+print("CSC1184 – Lab 4 ready")
+
+# TODO: Import pandas using the standard alias pd
+# import pandas as ...
+
+print("Imported pandas as pd?")
+</textarea>
+                </div>
+                <div class="output-pane">
+                  <div class="output-label">Terminal Output</div>
+                  <pre class="output-box" aria-live="polite"></pre>
+                </div>
+              </div>
+            </div>
+            <div class="status"><span class="dot"></span><span class="status-text">Ready</span></div>
+          </section>
+        </section>
+
+        <!-- Exercise 1 -->
+        <section id="ex1">
+          <h2>Ex 1 – Build a Tiny Table</h2>
+          <p>
+            <strong>What you’ll practise.</strong> Creating a small <code>DataFrame</code> from a <strong>dict-of-lists</strong>.  
+            <strong>Why it matters.</strong> This mirrors how real CSV columns look inside pandas.
+          </p>
+
+          <section class="card" id="ex-lab4-1">
+            <div class="card-head">
+              <div class="file-name">Ex 1 – DataFrame from Dict of Lists</div>
+              <div class="toolbar">
+                <button class="btn btn-primary run">Run ▸</button>
+                <button class="btn clear">Clear</button>
+                <button class="btn reset">Reset</button>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="lecture-stack">
+                <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+import pandas as pd
+
+# A tiny student table stored as a dict-of-lists
+__TODO__ = None
+
+data = {
+    "id": [1, 2, 3, 4],
+    "name": ["Ana", "Bob", "Ciara", "Dan"],
+    "programme": ["CS", "CS", "DS", "DS"],
+    "exam_score": [55, 62, 71, 48],
+}
+
+# TODO: Build a DataFrame from data and store in a variable named students
+students = __TODO__
+
+print("Students table:")
+print(students)
+
+# TODO: Print the shape and list of column names
+shape = __TODO__
+cols = __TODO__
+
+print("\nShape (rows, columns):", shape)
+print("Columns:", cols)
+</textarea>
+                </div>
+                <div class="output-pane">
+                  <div class="output-label">Terminal Output</div>
+                  <pre class="output-box" aria-live="polite"></pre>
+                </div>
+              </div>
+            </div>
+            <div class="status"><span class="dot"></span><span class="status-text">Ready</span></div>
+          </section>
+        </section>
+
+        <!-- Exercise 2 -->
+        <section id="ex2">
+          <h2>Ex 2 – First Look: head/info/describe</h2>
+          <p>
+            <strong>What you’ll practise.</strong> Running the standard “first look” methods on a DataFrame.  
+            <strong>Why it matters.</strong> These should become your reflex whenever you load a new dataset.
+          </p>
+
+          <section class="card" id="ex-lab4-2">
+            <div class="card-head">
+              <div class="file-name">Ex 2 – Overview Methods</div>
+              <div class="toolbar">
+                <button class="btn btn-primary run">Run ▸</button>
+                <button class="btn clear">Clear</button>
+                <button class="btn reset">Reset</button>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="lecture-stack">
+                <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+import pandas as pd
+
+data = {
+    "id": [1, 2, 3, 4, 5],
+    "name": ["Ana", "Bob", "Ciara", "Dan", "Ella"],
+    "programme": ["CS", "CS", "DS", "CS", "DS"],
+    "exam_score": [55, 62, 71, 48, 83],
+    "labs_attended": [6, 7, 5, 2, 8],
+}
+
+students = pd.DataFrame(data)
+
+print("HEAD (first rows):")
+# TODO: print the first few rows using head()
+__TODO__
+
+print("\nShape (rows, columns):")
+# TODO: print shape
+__TODO__
+
+print("\nINFO:")
+# TODO: show info()
+__TODO__
+
+print("\nDESCRIBE (numeric columns):")
+# TODO: show describe()
+__TODO__
+</textarea>
+                </div>
+                <div class="output-pane">
+                  <div class="output-label">Terminal Output</div>
+                  <pre class="output-box" aria-live="polite"></pre>
+                </div>
+              </div>
+            </div>
+            <div class="status"><span class="dot"></span><span class="status-text">Ready</span></div>
+          </section>
+        </section>
+
+        <!-- Exercise 3 -->
+        <section id="ex3">
+          <h2>Ex 3 – Selecting Columns</h2>
+          <p>
+            <strong>What you’ll practise.</strong> Selecting one column (Series) and multiple columns (DataFrame), then computing a basic summary.
+          </p>
+
+          <section class="card" id="ex-lab4-3">
+            <div class="card-head">
+              <div class="file-name">Ex 3 – Column Selection &amp; Mean</div>
+              <div class="toolbar">
+                <button class="btn btn-primary run">Run ▸</button>
+                <button class="btn clear">Clear</button>
+                <button class="btn reset">Reset</button>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="lecture-stack">
+                <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+import pandas as pd
+
+data = {
+    "id": [1, 2, 3, 4, 5],
+    "name": ["Ana", "Bob", "Ciara", "Dan", "Ella"],
+    "programme": ["CS", "CS", "DS", "CS", "DS"],
+    "exam_score": [55, 62, 71, 48, 83],
+    "labs_attended": [6, 7, 5, 2, 8],
+}
+
+students = pd.DataFrame(data)
+
+# TODO 1: Select the exam_score column as a Series and print it
+exam_scores = __TODO__
+print("Exam scores (Series):")
+print(exam_scores)
+
+# TODO 2: Select a smaller table with only name and exam_score
+name_and_score = __TODO__
+print("\nName and exam_score (DataFrame):")
+print(name_and_score)
+
+# TODO 3: Compute and print the average exam score using the Series
+avg_score = __TODO__
+print("\nAverage exam score:", avg_score)
+</textarea>
+                </div>
+                <div class="output-pane">
+                  <div class="output-label">Terminal Output</div>
+                  <pre class="output-box" aria-live="polite"></pre>
+                </div>
+              </div>
+            </div>
+            <div class="status"><span class="dot"></span><span class="status-text">Ready</span></div>
+          </section>
+        </section>
+
+        <!-- Exercise 4 -->
+        <section id="ex4">
+          <h2>Ex 4 – Selecting Rows (loc &amp; iloc)</h2>
+          <p>
+            <strong>What you’ll practise.</strong> Using <code>.iloc</code> (positions) and <code>.loc</code> (labels) to pick out rows and row ranges.
+          </p>
+
+          <section class="card" id="ex-lab4-4">
+            <div class="card-head">
+              <div class="file-name">Ex 4 – Row Selection</div>
+              <div class="toolbar">
+                <button class="btn btn-primary run">Run ▸</button>
+                <button class="btn clear">Clear</button>
+                <button class="btn reset">Reset</button>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="lecture-stack">
+                <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+import pandas as pd
+
+data = {
+    "id": [1, 2, 3, 4, 5],
+    "name": ["Ana", "Bob", "Ciara", "Dan", "Ella"],
+    "programme": ["CS", "CS", "DS", "CS", "DS"],
+    "exam_score": [55, 62, 71, 48, 83],
+    "labs_attended": [6, 7, 5, 2, 8],
+}
+
+students = pd.DataFrame(data)
+
+print("Full table:")
+print(students)
+
+# TODO 1: Use iloc to select the first 2 rows
+print("\nFirst two rows (iloc):")
+first_two = __TODO__
+print(first_two)
+
+# TODO 2: Use loc to select rows with labels 2..4 (inclusive)
+print("\nRows with labels 2..4 (loc):")
+two_to_four = __TODO__
+print(two_to_four)
+
+# TODO 3: Use loc to select rows with labels 1..3 and only the columns name and exam_score
+print("\nRows 1..3, columns name & exam_score (loc):")
+subset = __TODO__
+print(subset)
+</textarea>
+                </div>
+                <div class="output-pane">
+                  <div class="output-label">Terminal Output</div>
+                  <pre class="output-box" aria-live="polite"></pre>
+                </div>
+              </div>
+            </div>
+            <div class="status"><span class="dot"></span><span class="status-text">Ready</span></div>
+          </section>
+        </section>
+
+        <!-- Exercise 5 -->
+        <section id="ex5">
+          <h2>Ex 5 – Filtering: Pass/Fail</h2>
+          <p>
+            <strong>What you’ll practise.</strong> Creating a boolean mask from a condition and using it to filter rows.
+          </p>
+
+          <section class="card" id="ex-lab4-5">
+            <div class="card-head">
+              <div class="file-name">Ex 5 – Filter by Exam Score</div>
+              <div class="toolbar">
+                <button class="btn btn-primary run">Run ▸</button>
+                <button class="btn clear">Clear</button>
+                <button class="btn reset">Reset</button>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="lecture-stack">
+                <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+import pandas as pd
+
+data = {
+    "id": [1, 2, 3, 4, 5],
+    "name": ["Ana", "Bob", "Ciara", "Dan", "Ella"],
+    "programme": ["CS", "CS", "DS", "CS", "DS"],
+    "exam_score": [55, 62, 71, 48, 83],
+    "labs_attended": [6, 7, 5, 2, 8],
+}
+
+students = pd.DataFrame(data)
+
+threshold = 60
+
+# TODO 1: Build a boolean mask where exam_score >= threshold
+mask = __TODO__
+
+print("Mask (exam_score >= 60):")
+print(mask)
+
+# TODO 2: Use the mask to filter the table into a new DataFrame called passed
+passed = __TODO__
+
+print("\nStudents who passed:")
+print(passed)
+
+# TODO 3: Compute how many passed and the pass rate (%)
+num_passing = __TODO__
+num_total = __TODO__
+pass_rate = (num_passing / num_total) * 100
+
+print("\nPassing:", num_passing, "out of", num_total)
+print("Pass rate (%):", round(pass_rate, 1))
+</textarea>
+                </div>
+                <div class="output-pane">
+                  <div class="output-label">Terminal Output</div>
+                  <pre class="output-box" aria-live="polite"></pre>
+                </div>
+              </div>
+            </div>
+            <div class="status"><span class="dot"></span><span class="status-text">Ready</span></div>
+          </section>
+        </section>
+
+        <!-- Exercise 6 -->
+        <section id="ex6">
+          <h2>Ex 6 – Adding New Columns</h2>
+          <p>
+            <strong>What you’ll practise.</strong> Creating new columns from existing ones (pass flag and normalised scores).
+          </p>
+
+          <section class="card" id="ex-lab4-6">
+            <div class="card-head">
+              <div class="file-name">Ex 6 – Derived Columns</div>
+              <div class="toolbar">
+                <button class="btn btn-primary run">Run ▸</button>
+                <button class="btn clear">Clear</button>
+                <button class="btn reset">Reset</button>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="lecture-stack">
+                <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+import pandas as pd
+
+data = {
+    "id": [1, 2, 3, 4, 5],
+    "name": ["Ana", "Bob", "Ciara", "Dan", "Ella"],
+    "programme": ["CS", "CS", "DS", "CS", "DS"],
+    "exam_score": [55, 62, 71, 48, 83],
+    "labs_attended": [6, 7, 5, 2, 8],
+}
+
+students = pd.DataFrame(data)
+
+# TODO 1: Add a new boolean column "passed" (True if exam_score >= 60)
+students["passed"] = __TODO__
+
+# TODO 2: Compute the maximum exam_score
+max_score = __TODO__
+
+# TODO 3: Add a new column "score_normalised" = exam_score / max_score
+students["score_normalised"] = __TODO__
+
+print("Table with new columns:")
+print(students)
+
+print("\nAverage normalised score:", students["score_normalised"].mean())
+print("Number of students who passed:", students["passed"].sum())
+</textarea>
+                </div>
+                <div class="output-pane">
+                  <div class="output-label">Terminal Output</div>
+                  <pre class="output-box" aria-live="polite"></pre>
+                </div>
+              </div>
+            </div>
+            <div class="status"><span class="dot"></span><span class="status-text">Ready</span></div>
+          </section>
+        </section>
+
+        <!-- Exercise 7 -->
+        <section id="ex7">
+          <h2>Ex 7 – Combining Filters</h2>
+          <p>
+            <strong>What you’ll practise.</strong> Using two conditions together (programme and exam score) to narrow down rows.
+          </p>
+
+          <section class="card" id="ex-lab4-7">
+            <div class="card-head">
+              <div class="file-name">Ex 7 – CS Students Who Passed</div>
+              <div class="toolbar">
+                <button class="btn btn-primary run">Run ▸</button>
+                <button class="btn clear">Clear</button>
+                <button class="btn reset">Reset</button>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="lecture-stack">
+                <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+import pandas as pd
+
+data = {
+    "id": [1, 2, 3, 4, 5, 6],
+    "name": ["Ana", "Bob", "Ciara", "Dan", "Ella", "Farah"],
+    "programme": ["CS", "CS", "DS", "CS", "DS", "CS"],
+    "exam_score": [55, 62, 71, 48, 83, 66],
+    "labs_attended": [6, 7, 5, 2, 8, 4],
+}
+
+students = pd.DataFrame(data)
+
+# Condition 1: programme is CS
+cs_mask = __TODO__
+
+# Condition 2: exam_score >= 60
+pass_mask = __TODO__
+
+# TODO: Combine both masks with & to get CS students who passed
+cs_and_pass = __TODO__
+
+cs_passed = students[cs_and_pass]
+
+print("CS students who passed:")
+print(cs_passed)
+
+print("\nCount:", len(cs_passed))
+print("Average exam score (CS & passed):", cs_passed["exam_score"].mean())
+</textarea>
+                </div>
+                <div class="output-pane">
+                  <div class="output-label">Terminal Output</div>
+                  <pre class="output-box" aria-live="polite"></pre>
+                </div>
+              </div>
+            </div>
+            <div class="status"><span class="dot"></span><span class="status-text">Ready</span></div>
+          </section>
+        </section>
+
+        <!-- Exercise 8 -->
+        <section id="ex8">
+          <h2>Ex 8 – Grouped Averages by Programme</h2>
+          <p>
+            <strong>What you’ll practise.</strong> A gentle first use of <code>groupby</code> to calculate mean exam score by programme.
+          </p>
+
+          <div class="box box-info">
+            <span class="box-title">Reminder: rough idea of groupby</span>
+            <p>
+              <code>students.groupby("programme")["exam_score"].mean()</code> means:
+            </p>
+            <ul>
+              <li>Group rows that share the same <code>programme</code> value.</li>
+              <li>Within each group, take the <code>exam_score</code> column and compute the mean.</li>
+            </ul>
+          </div>
+
+          <section class="card" id="ex-lab4-8">
+            <div class="card-head">
+              <div class="file-name">Ex 8 – Average Score by Programme</div>
+              <div class="toolbar">
+                <button class="btn btn-primary run">Run ▸</button>
+                <button class="btn clear">Clear</button>
+                <button class="btn reset">Reset</button>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="lecture-stack">
+                <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+import pandas as pd
+
+data = {
+    "id": [1, 2, 3, 4, 5, 6],
+    "name": ["Ana", "Bob", "Ciara", "Dan", "Ella", "Farah"],
+    "programme": ["CS", "CS", "DS", "CS", "DS", "CS"],
+    "exam_score": [55, 62, 71, 48, 83, 66],
+    "labs_attended": [6, 7, 5, 2, 8, 4],
+}
+
+students = pd.DataFrame(data)
+
+print("Full table:")
+print(students)
+
+# TODO: Compute the average exam_score per programme using groupby
+avg_by_programme = __TODO__
+
+print("\nAverage exam score by programme:")
+print(avg_by_programme)
+</textarea>
+                </div>
+                <div class="output-pane">
+                  <div class="output-label">Terminal Output</div>
+                  <pre class="output-box" aria-live="polite"></pre>
+                </div>
+              </div>
+            </div>
+            <div class="status"><span class="dot"></span><span class="status-text">Ready</span></div>
+          </section>
+        </section>
+
+        <!-- Exercise 9 -->
+        <section id="ex9">
+          <h2>Ex 9 – Mini Analysis Pipeline</h2>
+          <p>
+            <strong>What you’ll practise.</strong> Putting pieces together: overview → filter → new column → simple insight.
+          </p>
+
+          <p>
+            Imagine this table came from <code>students.csv</code> via <code>pd.read_csv</code>. For the lab, we build it inline.
+          </p>
+
+          <section class="card" id="ex-lab4-9">
+            <div class="card-head">
+              <div class="file-name">Ex 9 – End-to-End Mini Analysis</div>
+              <div class="toolbar">
+                <button class="btn btn-primary run">Run ▸</button>
+                <button class="btn clear">Clear</button>
+                <button class="btn reset">Reset</button>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="lecture-stack">
+                <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+import pandas as pd
+
+data = {
+    "id": [1, 2, 3, 4, 5, 6, 7],
+    "name": ["Ana", "Bob", "Ciara", "Dan", "Ella", "Farah", "Gavin"],
+    "programme": ["CS", "CS", "DS", "CS", "DS", "CS", "DS"],
+    "exam_score": [55, 62, 71, 48, 83, 66, 59],
+    "labs_attended": [6, 7, 5, 2, 8, 4, 3],
+}
+
+students = pd.DataFrame(data)
+
+print("HEAD:")
+# TODO 1: Show the first few rows
+__TODO__
+
+# TODO 2: Add a pass flag (exam_score >= 60)
+students["passed"] = __TODO__
+
+# TODO 3: Filter to DS students only
+ds_students = __TODO__
+
+print("\nDS students:")
+print(ds_students)
+
+# TODO 4: For DS students, compute:
+# - average exam_score
+# - pass rate (%)
+avg_ds_score = __TODO__
+ds_pass_rate = __TODO__  # fraction True * 100
+
+print("\nAverage DS exam score:", round(avg_ds_score, 1))
+print("DS pass rate (%):", round(ds_pass_rate, 1))
+
+# TODO 5 (reflection, in comments):
+# In your own words, what did you just do with this table?
+# - what question were you answering?
+# - what is the main takeaway?
+</textarea>
+                </div>
+                <div class="output-pane">
+                  <div class="output-label">Terminal Output</div>
+                  <pre class="output-box" aria-live="polite"></pre>
+                </div>
+              </div>
+            </div>
+            <div class="status"><span class="dot"></span><span class="status-text">Ready</span></div>
+          </section>
+        </section>
+
+      </main>
+    </div>
+
+    <footer>
+      <p class="copyright"></p>
+      <div class="legal-notice"></div>
+    </footer>
+  </div>
+
+  <script src="../theme/footer.js"></script>
+  <script src="../theme/legal.js"></script>
+  <script src="../engine/engine.js"></script>
+  <script>
+    // Init all playground blocks
+    initPlayground('ex-lab4-0');
+    initPlayground('ex-lab4-1');
+    initPlayground('ex-lab4-2');
+    initPlayground('ex-lab4-3');
+    initPlayground('ex-lab4-4');
+    initPlayground('ex-lab4-5');
+    initPlayground('ex-lab4-6');
+    initPlayground('ex-lab4-7');
+    initPlayground('ex-lab4-8');
+    initPlayground('ex-lab4-9');
+
+    applyFooterText();
+    applyLegalNotice();
+  </script>
+</body>
+</html>

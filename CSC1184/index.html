@@ -35,14 +35,28 @@
       <a href="lectures/lecture1_f45gt674hg.html" class="module-card">
         <div class="card-top"><span class="badge lec">Lecture 1</span></div>
         <h3>Introduction & Data Analysis Mindset</h3>
-        <p>In Lecture 1, we set the scene: what “programming for data analysis” actually means, how a typical analysis workflow looks, and what tools you’ll use in this module.</p>
+        <p>In Lecture 1, we set the scene: what “programming for data analysis” means, how a typical analysis workflow looks, and warm up with small Python examples using lists and built-in functions.</p>
         <span class="arrow">Read Notes &rarr;</span>
       </a>
 
       <a href="lectures/" class="module-card" style="opacity: 0.6; pointer-events: none;">
         <div class="card-top"><span class="badge lec">Lecture 2</span></div>
-        <h3>Files, Dictionaries & Functions</h3>
-        <p>This week we upgrade to the real-world toolkit. We will cover loading external data from Files, organizing it effectively with Dictionaries, and encapsulating logic into reusable Functions.</p>
+        <h3>Files, CSV &amp; List-of-Dicts</h3>
+        <p>This week we move from hard-coded lists to data in files. We look at how CSVs are structured, how to read them safely with <code>with open(...)</code>, and how to turn rows into labelled dictionaries using <code>zip</code>. We finish by sketching a small reusable <code>load_data(...)</code> pattern.</p> 
+        <span class="arrow">Locked</span>
+      </a>
+
+      <a href="lectures/" class="module-card" style="opacity: 0.6; pointer-events: none;">
+        <div class="card-top"><span class="badge lec">Lecture 3</span></div>
+        <h3>NumPy Arrays &amp; Vectorised Operations</h3>
+        <p>We move from plain Python lists to NumPy arrays: creating arrays, understanding shape and dtype, using masks, and applying fast vectorised operations for summaries and simple simulations.</p>
+        <span class="arrow">Locked</span>
+      </a>
+
+      <a href="lectures/" class="module-card" style="opacity: 0.6; pointer-events: none;">
+        <div class="card-top"><span class="badge lec">Lecture 4</span></div>
+        <h3><code>pandas</code> DataFrames &amp; Table Operations</h3>
+        <p>Meet <code>pandas</code>, the main tool for working with tables: creating DataFrames, taking a quick first look (head/info/describe), selecting rows and columns, filtering, and adding simple derived columns.</p>
         <span class="arrow">Locked</span>
       </a>
 
@@ -53,16 +67,26 @@
       <a href="labs/" class="module-card" style="opacity: 0.6; pointer-events: none;">
         <div class="card-top"><span class="badge lab">Lab 1</span></div>
         <h3>Lists, Built-ins & Simple Loops</h3>
-        <p>Hands-on practice treating Python lists as tiny datasets using built-ins (len, sum, min, max) and simple loops for counts, cleaning.</p>
-        <span class="arrow">Locked</span>
+        <p>Hands-on practice treating Python lists as tiny datasets using built-ins (len, sum, min, max) and simple loops for counting, cleaning, simple transforms, and basic smoothing.</p>        <span class="arrow">Locked</span>
       </a>
       <a href="labs/" class="module-card" style="opacity: 0.6; pointer-events: none;">
         <div class="card-top"><span class="badge lab">Lab 2</span></div>
-        <h3>Data Structures & File Loading</h3>
-        <p>Build a reusable CSV data loader using Python dictionaries and functions to process real-world datasets in your local environment.</p>
+        <h3>Dictionaries &amp; File Loading</h3>
+        <p>Practice building dictionaries from lists, then write a small <code>load_data(...)</code> function that reads a CSV file, uses <code>zip</code> to create row dictionaries, and handles simple “messy data” cases without crashing.</p>
         <span class="arrow">Locked</span>
       </a>
-
+      <a href="labs/" class="module-card" style="opacity: 0.6; pointer-events: none;">
+        <div class="card-top"><span class="badge lab">Lab 3</span></div>
+        <h3>NumPy Practice: Masks &amp; Simulation</h3>
+        <p>Hands-on practice with NumPy arrays: converting from lists and dicts, using boolean masks, comparing groups, and running a tiny simulation of exam scores.</p>
+        <span class="arrow">Locked</span>
+      </a>
+      <a href="labs/" class="module-card" style="opacity: 0.6; pointer-events: none;">
+        <div class="card-top"><span class="badge lab">Lab 4</span></div>
+        <h3><code>pandas</code>: Filtering &amp; Summaries</h3>
+        <p>Hands-on practice with <code>pandas</code>: build a small student table, explore it with head/info/describe, select rows and columns, filter by conditions, create new columns, and compute simple grouped averages.</p>
+        <span class="arrow">Locked</span>
+      </a>
     </div>
 
     <footer>
