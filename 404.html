@@ -55,18 +55,31 @@
           secondaryLabel: "Python Playground"
         }
       };
+      const defaultData = {
+        title: "DCU Course Sites",
+        home: "/DCU/",
+        secondary: "https://github.com/hosseinjavidnia/DCU",
+        secondaryLabel: "View repository"
+      };
       const parts = location.pathname.split("/").filter(Boolean);
-      const course = parts[1];
-      const data = courseData[course] || courseData.CSC1014;
+      const course = courseData[parts[1]] ? parts[1] : null;
+      const data = course ? courseData[course] : defaultData;
       document.title = `Page Not Found | ${data.title}`;
       const titleEl = document.getElementById("course-title");
       const homeLink = document.getElementById("home-link");
       const secondaryLink = document.getElementById("secondary-link");
+      const lead = document.querySelector(".lead");
       if (titleEl) titleEl.textContent = data.title;
-      if (homeLink) homeLink.href = data.home;
+      if (homeLink) {
+        homeLink.href = data.home;
+        homeLink.textContent = course ? "Back to course home" : "Browse courses";
+      }
       if (secondaryLink) {
         secondaryLink.href = data.secondary;
         secondaryLink.textContent = data.secondaryLabel;
+      }
+      if (!course && lead) {
+        lead.textContent = "We couldn't match that path to a course. Use the links below to return to the site root or repository.";
       }
     })();
   </script>
