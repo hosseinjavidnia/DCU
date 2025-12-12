@@ -151,6 +151,7 @@ nav {
   font-size: 13px; font-weight: 500; transition: all 0.15s ease;
   display: flex; align-items: center; gap: 6px;
 }
+.btn svg { width: 16px; height: 16px; margin-right: 8px; }
 .btn:hover { background: #f1f5f9; border-color: #cbd5e1; }
 .btn:active { transform: translateY(1px); }
 .btn-primary { background: var(--brand); color: #fff; border-color: var(--brand); }
@@ -289,6 +290,7 @@ footer {
 .split-row { display: flex; gap: 24px; flex-wrap: wrap; margin: 20px 0; }
 .split-card { background: #f8f9fa; border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; flex: 1 1 260px; }
 .split-card.issue { color: #c0392b; border-color: #f5c7c2; background: #fff5f3; }
+.download-group { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 15px; }
 
 /* --- INTRO GOALS (Keep these) --- */
 .intro-goals { text-align: left; }

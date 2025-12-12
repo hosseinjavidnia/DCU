@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Lab 5 | CSC1184</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+
+  <!-- Pyodide + CodeMirror (same stack as other labs) -->
+  <script src="https://cdn.jsdelivr.net/pyodide/v0.23.4/full/pyodide.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/eclipse.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/python/python.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/matchbrackets.min.js"></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../theme/theme.css">
+</head>
+<body class="lecture">
+
+  <div class="wrap wide">
+    
+    <nav>
+      <div class="nav-left">
+        <a href="../index.html" class="back-link">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path d="M19 12H5m7-7l-7 7 7 7"></path>
+          </svg>
+          Back to Course
+        </a>
+        <span style="color:var(--border)">|</span>
+        <h1>Week 5 Lab</h1>
+      </div>
+      <span class="badge-top">Lab Exercise</span>
+    </nav>
+
+    <div class="lecture-wrap">
+      
+      <aside class="lecture-sidebar">
+        <div class="toc-title">Lab Menu</div>
+        <a href="#goals" class="toc-link active">1. Goals & Setup</a>
+        <a href="#warmup" class="toc-link">2. Categorical Counts</a>
+        <a href="#groups" class="toc-link">3. Grouped Aggregations</a>
+        <a href="#pipeline" class="toc-link">4. Filter → Group → Sort</a>
+        <a href="#joins-browser" class="toc-link">5. Joins (Browser)</a>
+        <a href="#local" class="toc-link">6. Local CSV Analysis</a>
+      </aside>
+
+      <main class="lecture-content">
+        
+        <!-- Goals -->
+        <section id="goals">
+          <h2>1. Goals &amp; Setup</h2>
+          <div class="split-row">
+            <div class="split-card">
+              <h4>Learning goals</h4>
+              <ul>
+                <li>Use <code>value_counts</code> for categorical summaries.</li>
+                <li>Use <code>groupby</code> + <code>agg</code> for grouped summaries.</li>
+                <li>Use <code>reset_index</code> and <code>sort_values</code> to tidy group results.</li>
+                <li>Use <code>pd.merge</code> to join related tables on a key.</li>
+                <li>Chain these into a small “load → join → group → summarise → interpret” pipeline.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="box box-info">
+            <span class="box-title">Browser vs Local</span>
+            <ul>
+              <li>Exercises 1–6 run in the browser (same engine as lectures).</li>
+              <li>Exercises 7–9 are designed for your local Python environment with real CSV files.</li>
+            </ul>
+          </div>
+
+          <div class="box box-warn">
+            <span class="box-title">Local data (for Exercises 7–9)</span>
+            <p>
+              Download these CSV files and save them into a folder named <code>lab5_data</code> on your computer.
+            </p>
+            <div class="download-group">
+              <a href="lab_data/customers.csv" class="btn btn-primary">
+                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                </svg>
+                customers.csv
+              </a>
+              <a href="lab_data/orders.csv" class="btn btn-primary">
+                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                </svg>
+                orders.csv
+              </a>
+              <a href="lab_data/order_items.csv" class="btn btn-primary">
+                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                </svg>
+                order_items.csv
+              </a>
+            </div>
+          </div>
+        </section>
+
+        <!-- Warm-up -->
+        <section id="warmup">
+          <h2>2. Categorical Counts</h2>
+          <p>
+            <strong>What you’ll practise.</strong> Using <code>value_counts</code> and <code>normalize=True</code> to summarise categorical variables.  
+            <strong>Why it matters.</strong> This is the standard way to answer “how many in each category?”.
+          </p>
+
+          <section class="card" id="lab5-ex1">
+            <div class="card-head">
+              <div class="file-name">Ex 1 – Programme Frequency with value_counts</div>
+              <div class="toolbar">
+                <button class="btn btn-primary run">Run ▸</button>
+                <button class="btn clear">Clear</button>
+                <button class="btn reset">Reset</button>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="lecture-stack">
+                <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+import pandas as pd
+
+__TODO__ = None
+
+data = {
+    "student_id": [101, 102, 103, 104, 105, 106, 107],
+    "programme":  ["CS", "CS", "DS", "IT", "DS", "CS", "IT"]
+}
+
+df = pd.DataFrame(data)
+print(df)
+
+# TODO 1: Use value_counts() to count how many students are in each programme.
+prog_counts = __TODO__
+
+print("\nCounts per programme:")
+print(prog_counts)
+
+# TODO 2: Use value_counts(normalize=True) to get relative frequencies.
+prog_props = __TODO__
+
+print("\nProportions per programme (fraction):")
+print(prog_props)
+
+# TODO 3: Multiply by 100 and round to 1 decimal place to get percentages.
+prog_percent = __TODO__
+
+print("\nProportions per programme (%):")
+print(prog_percent)
+
+# TODO 4: Print one line that describes the most common programme in words.
+# Hint: prog_counts.idxmax() gives the label with the highest count.
+</textarea>
+                </div>
+                <div class="output-pane">
+                  <div class="output-label">Output</div>
+                  <pre class="output-box" aria-live="polite"></pre>
+                </div>
+              </div>
+            </div>
+            <div class="status"><span class="dot"></span><span class="status-text">Ready</span></div>
+          </section>
+        </section>
+
+        <!-- Grouped Aggregations -->
+        <section id="groups">
+          <h2>3. Grouped Aggregations</h2>
+
+          <h3>Ex 2 – Mean and Count per Country</h3>
+          <p>
+            <strong>What you’ll practise.</strong> Basic <code>groupby</code> with a single key and multiple aggregations.  
+            <strong>Why it matters.</strong> This is the workhorse pattern for questions like “average score per programme”.
+          </p>
+
+          <section class="card" id="lab5-ex2">
+            <div class="card-head">
+              <div class="file-name">Ex 2 – Groupby Country</div>
+              <div class="toolbar">
+                <button class="btn btn-primary run">Run ▸</button>
+                <button class="btn clear">Clear</button>
+                <button class="btn reset">Reset</button>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="lecture-stack">
+                <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+import pandas as pd
+
+__TODO__ = None
+
+orders = pd.DataFrame({
+    "order_id":   [1, 2, 3, 4, 5, 6, 7],
+    "country":    ["IE", "IE", "UK", "DE", "UK", "IE", "DE"],
+    "order_value":[50.0, 30.0, 80.0, 25.0, 60.0, 120.0, 40.0]
+})
+
+print(orders)
+
+# TODO 1: Group by country and compute mean and count of order_value.
+grouped = __TODO__
+
+print("\nGrouped result (index is country):")
+print(grouped)
+
+# TODO 2: Reset the index so that country becomes a column again.
+grouped_reset = __TODO__
+
+print("\nAfter reset_index:")
+print(grouped_reset)
+
+# TODO 3: Sort by mean descending to see the highest average order value first.
+sorted_by_mean = __TODO__
+
+print("\nSorted by mean order value (descending):")
+print(sorted_by_mean)
+
+# TODO 4: Print one sentence describing which country has the highest average order value.
+</textarea>
+                </div>
+                <div class="output-pane">
+                  <div class="output-label">Output</div>
+                  <pre class="output-box" aria-live="polite"></pre>
+                </div>
+              </div>
+            </div>
+            <div class="status"><span class="dot"></span><span class="status-text">Ready</span></div>
+          </section>
+
+          <h3>Ex 3 – Grouping by Two Keys</h3>
+          <p>
+            <strong>What you’ll practise.</strong> <code>groupby</code> with multiple columns and reading the resulting table.  
+            <strong>Why it matters.</strong> Many real questions are “per country and channel” or “per year and programme”.
+          </p>
+
+          <section class="card" id="lab5-ex3">
+            <div class="card-head">
+              <div class="file-name">Ex 3 – Country &amp; Channel</div>
+              <div class="toolbar">
+                <button class="btn btn-primary run">Run ▸</button>
+                <button class="btn clear">Clear</button>
+                <button class="btn reset">Reset</button>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="lecture-stack">
+                <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+import pandas as pd
+
+__TODO__ = None
+
+orders = pd.DataFrame({
+    "order_id":   [1, 2, 3, 4, 5, 6, 7, 8],
+    "country":    ["IE", "IE", "UK", "DE", "UK", "IE", "DE", "IE"],
+    "channel":    ["online", "store", "online", "store", "online", "online", "store", "store"],
+    "order_value":[50.0, 30.0, 80.0, 25.0, 60.0, 120.0, 40.0, 70.0]
+})
+
+print(orders)
+
+# TODO 1: Group by both country and channel, aggregating order_value with mean and count.
+grouped = __TODO__
+
+print("\nGrouped by country + channel:")
+print(grouped)
+
+# TODO 2: Reset the index so that country and channel become columns.
+grouped_reset = __TODO__
+
+print("\nAfter reset_index:")
+print(grouped_reset)
+
+# TODO 3: Sort by country then by channel.
+sorted_result = __TODO__
+
+print("\nSorted by country, channel:")
+print(sorted_result)
+
+# TODO 4: Pick one row and explain in a comment what its numbers mean in plain English.
+</textarea>
+                </div>
+                <div class="output-pane">
+                  <div class="output-label">Output</div>
+                  <pre class="output-box" aria-live="polite"></pre>
+                </div>
+              </div>
+            </div>
+            <div class="status"><span class="dot"></span><span class="status-text">Ready</span></div>
+          </section>
+        </section>
+
+        <!-- Filter → Group → Sort -->
+        <section id="pipeline">
+          <h2>4. Filter → Group → Sort</h2>
+          <p>
+            <strong>What you’ll practise.</strong> Applying a typical mini-pipeline: filter rows, group, aggregate, sort.  
+            <strong>Why it matters.</strong> This pattern shows up constantly in real analyses.
+          </p>
+
+          <section class="card" id="lab5-ex4">
+            <div class="card-head">
+              <div class="file-name">Ex 4 – Completed Orders by Country</div>
+              <div class="toolbar">
+                <button class="btn btn-primary run">Run ▸</button>
+                <button class="btn clear">Clear</button>
+                <button class="btn reset">Reset</button>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="lecture-stack">
+                <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+import pandas as pd
+
+__TODO__ = None
+
+orders = pd.DataFrame({
+    "order_id":   [1, 2, 3, 4, 5, 6, 7, 8],
+    "country":    ["IE", "IE", "UK", "DE", "UK", "IE", "DE", "IE"],
+    "status":     ["completed", "cancelled", "completed", "completed", "returned", "completed", "completed", "completed"],
+    "order_value":[50.0, 30.0, 80.0, 25.0, 60.0, 120.0, 40.0, 70.0]
+})
+
+print(orders)
+
+# TODO 1: Filter to keep only rows where status == "completed".
+completed = __TODO__
+
+print("\nCompleted orders only:")
+print(completed)
+
+# TODO 2: Group the completed orders by country and compute:
+# - total revenue (sum of order_value)
+# - number of completed orders (count)
+grouped = __TODO__
+
+print("\nCompleted orders by country:")
+print(grouped)
+
+# TODO 3: Reset index and sort by total revenue descending.
+grouped_reset = __TODO__
+sorted_revenue = __TODO__
+
+print("\nSorted by total completed revenue:")
+print(sorted_revenue)
+
+# TODO 4: Print a short summary line identifying the top country by completed revenue.
+</textarea>
+                </div>
+                <div class="output-pane">
+                  <div class="output-label">Output</div>
+                  <pre class="output-box" aria-live="polite"></pre>
+                </div>
+              </div>
+            </div>
+            <div class="status"><span class="dot"></span><span class="status-text">Ready</span></div>
+          </section>
+        </section>
+
+        <!-- Joins in Browser -->
+        <section id="joins-browser">
+          <h2>5. Joins (Browser)</h2>
+
+          <h3>Ex 5 – Simple Customer–Order Join</h3>
+          <p>
+            <strong>What you’ll practise.</strong> A basic <code>pd.merge</code> with <code>how="inner"</code> and <code>how="left"</code>.  
+            <strong>Why it matters.</strong> Most interesting datasets are split across multiple tables.
+          </p>
+
+          <section class="card" id="lab5-ex5">
+            <div class="card-head">
+              <div class="file-name">Ex 5 – Customers &amp; Orders Join</div>
+              <div class="toolbar">
+                <button class="btn btn-primary run">Run ▸</button>
+                <button class="btn clear">Clear</button>
+                <button class="btn reset">Reset</button>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="lecture-stack">
+                <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+import pandas as pd
+
+__TODO__ = None
+
+customers = pd.DataFrame({
+    "customer_id": [1, 2, 3, 4],
+    "name":        ["Alice", "Bob", "Ciara", "Dan"],
+    "country":     ["IE", "UK", "IE", "DE"]
+})
+
+orders = pd.DataFrame({
+    "order_id":    [101, 102, 103, 104, 105],
+    "customer_id": [1, 1, 2, 4, 5],     # note: customer_id 5 has no row in customers
+    "order_value": [50.0, 80.0, 25.0, 40.0, 60.0]
+})
+
+print("Customers:")
+print(customers)
+print("\nOrders:")
+print(orders)
+
+# TODO 1: Inner join on customer_id (only matching ids).
+inner_join = __TODO__
+
+print("\nInner join result:")
+print(inner_join)
+
+# TODO 2: Left join from orders to customers (keep all orders).
+left_join = __TODO__
+
+print("\nLeft join result:")
+print(left_join)
+
+# TODO 3: In a comment, explain the difference between the inner and left join
+# for the order with customer_id 5.
+</textarea>
+                </div>
+                <div class="output-pane">
+                  <div class="output-label">Output</div>
+                  <pre class="output-box" aria-live="polite"></pre>
+                </div>
+              </div>
+            </div>
+            <div class="status"><span class="dot"></span><span class="status-text">Ready</span></div>
+          </section>
+
+          <h3>Ex 6 – Orders, Products &amp; Line Totals</h3>
+          <p>
+            <strong>What you’ll practise.</strong> Joining an order lines table to a products table and creating a derived column.  
+            <strong>Why it matters.</strong> “Price × quantity” is a classic pattern in transactional datasets.
+          </p>
+
+          <section class="card" id="lab5-ex6">
+            <div class="card-head">
+              <div class="file-name">Ex 6 – Product Join &amp; Revenue</div>
+              <div class="toolbar">
+                <button class="btn btn-primary run">Run ▸</button>
+                <button class="btn clear">Clear</button>
+                <button class="btn reset">Reset</button>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="lecture-stack">
+                <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+import pandas as pd
+
+__TODO__ = None
+
+order_items = pd.DataFrame({
+    "order_id":   [101, 101, 102, 103, 104],
+    "product_id": [10, 11, 10, 12, 11],
+    "quantity":   [1, 2, 1, 3, 1]
+})
+
+products = pd.DataFrame({
+    "product_id":   [10, 11, 12],
+    "product_name": ["Laptop", "Mouse", "Keyboard"],
+    "price":        [1200.0, 25.0, 45.0]
+})
+
+print("Order items:")
+print(order_items)
+print("\nProducts:")
+print(products)
+
+# TODO 1: Merge order_items with products on product_id.
+items_with_price = __TODO__
+
+print("\nOrder items with price:")
+print(items_with_price)
+
+# TODO 2: Create a new column 'line_total' = price * quantity.
+items_with_price["line_total"] = __TODO__
+
+print("\nWith line_total:")
+print(items_with_price)
+
+# TODO 3: Group by product_name and compute total revenue for each product.
+product_revenue = __TODO__
+
+print("\nTotal revenue by product:")
+print(product_revenue)
+
+# TODO 4: Print one line describing which product brought in the most revenue.
+</textarea>
+                </div>
+                <div class="output-pane">
+                  <div class="output-label">Output</div>
+                  <pre class="output-box" aria-live="polite"></pre>
+                </div>
+              </div>
+            </div>
+            <div class="status"><span class="dot"></span><span class="status-text">Ready</span></div>
+          </section>
+        </section>
+
+        <!-- Local work -->
+        <section id="local">
+          <h2>6. Local CSV Analysis (Exercises 7–9)</h2>
+          <p>
+            For the remaining exercises, you will switch to your local Python environment (VS Code / IDE) and use the CSV
+            files you downloaded into <code>lab5_data</code>.
+          </p>
+
+          <div class="box box-info">
+            <span class="box-title">Local setup reminder</span>
+<pre class="pseudo-block">
+# In your local folder (e.g. lab5_data/analysis_lab5.py)
+
+import pandas as pd
+
+customers = pd.read_csv("customers.csv")
+orders = pd.read_csv("orders.csv")
+order_items = pd.read_csv("order_items.csv")
+
+print(customers.head())
+print(orders.head())
+print(order_items.head())
+</pre>
+          </div>
+
+          <h3>Ex 7 – Total Spend per Customer</h3>
+          <p>
+            <strong>Goal.</strong> Join customers and orders, then compute how much each customer has spent in total.
+          </p>
+
+          <div class="box box-warn">
+            <span class="box-title">Task specification</span>
+<pre class="pseudo-block">
+# 1. Read customers.csv and orders.csv using pd.read_csv.
+#    Inspect them with head() and info().
+
+# 2. Use pd.merge to join orders with customers on "customer_id".
+#    Choose an appropriate 'how' (inner is fine).
+
+# 3. Group by customer_id (and optionally name) and compute:
+#    - total_spend = sum of order_value
+#    - num_orders  = count of orders
+
+# 4. Sort by total_spend descending and print the top 5 customers.
+</pre>
+          </div>
+
+          <h3>Ex 8 – Revenue per Country</h3>
+          <p>
+            <strong>Goal.</strong> Use the joined data to see which countries bring the most revenue.
+          </p>
+
+          <div class="box box-info">
+            <span class="box-title">Task specification</span>
+<pre class="pseudo-block">
+# 1. Starting from your joined orders+customers DataFrame:
+
+# 2. Group by country and compute:
+#    - total_revenue = sum of order_value
+#    - avg_order     = mean of order_value
+#    - num_orders    = count of order_value
+
+# 3. Reset the index and sort by total_revenue descending.
+
+# 4. Print the table and write 1–2 short print(...) statements:
+#    - Which country has the highest revenue?
+#    - Roughly how much more than the second country?
+</pre>
+          </div>
+
+          <h3>Ex 9 – Mini Report (Text)</h3>
+          <p>
+            <strong>Goal.</strong> Practise turning group results into a short narrative.
+          </p>
+
+          <div class="box box-info">
+            <span class="box-title">Task specification</span>
+<pre class="pseudo-block">
+# At the end of your script, add a short "report" via print statements.
+
+# For example:
+# print("Top customer:", ...)
+# print("They placed", ..., "orders with total spend of", ...)
+
+# print("Top country:", ...)
+# print("It accounts for about", ..., "% of total revenue in this dataset.")
+
+# Keep it short but make sure a reader who cannot see the raw data
+# could still understand your key findings.
+</pre>
+          </div>
+        </section>
+
+      </main>
+    </div>
+
+    <footer>
+      <p class="copyright"></p>
+      <div class="legal-notice"></div>
+    </footer>
+
+  </div>
+
+  <script src="../theme/footer.js"></script>
+  <script src="../theme/legal.js"></script>
+  <script src="../engine/engine.js"></script>
+  <script>
+    // Init browser playground blocks
+    initPlayground('lab5-ex1');
+    initPlayground('lab5-ex2');
+    initPlayground('lab5-ex3');
+    initPlayground('lab5-ex4');
+    initPlayground('lab5-ex5');
+    initPlayground('lab5-ex6');
+
+    applyFooterText();
+    applyLegalNotice();
+  </script>
+</body>
+</html>

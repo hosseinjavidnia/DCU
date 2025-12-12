@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Lecture 5 | CSC1184</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+
+  <!-- Pyodide + CodeMirror (same stack as other lectures) -->
+  <script src="https://cdn.jsdelivr.net/pyodide/v0.23.4/full/pyodide.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/eclipse.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/python/python.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/matchbrackets.min.js"></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../theme/theme.css">
+</head>
+<body class="lecture">
+
+  <div class="wrap wide">
+    
+    <nav>
+      <div class="nav-left">
+        <a href="../index.html" class="back-link">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path d="M19 12H5m7-7l-7 7 7 7"></path>
+          </svg>
+          Back to Course
+        </a>
+        <span style="color:var(--border)">|</span>
+        <h1>Week 5</h1>
+      </div>
+      <span class="badge-top">Lecture Note</span>
+    </nav>
+
+    <div class="lecture-wrap">
+      
+      <aside class="lecture-sidebar">
+        <div class="toc-title">On this page</div>
+        <a href="#intro" class="toc-link active">Introduction</a>
+        <a href="#cats" class="toc-link">1. Categorical Summaries</a>
+        <a href="#groupby" class="toc-link">2. Grouped Aggregations</a>
+        <a href="#pipeline" class="toc-link">3. Mini Pipeline</a>
+        <a href="#joins-concept" class="toc-link">4. Joins – Concept</a>
+        <a href="#joins-pandas" class="toc-link">5. Joins in pandas</a>
+        <a href="#join-groupby" class="toc-link">6. Join + Groupby Case Study</a>
+        <a href="#recap" class="toc-link">7. Recap &amp; Lab Link</a>
+      </aside>
+
+      <main class="lecture-content">
+        
+        <!-- INTRO -->
+        <header id="intro">
+          <h1>Week 5 – Grouped Aggregations &amp; Joins</h1>
+
+          <p class="lede">
+            In Week 4 you learned how to load a table into a pandas <code>DataFrame</code>, take a quick look at it, 
+            and filter rows and columns. In Week 5 we move from “row-level thinking” to 
+            <strong>group-level thinking</strong>: questions like “average score per programme” or 
+            “total sales per product”. We also meet <strong>joins</strong>, which let us combine information 
+            from multiple tables.
+          </p>
+
+          <div class="callout callout-goal">
+            <span class="callout-title">By the end of this lecture, you should be able to:</span>
+            <ul>
+              <li>Use <code>value_counts</code> to summarise how often each category appears.</li>
+              <li>Use <code>groupby</code> + <code>agg</code> to compute grouped summaries (e.g. average score per programme).</li>
+              <li>Explain at a picture level what a table join does and why it is useful.</li>
+              <li>Use <code>pd.merge</code> to join two tables on a key.</li>
+              <li>Combine loading → joining → grouping into a short analysis pipeline.</li>
+            </ul>
+          </div>
+
+          <div class="box box-info">
+            <span class="box-title">pandas functions used in this lecture</span>
+            <ul>
+              <li><code>Series.value_counts()</code> – counts how many times each category appears in a column.</li>
+              <li><code>DataFrame.groupby(keys)</code> – groups rows that share the same key(s) so we can compute per-group summaries.</li>
+              <li><code>.agg(functions)</code> – applies one or more summary functions (like <code>"mean"</code>, <code>"count"</code>) to each group.</li>
+              <li><code>DataFrame.reset_index()</code> – turns group labels (index) back into normal columns.</li>
+              <li><code>DataFrame.sort_values(col)</code> – sorts the table by one or more columns.</li>
+              <li><code>pd.merge(left, right, on=..., how=...)</code> – joins two DataFrames on matching key values.</li>
+            </ul>
+          </div>
+        </header>
+
+        <!-- 1. CATEGORICAL SUMMARIES -->
+        <h2 id="cats">1. Categorical Summaries with <code>value_counts</code></h2>
+
+        <p>
+          Many questions in data analysis involve categories rather than numbers. For example:
+        </p>
+        <ul>
+          <li>“How many students are in each programme?”</li>
+          <li>“What proportion of orders are in each status (pending/shipped/cancelled)?”</li>
+        </ul>
+
+        <p>
+          In pandas, a single column is represented as a <code>Series</code>. 
+          To build a frequency table for that column, we use 
+          <strong><code>Series.value_counts()</code></strong>:
+        </p>
+        <ul>
+          <li><code>df["programme"].value_counts()</code> – returns counts for each programme.</li>
+          <li><code>df["programme"].value_counts(normalize=True)</code> – returns proportions (fractions) instead of counts.</li>
+        </ul>
+
+        <div class="box box-info">
+          <span class="box-title">What <code>value_counts</code> does</span>
+          <p>
+            <code>value_counts</code> looks at all the values in a column and returns a new Series where:
+          </p>
+          <ul>
+            <li>the index labels are the distinct values (e.g. programme names), and</li>
+            <li>the values are how often each one appears.</li>
+          </ul>
+        </div>
+
+        <section class="card" id="ex-5-1">
+          <div class="card-head">
+            <div class="file-name">Example 1 – Frequency &amp; Proportion by Programme</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+import pandas as pd
+
+# Tiny student table: each row = one student
+data = {
+    "student_id": [1, 2, 3, 4, 5, 6, 7],
+    "programme":  ["CS", "CS", "DS", "CS", "DS", "IT", "IT"],
+    "exam_score": [60, 72, 80, 55, 68, 49, 90],
+}
+students = pd.DataFrame(data)
+
+print("Students table:")
+print(students)
+
+print("\nHow many students per programme?")
+counts = students["programme"].value_counts()
+print(counts)
+
+print("\nWhat proportion per programme?")
+proportions = students["programme"].value_counts(normalize=True)
+print(proportions)
+
+# Turn proportions into percentages
+print("\nAs percentages:")
+print((proportions * 100).round(1))
+</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="status">
+            <span class="dot"></span><span class="status-text">Ready</span>
+          </div>
+        </section>
+
+        <!-- 2. GROUPED AGGREGATIONS -->
+        <h2 id="groupby">2. Grouped Aggregations with <code>groupby</code></h2>
+
+        <p>
+          Now suppose we want questions like:
+        </p>
+        <ul>
+          <li>“What is the <strong>average exam score per programme</strong>?”</li>
+          <li>“How many students are in each programme, and what is their mean score?”</li>
+        </ul>
+
+        <p>
+          For these, we use the <strong>split–apply–combine</strong> pattern:
+        </p>
+        <ol>
+          <li><strong>Split</strong> the table into groups (by programme).</li>
+          <li><strong>Apply</strong> a summary function (mean, count, etc.) to each group.</li>
+          <li><strong>Combine</strong> the results into a new, smaller table.</li>
+        </ol>
+
+        <p>
+          In pandas this is done with <code>DataFrame.groupby(...)</code>:
+        </p>
+        <ul>
+          <li><code>students.groupby("programme")["exam_score"].mean()</code> – mean score per programme.</li>
+          <li><code>students.groupby("programme")["exam_score"].agg(["mean", "count"])</code> – both mean and count.</li>
+        </ul>
+
+        <div class="box box-info">
+          <span class="box-title"><code>groupby</code> and <code>agg</code> – what they do</span>
+          <ul>
+            <li><code>DataFrame.groupby(keys)</code> – creates a “grouped” object. It does not compute anything yet; it just knows how rows are split into groups.</li>
+            <li><code>grouped["column"].mean()</code> – computes the mean of that column for each group.</li>
+            <li><code>grouped["column"].agg(["mean", "count"])</code> – computes multiple summaries (mean and count) at once for each group.</li>
+          </ul>
+        </div>
+
+        <section class="card" id="ex-5-2">
+          <div class="card-head">
+            <div class="file-name">Example 2 – Average Score per Programme</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+import pandas as pd
+
+data = {
+    "student_id": [1, 2, 3, 4, 5, 6, 7],
+    "programme":  ["CS", "CS", "DS", "CS", "DS", "IT", "IT"],
+    "exam_score": [60, 72, 80, 55, 68, 49, 90],
+}
+students = pd.DataFrame(data)
+
+print("Students table:")
+print(students)
+
+# Average exam_score per programme
+grouped_mean = students.groupby("programme")["exam_score"].mean()
+print("\nAverage score per programme:")
+print(grouped_mean)
+
+# Mean and count together
+grouped_stats = students.groupby("programme")["exam_score"].agg(["mean", "count"])
+print("\nMean and count per programme:")
+print(grouped_stats)
+
+# Reset index to turn 'programme' back into a normal column
+print("\nAs a normal DataFrame (after reset_index):")
+grouped_stats_reset = grouped_stats.reset_index()
+print(grouped_stats_reset)
+</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="status">
+            <span class="dot"></span><span class="status-text">Ready</span>
+          </div>
+        </section>
+
+        <div class="box box-info">
+          <span class="box-title">What <code>reset_index</code> does</span>
+          <p>
+            After a <code>groupby</code>, the group labels (like programme names) become the index of the result. 
+            <code>.reset_index()</code> moves those labels back into normal columns and gives the table a fresh 0..N index. 
+            This often makes the result easier to work with and to read.
+          </p>
+        </div>
+
+        <section class="card" id="ex-5-3">
+          <div class="card-head">
+            <div class="file-name">Example 3 – Group, Aggregate, Sort</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+import pandas as pd
+
+data = {
+    "student_id": [1, 2, 3, 4, 5, 6, 7],
+    "programme":  ["CS", "CS", "DS", "CS", "DS", "IT", "IT"],
+    "exam_score": [60, 72, 80, 55, 68, 49, 90],
+}
+students = pd.DataFrame(data)
+
+# Group by programme and compute mean and count
+stats = (
+    students
+    .groupby("programme")["exam_score"]
+    .agg(["mean", "count"])
+    .reset_index()
+)
+
+print("Stats per programme (unsorted):")
+print(stats)
+
+# sort_values: order rows by the 'mean' column (descending)
+sorted_stats = stats.sort_values("mean", ascending=False)
+print("\nStats per programme sorted by mean score (highest first):")
+print(sorted_stats)
+</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="status">
+            <span class="dot"></span><span class="status-text">Ready</span>
+          </div>
+        </section>
+
+        <div class="box box-info">
+          <span class="box-title">What <code>sort_values</code> does</span>
+          <p>
+            <code>DataFrame.sort_values("col_name")</code> reorders the rows of the table so that they are sorted 
+            by the values in <code>col_name</code>. You can use <code>ascending=False</code> for highest-first order.
+          </p>
+        </div>
+
+        <!-- 3. MINI PIPELINE -->
+        <h2 id="pipeline">3. A Small Grouped Analysis Pipeline</h2>
+
+        <p>
+          Let’s put the pieces together into a short “pipeline” that mirrors what you might do in practice:
+        </p>
+        <ol>
+          <li>Filter the rows (e.g. keep only students with enough lab attendance).</li>
+          <li>Group by a category (programme).</li>
+          <li>Compute summaries (mean score, count).</li>
+          <li>Sort and interpret.</li>
+        </ol>
+
+        <section class="card" id="ex-5-4">
+          <div class="card-head">
+            <div class="file-name">Example 4 – Filter → Group → Summarise → Sort</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+import pandas as pd
+
+data = {
+    "student_id":    [1, 2, 3, 4, 5, 6, 7],
+    "programme":     ["CS", "CS", "DS", "CS", "DS", "IT", "IT"],
+    "exam_score":    [60, 72, 80, 55, 68, 49, 90],
+    "labs_attended": [6,   5,   7,  2,  4,  3,  6],
+}
+students = pd.DataFrame(data)
+
+print("All students:")
+print(students)
+
+# 1. Filter: only students with at least 4 labs
+mask = students["labs_attended"] >= 4
+engaged = students[mask]
+
+print("\nStudents with labs_attended >= 4:")
+print(engaged)
+
+# 2. Group by programme, 3. Summarise, 4. Sort
+summary = (
+    engaged
+    .groupby("programme")["exam_score"]
+    .agg(["mean", "count"])
+    .reset_index()
+    .sort_values("mean", ascending=False)
+)
+
+print("\nAverage exam_score per programme (among engaged students):")
+print(summary)
+</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="status">
+            <span class="dot"></span><span class="status-text">Ready</span>
+          </div>
+        </section>
+
+        <!-- 4. JOINS – CONCEPT -->
+        <h2 id="joins-concept">4. Joins – Combining Tables Conceptually</h2>
+
+        <p>
+          In many real datasets, information is split across <strong>multiple tables</strong>. 
+          For example:
+        </p>
+        <ul>
+          <li><strong>students</strong> – one row per student, including <code>student_id</code> and <code>programme_id</code>.</li>
+          <li><strong>programmes</strong> – one row per programme, including <code>programme_id</code> and <code>programme_name</code>.</li>
+        </ul>
+
+        <p>
+          A <strong>join</strong> is an operation that matches rows from two tables whenever a key value is the same 
+          (e.g. the same <code>programme_id</code>). After the join, each resulting row has columns from both tables.
+        </p>
+
+        <div class="box box-info">
+          <span class="box-title">Key ideas for joins</span>
+          <ul>
+            <li><strong>Key column</strong> – a column used for matching rows (e.g. <code>programme_id</code>).</li>
+            <li><strong>Inner join</strong> – keep only rows where both tables have matching key values.</li>
+            <li><strong>Left join</strong> – keep all rows from the left table, add matching columns from the right table when possible (missing matches become <code>NaN</code>).</li>
+          </ul>
+        </div>
+
+        <!-- 5. JOINS IN PANDAS -->
+        <h2 id="joins-pandas">5. Joins in pandas with <code>pd.merge</code></h2>
+
+        <p>
+          In pandas, joins are done with <strong><code>pd.merge</code></strong>:
+        </p>
+        <ul>
+          <li><code>pd.merge(left, right, on="key", how="inner")</code> – inner join on the given column name.</li>
+          <li><code>pd.merge(left, right, on="key", how="left")</code> – left join (keep all rows from <code>left</code>).</li>
+        </ul>
+
+        <p>
+          If the key columns have different names in the two tables, you can use:
+        </p>
+        <ul>
+          <li><code>pd.merge(left, right, left_on="key_in_left", right_on="key_in_right", how="inner")</code></li>
+        </ul>
+
+        <div class="box box-info">
+          <span class="box-title">What <code>pd.merge</code> does</span>
+          <p>
+            <code>pd.merge</code> lines up rows from two DataFrames wherever the key values match, 
+            then combines their columns. The <code>how</code> argument controls which non-matching rows are kept 
+            (<code>"inner"</code>, <code>"left"</code>, etc.).
+          </p>
+        </div>
+
+        <section class="card" id="ex-5-5">
+          <div class="card-head">
+            <div class="file-name">Example 5 – Basic Inner &amp; Left Joins</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+import pandas as pd
+
+students = pd.DataFrame({
+    "student_id": [1, 2, 3, 4],
+    "programme_id": ["CS", "CS", "DS", "UNK"],  # UNK = unknown / invalid code
+    "exam_score": [60, 72, 80, 55],
+})
+
+programmes = pd.DataFrame({
+    "programme_id": ["CS", "DS", "IT"],
+    "programme_name": ["Computer Science", "Data Science", "Information Technology"],
+})
+
+print("Students:")
+print(students)
+print("\nProgrammes:")
+print(programmes)
+
+# Inner join: only rows with matching programme_id in both tables
+inner_join = pd.merge(students, programmes, on="programme_id", how="inner")
+print("\nInner join on programme_id:")
+print(inner_join)
+
+# Left join: keep all students, even if programme_id is unknown
+left_join = pd.merge(students, programmes, on="programme_id", how="left")
+print("\nLeft join on programme_id (all students kept):")
+print(left_join)
+</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="status">
+            <span class="dot"></span><span class="status-text">Ready</span>
+          </div>
+        </section>
+
+        <!-- 6. JOIN + GROUPBY CASE STUDY -->
+        <h2 id="join-groupby">6. Case Study – Join, Group, Summarise</h2>
+
+        <p>
+          Finally, we combine everything into a small case study:
+        </p>
+        <ol>
+          <li>Start from a student table with scores and <code>programme_id</code>.</li>
+          <li>Join with a programme table to get human-friendly programme names and school names.</li>
+          <li>Group by programme name and compute average score and student count.</li>
+          <li>Sort and interpret.</li>
+        </ol>
+
+        <section class="card" id="ex-5-6">
+          <div class="card-head">
+            <div class="file-name">Example 6 – Join + Groupby Mini Analysis</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+import pandas as pd
+
+# Table 1: students
+students = pd.DataFrame({
+    "student_id":    [1, 2, 3, 4, 5, 6, 7],
+    "programme_id":  ["CS", "CS", "DS", "CS", "DS", "IT", "IT"],
+    "exam_score":    [60, 72, 80, 55, 68, 49, 90],
+})
+
+# Table 2: programme info
+programmes = pd.DataFrame({
+    "programme_id":   ["CS", "DS", "IT"],
+    "programme_name": ["Computer Science", "Data Science", "Information Technology"],
+    "school":         ["Computing", "Computing", "Computing"],
+})
+
+print("Students:")
+print(students)
+print("\nProgrammes:")
+print(programmes)
+
+# 1. Join students with programmes to get names
+joined = pd.merge(students, programmes, on="programme_id", how="inner")
+
+print("\nAfter join (students with programme_name and school):")
+print(joined)
+
+# 2. Group by programme_name and summarise exam_score
+summary = (
+    joined
+    .groupby("programme_name")["exam_score"]
+    .agg(["mean", "count"])
+    .reset_index()
+    .sort_values("mean", ascending=False)
+)
+
+print("\nAverage exam_score per programme:")
+print(summary)
+</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="status">
+            <span class="dot"></span><span class="status-text">Ready</span>
+          </div>
+        </section>
+
+        <!-- 7. RECAP -->
+        <h2 id="recap">7. Recap &amp; Link to Lab 5</h2>
+
+        <h3>7.1 Key points</h3>
+        <ul>
+          <li><code>value_counts</code> gives you a quick frequency table for any categorical column.</li>
+          <li><code>groupby</code> + <code>agg</code> lets you compute per-group statistics such as mean and count.</li>
+          <li><code>reset_index</code> and <code>sort_values</code> help you turn grouped results into readable tables.</li>
+          <li>Joins (<code>pd.merge</code>) combine tables by matching key columns, so you can bring in extra information (names, prices, etc.).</li>
+          <li>A small analysis pipeline often looks like:
+            <code>load &rarr; filter &rarr; join &rarr; groupby &rarr; summarise &rarr; sort &rarr; interpret</code>.
+          </li>
+        </ul>
+
+        <h3>7.2 How this connects to Lab 5</h3>
+        <p>
+          In Lab 5, you will:
+        </p>
+        <ul>
+          <li>Load 2–3 related CSV files into pandas DataFrames.</li>
+          <li>Use <code>pd.merge</code> to join them on key columns.</li>
+          <li>Use <code>value_counts</code>, <code>groupby</code>, and <code>agg</code> to answer grouped questions 
+              (e.g. total spend per customer, average score per programme).</li>
+          <li>Write short, plain-English comments interpreting your grouped results.</li>
+        </ul>
+
+      </main>
+    </div>
+
+    <footer>
+      <p class="copyright"></p>
+      <div class="legal-notice"></div>
+    </footer>
+
+  </div>
+
+  <script src="../theme/footer.js"></script>
+  <script src="../theme/legal.js"></script>
+  <script src="../engine/engine.js"></script>
+  <script>
+    initPlayground('ex-5-1');
+    initPlayground('ex-5-2');
+    initPlayground('ex-5-3');
+    initPlayground('ex-5-4');
+    initPlayground('ex-5-5');
+    initPlayground('ex-5-6');
+
+    applyFooterText();
+    applyLegalNotice();
+  </script>
+</body>
+</html>
