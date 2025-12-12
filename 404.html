@@ -68,15 +68,22 @@
       const titleEl = document.getElementById("course-title");
       const homeLink = document.getElementById("home-link");
       const secondaryLink = document.getElementById("secondary-link");
+      const actions = document.querySelector(".actions");
       const lead = document.querySelector(".lead");
       if (titleEl) titleEl.textContent = data.title;
       if (homeLink) {
         homeLink.href = data.home;
         homeLink.textContent = course ? "Back to course home" : "Browse courses";
       }
-      if (secondaryLink) {
+      if (secondaryLink && course) {
         secondaryLink.href = data.secondary;
         secondaryLink.textContent = data.secondaryLabel;
+      }
+      if (!course && actions) {
+        actions.classList.remove("actions");
+        actions.style.display = "inline-block";
+        if (secondaryLink) secondaryLink.style.display = "none";
+        if (homeLink) homeLink.classList.add("btn-primary");
       }
       if (!course && lead) {
         lead.textContent = "We couldn't match that path to a course. Use the links below to return to the site root or repository.";
