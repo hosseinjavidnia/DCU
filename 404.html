@@ -71,22 +71,21 @@
       const actions = document.querySelector(".actions");
       const lead = document.querySelector(".lead");
       if (titleEl) titleEl.textContent = data.title;
-      if (homeLink) {
+      if (course && homeLink) {
         homeLink.href = data.home;
-        homeLink.textContent = course ? "Back to course home" : "Browse courses";
+        homeLink.textContent = "Back to course home";
       }
-      if (secondaryLink && course) {
+      if (course && secondaryLink) {
         secondaryLink.href = data.secondary;
         secondaryLink.textContent = data.secondaryLabel;
       }
-      if (!course && actions) {
-        actions.classList.remove("actions");
-        actions.style.display = "inline-block";
+      if (!course) {
+        if (actions) actions.style.display = "none";
+        if (homeLink) homeLink.style.display = "none";
         if (secondaryLink) secondaryLink.style.display = "none";
-        if (homeLink) homeLink.classList.add("btn-primary");
       }
       if (!course && lead) {
-        lead.textContent = "We couldn't match that path to a course. Use the links below to return to the site root or repository.";
+        lead.textContent = "We couldn't match that path to a course. Try returning to the site root or repository.";
       }
     })();
   </script>
