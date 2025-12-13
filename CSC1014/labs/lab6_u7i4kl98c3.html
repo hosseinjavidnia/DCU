@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Lab 6 | CSC1014</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+
+  <!-- Pyodide & CodeMirror (CDN) -->
+  <script src="https://cdn.jsdelivr.net/pyodide/v0.23.4/full/pyodide.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/eclipse.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/python/python.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/matchbrackets.min.js"></script>
+
+  <!-- Course theme -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../theme/theme.css">
+</head>
+<body class="lecture">
+
+  <div class="wrap wide">
+    
+    <nav>
+      <div class="nav-left">
+        <a href="../index.html" class="back-link">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path d="M19 12H5m7-7l-7 7 7 7"></path>
+          </svg>
+          Back to Course
+        </a>
+        <span style="color:var(--border)">|</span>
+        <h1>Week 6 – Lab</h1>
+      </div>
+      <span class="badge-top">Lab Sheet</span>
+    </nav>
+
+    <div class="lecture-wrap">
+      
+      <aside class="lecture-sidebar">
+        <div class="toc-title">On this page</div>
+        <a href="#intro" class="toc-link active">Introduction</a>
+        <a href="#ex0" class="toc-link">Ex 0 – Simple counting</a>
+        <a href="#ex1" class="toc-link">Ex 1 – Countdown</a>
+        <a href="#ex2" class="toc-link">Ex 2 – Sum 1..n</a>
+        <a href="#ex3" class="toc-link">Ex 3 – Sum &amp; average</a>
+        <a href="#ex4" class="toc-link">Ex 4 – Input validation</a>
+        <a href="#ex5" class="toc-link">Ex 5 – Sum until 0</a>
+        <a href="#ex6" class="toc-link">Ex 6 – Min &amp; max</a>
+        <a href="#ex7" class="toc-link">Ex 7 – Digits and sums</a>
+        <a href="#ex8" class="toc-link">Ex 8 – Debugging loops</a>
+        <a href="#ex9" class="toc-link">Ex 9 – Guess-the-number</a>
+        <a href="#ex10" class="toc-link">Ex 10 – Menu loop (optional)</a>
+      </aside>
+
+      <main class="lecture-content">
+        
+        <!-- INTRO -->
+        <header id="intro">
+          <h1>Lab 6 – Practising <code>while</code> Loops</h1>
+
+          <p class="lede">
+            In this lab you will practise writing <code>while</code> loops to repeat actions,
+            count, accumulate values, validate user input, and stop when a special “sentinel”
+            value is entered.
+          </p>
+
+          <div class="callout callout-goal">
+            <span class="callout-title">Lab goals</span>
+            <ul>
+              <li>Write your own <code>while</code> loops (not just run pre-written examples).</li>
+              <li>Use counters and accumulators to control and summarise repetitions.</li>
+              <li>Use loops for input validation and sentinel-controlled input.</li>
+              <li>Apply <code>while</code> loops to small numeric algorithms (digit sums, counts).</li>
+              <li>Recognise and fix infinite loops and off-by-one errors.</li>
+            </ul>
+          </div>
+
+          <div class="box box-info">
+            <span class="box-title">Key terms (used in this lab)</span>
+            <ul>
+              <li><strong>Loop</strong>: a control structure that repeats a block of code while a condition is true.</li>
+              <li><strong>Iteration</strong>: one complete run of the loop body from top to bottom.</li>
+              <li><strong>Accumulator</strong>: a variable (such as <code>total</code>) that keeps a running total.</li>
+              <li><strong>Sentinel value</strong>: a special value used to signal “stop” (for example, 0 to finish input).</li>
+              <li><strong>Input validation</strong>: checking that the user’s input satisfies some condition (for example, is positive) and re-asking if it does not.</li>
+              <li><strong>Infinite loop</strong>: a loop that never ends because its condition is always true.</li>
+              <li><strong>Off-by-one error</strong>: a mistake where a loop executes one time too many or one time too few.</li>
+            </ul>
+          </div>
+        </header>
+
+        <!-- EXERCISE 0 -->
+        <h2 id="ex0">Exercise 0 – Simple Counting with <code>while</code></h2>
+        <p>
+          Warm-up: write two short programs that count using a <code>while</code> loop.
+          Use a <strong>counter</strong> variable that changes each iteration.
+        </p>
+
+        <section class="card" id="ex-0">
+          <div class="card-head">
+            <div class="file-name">Ex 0 – Counting up and even numbers</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+# Ex 0(a) – Count from 1 to 10
+#
+# Write a program that prints the numbers from 1 to 10,
+# each on its own line, using a while loop.
+#
+# Hints:
+#   - Create a counter variable starting at 1.
+#   - Use a loop condition that stops at 10.
+#   - Update the counter inside the loop.
+
+# TODO: write your 1..10 counting program here
+
+
+# Ex 0(b) – Even numbers from 2 to 20
+#
+# Write a program that prints the even numbers 2, 4, 6, ... 20
+# using a while loop. There are different ways to do this:
+#   - Start at 2 and add 2 each time, or
+#   - Start at 1 and check if the number is even.
+#
+# Choose one approach and implement it.
+
+# TODO: write your even-number counting program here
+</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="status"><span class="dot"></span><span class="status-text">Ready</span></div>
+        </section>
+
+        <!-- EXERCISE 1 -->
+        <h2 id="ex1">Exercise 1 – Countdown</h2>
+        <p>
+          Practise counting <em>downwards</em> with a loop that decrements.
+        </p>
+
+        <section class="card" id="ex-1">
+          <div class="card-head">
+            <div class="file-name">Ex 1 – Countdown to blastoff</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <p>
+              Write a program that asks the user for a <strong>starting number</strong> and
+              then counts down to zero.
+            </p>
+            <p>Example interaction:</p>
+            <pre class="code-block"><code>Start? 5
+5
+4
+3
+2
+1
+0
+Blastoff!</code></pre>
+
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+# Ex 1 – Countdown
+#
+# Requirements:
+#   1. Ask the user for a starting number (integer).
+#   2. Use a while loop to print the sequence:
+#        start, start-1, ..., 1, 0
+#   3. After the loop, print "Blastoff!".
+#
+# Hints:
+#   - Use a counter variable that starts at the user's number.
+#   - Decrease the counter each iteration (e.g. counter = counter - 1).
+#   - Stop when the counter is less than 0, or when you have printed 0.
+
+# TODO: write your countdown program here
+</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="status"><span class="dot"></span><span class="status-text">Ready</span></div>
+        </section>
+
+        <!-- EXERCISE 2 -->
+        <h2 id="ex2">Exercise 2 – Sum from 1 to n (Accumulator Loop)</h2>
+        <p>
+          Use an <strong>accumulator</strong> to keep a running total of numbers from 1 up to
+          a user-chosen limit.
+        </p>
+
+        <section class="card" id="ex-2">
+          <div class="card-head">
+            <div class="file-name">Ex 2 – Sum 1..n with a while loop</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <p>
+              An <strong>accumulator</strong> is a variable that “accumulates” a value, such as a
+              running total. We usually initialise it to 0 and then add to it inside the loop.
+            </p>
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+# Ex 2 – Sum from 1 to n
+#
+# Write a program that:
+#   1. Asks the user for a positive integer n.
+#   2. Uses a while loop to compute the sum:
+#        1 + 2 + 3 + ... + n
+#   3. Prints the final sum with a clear message.
+#
+# Requirements:
+#   - Use an accumulator variable (e.g. total = 0).
+#   - Use a counter variable to count from 1 up to n.
+#   - Update both correctly inside the loop.
+
+# TODO: write your sum 1..n program here
+</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="status"><span class="dot"></span><span class="status-text">Ready</span></div>
+        </section>
+
+        <!-- EXERCISE 3 -->
+        <h2 id="ex3">Exercise 3 – Sum and Average of N Values</h2>
+        <p>
+          Combine a counter-controlled loop with an accumulator to compute both a sum and an average.
+        </p>
+
+        <section class="card" id="ex-3">
+          <div class="card-head">
+            <div class="file-name">Ex 3 – Sum &amp; average of user numbers</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <p>
+              You will ask the user how many numbers they plan to enter, then read exactly that
+              many numbers using a <code>while</code> loop.
+            </p>
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+# Ex 3 – Sum and average
+#
+# Write a program that:
+#   1. Asks: "How many numbers will you enter?" (call this count).
+#   2. Uses a while loop that runs exactly 'count' times.
+#   3. Each iteration:
+#        - asks for a number,
+#        - adds it to a running total.
+#   4. After the loop, prints:
+#        - the sum of all numbers,
+#        - the average of the numbers.
+#
+# Requirements:
+#   - Use an accumulator for the sum.
+#   - Use a separate counter for the loop.
+#   - When computing the average, make sure to use float division.
+
+# TODO: write your sum-and-average program here
+</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="status"><span class="dot"></span><span class="status-text">Ready</span></div>
+        </section>
+
+        <!-- EXERCISE 4 -->
+        <h2 id="ex4">Exercise 4 – Input Validation Loop</h2>
+        <p>
+          An <strong>input validation</strong> loop keeps asking until the user gives a value that
+          meets a condition.
+        </p>
+
+        <section class="card" id="ex-4">
+          <div class="card-head">
+            <div class="file-name">Ex 4 – Positive integer validation</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <p>
+              Write a program that accepts <strong>only positive integers</strong>. If the user
+              enters 0 or a negative number, the program should reject it and ask again.
+            </p>
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+# Ex 4 – Ask until a positive integer is entered
+#
+# Write a program that:
+#   1. Asks the user for an integer.
+#   2. While the integer is NOT positive (<= 0),
+#      prints an error message and asks again.
+#   3. When a positive integer is finally entered,
+#      prints a confirmation message and stops.
+#
+# Requirements:
+#   - Use a while loop.
+#   - Convert input to int.
+#   - Include at least one comment explaining your loop condition.
+
+# TODO: write your input validation program here
+</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="status"><span class="dot"></span><span class="status-text">Ready</span></div>
+        </section>
+
+        <!-- EXERCISE 5 -->
+        <h2 id="ex5">Exercise 5 – Sentinel Loop: Sum Until 0</h2>
+        <p>
+          A <strong>sentinel value</strong> is a special value that means “stop now”.
+          Here the sentinel value will be 0.
+        </p>
+
+        <section class="card" id="ex-5">
+          <div class="card-head">
+            <div class="file-name">Ex 5 – Sum numbers until 0 (sentinel loop)</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <p>
+              Write a program that repeatedly reads integers until the user enters 0, and then
+              prints the sum of all the non-zero values.
+            </p>
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+# Ex 5 – Sum until sentinel value 0
+#
+# Write a program that:
+#   1. Asks the user for an integer.
+#   2. If the integer is 0, stops immediately and prints the total (which may be 0).
+#   3. If the integer is not 0, adds it to a running total,
+#      then asks for the next integer.
+#   4. Repeats this using a while loop until 0 is entered.
+#
+# Hint:
+#   - You will probably read the first number BEFORE the loop,
+#     then update inside the loop.
+#
+# The value 0 is your SENTINEL VALUE: it signals "stop".
+
+# TODO: write your sentinel sum program here
+</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="status"><span class="dot"></span><span class="status-text">Ready</span></div>
+        </section>
+
+        <!-- EXERCISE 6 -->
+        <h2 id="ex6">Exercise 6 – Sentinel Loop: Minimum and Maximum</h2>
+        <p>
+          Extend the sentinel idea by tracking both the smallest and largest value entered
+          before the sentinel.
+        </p>
+
+        <section class="card" id="ex-6">
+          <div class="card-head">
+            <div class="file-name">Ex 6 – Min &amp; max with sentinel input</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <p>
+              A sentinel loop can also be used to compute statistics like minimum and maximum.
+            </p>
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+# Ex 6 – Minimum and maximum until 0
+#
+# Write a program that:
+#   1. Repeatedly asks the user for an integer.
+#   2. Stops when the user enters 0 (sentinel value).
+#   3. While reading non-zero numbers, keeps track of:
+#        - the smallest number entered,
+#        - the largest number entered.
+#   4. After 0 is entered:
+#        - if there was at least one non-zero number,
+#          print the minimum and maximum.
+#        - if the first value was 0 (no data),
+#          print "No data entered."
+#
+# Hints:
+#   - You can start by reading the first number outside the loop
+#     and use it to initialise both min and max.
+#   - Be careful with the case where the first number is 0.
+
+# TODO: write your min/max sentinel program here
+</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="status"><span class="dot"></span><span class="status-text">Ready</span></div>
+        </section>
+
+        <!-- EXERCISE 7 -->
+        <h2 id="ex7">Exercise 7 – Digits and Sums (Integer Algorithms)</h2>
+        <p>
+          Use <code>%</code> (remainder) and <code>//</code> (integer division) in loops to
+          process the digits of an integer.
+        </p>
+
+        <div class="box box-info">
+          <span class="box-title">Reminder: integer operators</span>
+          <ul>
+            <li><code>a % b</code> is the remainder when <code>a</code> is divided by <code>b</code>.</li>
+            <li><code>a // b</code> is integer division: it gives the whole-number part of <code>a / b</code>.</li>
+          </ul>
+        </div>
+
+        <section class="card" id="ex-7">
+          <div class="card-head">
+            <div class="file-name">Ex 7 – Digit sum and digit count</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+# Ex 7(a) – Sum of digits
+#
+# Write a program that:
+#   1. Asks the user for a positive integer n.
+#   2. Uses a while loop with % and // to compute the sum of its digits.
+#      Example: n = 1234 -> sum = 1 + 2 + 3 + 4 = 10
+#   3. Prints the digit sum.
+#
+# Hint:
+#   - Use n % 10 to get the last digit.
+#   - Use n // 10 to remove the last digit.
+
+# TODO: write your digit-sum program here
+
+
+# Ex 7(b) – Count digits
+#
+# Write a program that:
+#   1. Asks the user for a positive integer n.
+#   2. Uses a while loop to count how many digits n has.
+#      Example: 999 has 3 digits.
+#   3. Prints the digit count.
+#
+# Hint:
+#   - Repeatedly divide n by 10 (integer division) until it becomes 0.
+#   - Count how many times you do this.
+
+# TODO: write your digit-count program here
+</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="status"><span class="dot"></span><span class="status-text">Ready</span></div>
+        </section>
+
+        <!-- EXERCISE 8 -->
+        <h2 id="ex8">Exercise 8 – Debugging While Loops</h2>
+        <p>
+          In this exercise, you will examine short pieces of code that contain loop bugs
+          (infinite loops or off-by-one errors) and fix them.
+        </p>
+
+        <section class="card" id="ex-8">
+          <div class="card-head">
+            <div class="file-name">Ex 8 – Find and fix loop bugs</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <p>
+              For each snippet:
+            </p>
+            <ol>
+              <li>Read the code and decide what it is <em>trying</em> to do.</li>
+              <li>Predict the problem (infinite loop? wrong number of iterations?).</li>
+              <li>Run it to see what happens (if it runs forever, stop it).</li>
+              <li>Write a corrected version below the snippet.</li>
+              <li>Add a short comment explaining the bug and your fix.</li>
+            </ol>
+
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+# Ex 8(a) – Buggy counting loop
+#
+# Intended behaviour: print the numbers 1, 2, 3, 4, 5.
+#
+# Buggy code:
+# i = 1
+# while i <= 5:
+#     print(i)
+
+# TODO:
+#   - Copy the buggy code above into a new version.
+#   - Fix it so that it prints 1..5 and then stops.
+#   - Add a comment describing what the bug was.
+
+# Your fixed version for 8(a):
+
+
+# Ex 8(b) – Off-by-one error
+#
+# Intended behaviour: print numbers from 0 up to (but not including) 10.
+#
+# Buggy code:
+# i = 0
+# while i <= 10:
+#     print(i)
+#     i = i + 1
+
+# TODO:
+#   - Fix the loop so it prints 0..9 but NOT 10.
+#   - Add a comment describing why the original code was off by one.
+
+# Your fixed version for 8(b):
+
+
+# Ex 8(c) – Uninitialised or wrong update
+#
+# Intended behaviour: ask for a positive integer n and then
+# print n stars ("*") on one line using a while loop.
+#
+# Example:
+#   n = 4
+#   Output: ****
+#
+# Think of a possible buggy version (for example, wrong initial counter,
+# missing update, or using the wrong condition), write it, then fix it.
+#
+# TODO:
+#   - Invent a buggy version.
+#   - Then write a corrected version with a comment explaining the difference.
+
+# Your buggy version for 8(c):
+
+
+# Your fixed version for 8(c):
+
+</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="status"><span class="dot"></span><span class="status-text">Ready</span></div>
+        </section>
+
+        <!-- EXERCISE 9 -->
+        <h2 id="ex9">Exercise 9 – Guess-the-Number Game</h2>
+        <p>
+          Combine a <code>while</code> loop with <code>if</code> / <code>elif</code> / <code>else</code>
+          to build a simple interactive game.
+        </p>
+
+        <section class="card" id="ex-9">
+          <div class="card-head">
+            <div class="file-name">Ex 9 – Guess-the-number with while + if</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <p>
+              Write a guessing game where the user must guess a secret number. Use a hard-coded
+              secret value (for example, <code>secret = 7</code>).
+            </p>
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+# Ex 9 – Guess-the-number game
+#
+# Write a program that:
+#   1. Stores a secret integer in a variable (for example, 7).
+#   2. Uses a while loop to repeatedly:
+#        - ask the user for a guess,
+#        - compare the guess with the secret,
+#        - print "Too low!", "Too high!", or "Correct!".
+#   3. Stops when the user guesses correctly.
+#
+# Optional:
+#   - Keep a counter of how many guesses the user needed
+#     and print that number at the end.
+
+# TODO: write your guess-the-number game here
+</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="status"><span class="dot"></span><span class="status-text">Ready</span></div>
+        </section>
+
+        <!-- EXERCISE 10 -->
+        <h2 id="ex10">Exercise 10 – Simple Menu Loop (Optional Challenge)</h2>
+        <p>
+          This exercise uses a <strong>menu</strong> and a <strong>sentinel choice</strong>.
+          A menu is a text list of options. A sentinel choice is the menu option that means
+          “quit”.
+        </p>
+
+        <section class="card" id="ex-10">
+          <div class="card-head">
+            <div class="file-name">Ex 10 – Menu-driven loop (optional)</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <p>
+              Build a small menu that repeats until the user chooses to quit.
+            </p>
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+# Ex 10 – Simple menu loop (optional)
+#
+# Write a program that:
+#   1. Prints a menu, for example:
+#        1) Say hello
+#        2) Show countdown from 5
+#        3) Quit
+#   2. Asks the user to enter 1, 2 or 3.
+#   3. Uses a while loop that continues until the user chooses 3 (the sentinel choice).
+#   4. Inside the loop, uses if / elif / else to:
+#        - For choice 1: print a greeting message.
+#        - For choice 2: print a short countdown (you can reuse ideas from Ex 1).
+#        - For any other choice: print "Invalid choice".
+#   5. When the user chooses 3, exit the loop and print "Goodbye!".
+#
+# Hints:
+#   - Decide where you will read the user's choice (before or inside the loop).
+#   - Make sure you update the choice variable each iteration.
+
+# TODO: write your menu loop program here
+</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="status"><span class="dot"></span><span class="status-text">Ready</span></div>
+        </section>
+
+      </main>
+    </div>
+
+    <footer>
+      <p class="copyright"></p>
+      <div class="legal-notice"></div>
+    </footer>
+
+  </div>
+
+  <script src="../theme/footer.js"></script>
+  <script src="../theme/legal.js"></script>
+  <script src="../engine/engine.js"></script>
+  <script>
+    // Init all playgrounds in this lab
+    initPlayground('ex-0');
+    initPlayground('ex-1');
+    initPlayground('ex-2');
+    initPlayground('ex-3');
+    initPlayground('ex-4');
+    initPlayground('ex-5');
+    initPlayground('ex-6');
+    initPlayground('ex-7');
+    initPlayground('ex-8');
+    initPlayground('ex-9');
+    initPlayground('ex-10');
+
+    applyFooterText();
+    applyLegalNotice();
+  </script>
+</body>
+</html>

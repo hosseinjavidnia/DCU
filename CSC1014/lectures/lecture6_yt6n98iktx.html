@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Lecture 6 | CSC1014</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+
+  <!-- Pyodide & CodeMirror (CDN) -->
+  <script src="https://cdn.jsdelivr.net/pyodide/v0.23.4/full/pyodide.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/eclipse.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/python/python.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/matchbrackets.min.js"></script>
+
+  <!-- Course theme -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../theme/theme.css">
+</head>
+<body class="lecture">
+
+  <div class="wrap wide">
+    
+    <nav>
+      <div class="nav-left">
+        <a href="../index.html" class="back-link">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path d="M19 12H5m7-7l-7 7 7 7"></path>
+          </svg>
+          Back to Course
+        </a>
+        <span style="color:var(--border)">|</span>
+        <h1>Week 6</h1>
+      </div>
+      <span class="badge-top">Lecture Note</span>
+    </nav>
+
+    <div class="lecture-wrap">
+      
+      <aside class="lecture-sidebar">
+        <div class="toc-title">On this page</div>
+        <a href="#intro" class="toc-link active">Introduction</a>
+        <a href="#why-loops" class="toc-link">1. Why Do We Need Loops?</a>
+        <a href="#what-is-loop" class="toc-link">2. What Is a Loop?</a>
+        <a href="#while-syntax" class="toc-link">3. while Syntax &amp; Meaning</a>
+        <a href="#tracing" class="toc-link">4. Tracing Loops</a>
+        <a href="#patterns" class="toc-link">5. Classic Loop Patterns</a>
+        <a href="#input-loops" class="toc-link">6. Loops with Input</a>
+        <a href="#pitfalls" class="toc-link">7. Common Pitfalls &amp; Debugging</a>
+        <a href="#complexity" class="toc-link">8. How Many Times? (Complexity)</a>
+        <a href="#recap" class="toc-link">9. Recap &amp; Self-check</a>
+      </aside>
+
+      <main class="lecture-content">
+        
+        <!-- INTRO -->
+        <header id="intro">
+          <h1>Week 6 – Repetition and <code>while</code> Loops</h1>
+
+          <div class="callout callout-goal">
+            <span class="callout-title">Lecture goals</span>
+            <ul>
+              <li>Explain why programs need repetition and how loops provide it.</li>
+              <li>Define what a <strong>loop</strong>, an <strong>iteration</strong>, and a <strong>loop condition</strong> are.</li>
+              <li>Understand the syntax and behaviour of Python’s <code>while</code> loop.</li>
+              <li>Recognise and use basic loop patterns: <strong>counter-controlled</strong> and <strong>accumulator</strong> loops.</li>
+              <li>Combine loops with input and conditionals to solve simple problems.</li>
+              <li>Identify and fix common loop errors, including <strong>infinite loops</strong> and <strong>off-by-one errors</strong>.</li>
+            </ul>
+          </div>
+
+          <div class="callout callout-idea">
+            <span class="callout-title">Big picture</span>
+            So far, your programs could only do things <em>once</em> and make one-off decisions.
+            Today you give them the power to repeat actions automatically and stop when a condition is met.
+          </div>
+
+          <div class="box box-info">
+            <span class="box-title">Key terms (used in this lecture)</span>
+            <ul>
+              <li><strong>Loop</strong>: a structure that repeats a block of code while a condition is true.</li>
+              <li><strong>Iteration</strong>: one complete run of the loop body from top to bottom.</li>
+              <li><strong>Loop condition</strong>: the Boolean expression that decides whether the loop runs again.</li>
+              <li><strong>Infinite loop</strong>: a loop whose condition never becomes false, so it never stops.</li>
+              <li><strong>Counter-controlled loop</strong>: a loop where a counter variable controls how many iterations occur.</li>
+              <li><strong>Accumulator loop</strong>: a loop that builds up a running total in a variable.</li>
+              <li><strong>Off-by-one error</strong>: a logic mistake where a loop runs one time too few or too many.</li>
+              <li><strong>Trace table</strong>: a table used to follow variable values line by line through a program.</li>
+            </ul>
+          </div>
+        </header>
+
+        <!-- 1. WHY LOOPS -->
+        <h2 id="why-loops">1. Why Do We Need Loops?</h2>
+        <p>
+          In everyday life, many tasks involve repetition. For example:
+        </p>
+        <ul>
+          <li>Climbing stairs: repeat “step up” until you reach the top floor.</li>
+          <li>Brushing teeth: repeat the brushing motion until 2 minutes have passed.</li>
+          <li>Checking email: repeat “check inbox” every morning.</li>
+        </ul>
+        <p>
+          In programming, we often need to repeat operations such as:
+        </p>
+        <ul>
+          <li>Adding up a list of numbers.</li>
+          <li>Asking the user again if they typed invalid input.</li>
+          <li>Simulating several time steps in a simple model.</li>
+        </ul>
+        <p>
+          Without loops, the only way to repeat something is to write the same code line many
+          times. This is:
+        </p>
+        <ul>
+          <li>Hard to read.</li>
+          <li>Hard to change (if you want to go from 10 repetitions to 100).</li>
+          <li>Easy to get wrong.</li>
+        </ul>
+
+        <div class="box box-idea">
+          <span class="box-title">Key idea</span>
+          A loop lets you say “repeat this block of code while this condition is true” instead
+          of copy-pasting the block many times.
+        </div>
+
+        <!-- 2. WHAT IS A LOOP -->
+        <h2 id="what-is-loop">2. What Is a Loop?</h2>
+        <p>
+          At a high level, a <strong>loop</strong> is a control structure that repeats a block of
+          code. Each time the block runs is called an <strong>iteration</strong>.
+        </p>
+        <p>
+          Every loop involves three main parts:
+        </p>
+        <ol>
+          <li><strong>Initialisation</strong> – set up any variables used to control the loop.</li>
+          <li><strong>Condition</strong> – a Boolean expression checked before each iteration.</li>
+          <li><strong>Update</strong> – code inside the loop body that changes something so the condition will eventually become false.</li>
+        </ol>
+
+        <figure>
+          <img src="https://upload.wikimedia.org/wikipedia/commons/8/83/While-loop-diagram.svg"
+               alt="Flowchart of a while loop: test condition, if true run body and go back, if false exit"
+               style="max-width: 420px; width: 100%; display: block; margin: 1rem auto;">
+          <figcaption>
+            Flow of control in a <code>while</code> loop: test the condition, run the body, then repeat.
+          </figcaption>
+        </figure>
+
+        <p>
+          In Python, we will use the <strong><code>while</code> loop</strong> to implement this pattern.
+        </p>
+
+        <!-- 3. WHILE SYNTAX -->
+        <h2 id="while-syntax">3. The <code>while</code> Loop: Syntax &amp; Meaning</h2>
+        <p>
+          Python’s <code>while</code> loop has this general form:
+        </p>
+
+        <pre class="code-block"><code>while &lt;condition&gt;:
+    &lt;indented block of one or more statements&gt;</code></pre>
+
+        <p>
+          The <strong>condition</strong> must be a Boolean expression: something that evaluates to
+          either <code>True</code> or <code>False</code>. For example:
+        </p>
+        <ul>
+          <li><code>x &lt;= 10</code></li>
+          <li><code>count != 0</code></li>
+          <li><code>not done</code></li>
+        </ul>
+
+        <p>Python executes a <code>while</code> loop like this:</p>
+        <ol>
+          <li>Evaluate the condition.</li>
+          <li>If the condition is <code>True</code>:
+            <ul>
+              <li>Execute the indented block (one <strong>iteration</strong>).</li>
+              <li>Go back to step 1.</li>
+            </ul>
+          </li>
+          <li>If the condition is <code>False</code>, skip the block and continue after the loop.</li>
+        </ol>
+
+        <div class="pill-steps">
+          <div class="pill-step">Check condition</div>
+          <div class="pill-sep">→</div>
+          <div class="pill-step">Run body</div>
+          <div class="pill-sep">→</div>
+          <div class="pill-step">Update + repeat</div>
+        </div>
+
+        <section class="card" id="ex-1">
+          <div class="card-head">
+            <div class="file-name">Example 6.1 – Counting from 1 to 5</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <p>
+              This is a simple <strong>counter-controlled loop</strong>. A counter-controlled loop
+              uses a variable (here <code>i</code>) to count how many iterations have happened.
+            </p>
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+# Example 6.1: Count from 1 to 5
+
+i = 1              # initialisation
+while i <= 5:      # loop condition
+    print(i)       # loop body
+    i = i + 1      # update (counter moves towards stopping)
+
+print("Done")
+</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+          </div>
+          <div class="status">
+            <span class="dot"></span><span class="status-text">Ready</span>
+          </div>
+        </section>
+
+        <div class="box box-warn">
+          <span class="box-title">Reminder</span>
+          The <strong>indentation</strong> tells Python which statements belong to the loop body.
+          All lines that are part of the loop must be indented the same amount.
+        </div>
+
+        <!-- 4. TRACING LOOPS -->
+        <h2 id="tracing">4. Tracing a Loop with a Trace Table</h2>
+        <p>
+          To understand a loop, it helps to simulate it step by step using a
+          <strong>trace table</strong>. A trace table is a simple table where:
+        </p>
+        <ul>
+          <li>Each column is a variable.</li>
+          <li>Each row shows the variable values at a particular moment.</li>
+        </ul>
+
+        <p>Consider this program:</p>
+
+        <section class="card" id="ex-2">
+          <div class="card-head">
+            <div class="file-name">Example 6.2 – Trace a simple loop</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <p>Before running, try to fill in a trace table for <code>i</code> and <code>total</code>.</p>
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+# Example 6.2: Sum the numbers 1, 2, 3
+
+i = 1
+total = 0
+
+while i <= 3:
+    total = total + i
+    print("i:", i, "total:", total)
+    i = i + 1
+
+print("Final total:", total)
+</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+
+            <p>Trace table sketch (fill before you run):</p>
+            <table class="trace-table">
+              <thead>
+                <tr>
+                  <th>Iteration</th>
+                  <th>i (at top of loop)</th>
+                  <th>total (at top of loop)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>1</td><td>?</td><td>?</td></tr>
+                <tr><td>2</td><td>?</td><td>?</td></tr>
+                <tr><td>3</td><td>?</td><td>?</td></tr>
+                <tr><td>after loop</td><td>?</td><td>?</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="status">
+            <span class="dot"></span><span class="status-text">Ready</span>
+          </div>
+        </section>
+
+        <div class="box box-idea">
+          <span class="box-title">Tracing tip</span>
+          When you get stuck on a loop, write a trace table and update it for each iteration.
+          This is exactly how many programmers debug their code.
+        </div>
+
+        <!-- 5. CLASSIC PATTERNS -->
+        <h2 id="patterns">5. Classic <code>while</code> Loop Patterns</h2>
+        <p>
+          Many loops in real programs follow a small number of common patterns. Recognising these
+          patterns makes code easier to understand and write.
+        </p>
+
+        <h3>5.1 Counter-controlled loop</h3>
+        <p>
+          A <strong>counter-controlled loop</strong> uses a variable (the <em>counter</em>) to count
+          how many iterations have happened. The loop condition typically compares the counter to
+          a limit.
+        </p>
+
+        <div class="box box-info">
+          <span class="box-title">Template: Counter-controlled loop</span>
+<pre><code>counter = start_value        # initialisation
+ while counter &lt;= end_value:  # condition
+    # loop body using counter
+    counter = counter + 1    # update</code></pre>
+        </div>
+
+        <p>Typical uses:</p>
+        <ul>
+          <li>Printing numbers from 1 to 10.</li>
+          <li>Repeating a simple action a fixed number of times.</li>
+        </ul>
+
+        <h3>5.2 Accumulator loop</h3>
+        <p>
+          An <strong>accumulator loop</strong> keeps a running total in a variable, often named
+          <code>total</code>, <code>sum</code>, or <code>count</code>. Each iteration adds something
+          to the accumulator.
+        </p>
+
+        <div class="box box-info">
+          <span class="box-title">Template: Accumulator loop</span>
+<pre><code>total = 0                   # accumulator initial value
+ counter = 1                 # or some start value
+ while counter &lt;= n:
+     total = total + counter # update accumulator
+     counter = counter + 1   # update counter
+
+ print(total)</code></pre>
+        </div>
+
+        <p>Typical uses:</p>
+        <ul>
+          <li>Adding up a sequence of numbers.</li>
+          <li>Counting how many values satisfy a condition.</li>
+        </ul>
+
+        <h3>5.3 Sentinel loop (preview)</h3>
+        <p>
+          A <strong>sentinel loop</strong> reads values until a special “sentinel” value appears.
+          A <strong>sentinel value</strong> is a special value used only to signal “stop”, for example
+          <code>0</code> or <code>-1</code>.
+        </p>
+        <p>
+          Example idea: keep asking for numbers until the user types <code>0</code>, then stop and
+          print the sum. We will use this pattern more in labs and later lectures.
+        </p>
+
+        <!-- 6. LOOPS WITH INPUT -->
+        <h2 id="input-loops">6. <code>while</code> Loops with Input</h2>
+        <p>
+          Loops become especially useful when combined with <code>input()</code>. For example,
+          we might want to keep asking the user for a value until they give a valid answer.
+        </p>
+
+        <section class="card" id="ex-3">
+          <div class="card-head">
+            <div class="file-name">Example 6.3 – Repeat until a positive number is entered</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <p>
+              This is a simple <strong>input validation loop</strong>. An input validation loop
+              repeats asking the user for input until the input satisfies some condition.
+            </p>
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+# Example 6.3: Keep asking until the user enters a positive number
+
+number_text = input("Enter a positive number: ")
+number = float(number_text)
+
+while number <= 0:
+    print("That is not positive. Please try again.")
+    number_text = input("Enter a positive number: ")
+    number = float(number_text)
+
+print("Thanks. You entered:", number)
+</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+
+            <p>
+              Notice how the <strong>update</strong> step is reading new input inside the loop body.
+              Without that, the condition <code>number &lt;= 0</code> would never change and the loop
+              would be an infinite loop.
+            </p>
+          </div>
+          <div class="status">
+            <span class="dot"></span><span class="status-text">Ready</span>
+          </div>
+        </section>
+
+        <!-- 7. PITFALLS -->
+        <h2 id="pitfalls">7. Common Loop Pitfalls &amp; Debugging Strategies</h2>
+
+        <h3>7.1 Infinite loops</h3>
+        <p>
+          An <strong>infinite loop</strong> is a loop whose condition never becomes false,
+          so it never stops (unless you interrupt the program).
+        </p>
+
+        <section class="card" id="ex-4">
+          <div class="card-head">
+            <div class="file-name">Example 6.4 – Infinite loop (do not run for too long)</div>
+            <div class="toolbar">
+              <button class="btn btn-primary run">Run ▸</button>
+              <button class="btn clear">Clear</button>
+              <button class="btn reset">Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <p>Try to spot the problem before running this code.</p>
+            <div class="lecture-stack">
+              <div class="editor-pane">
+<textarea class="code" spellcheck="false">
+# Example 6.4: Infinite loop example
+
+count = 1
+while count <= 5:
+    print("Count is", count)
+    # BUG: the update is missing here
+    # count = count + 1
+</textarea>
+              </div>
+              <div class="output-pane">
+                <div class="output-label">Terminal Output</div>
+                <pre class="output-box" aria-live="polite"></pre>
+              </div>
+            </div>
+            <p>
+              Because <code>count</code> is never updated, the condition
+              <code>count &lt;= 5</code> stays <code>True</code> forever.
+            </p>
+          </div>
+          <div class="status">
+            <span class="dot"></span><span class="status-text">Ready</span>
+          </div>
+        </section>
+
+        <div class="box box-warn">
+          <span class="box-title">Debugging loops</span>
+          When a loop does not behave as expected:
+          <ul>
+            <li>Check that the condition is written correctly.</li>
+            <li>Check that the variables in the condition are initialised.</li>
+            <li>Check that those variables are updated inside the loop body.</li>
+            <li>Add <code>print()</code> statements inside the loop to see values each iteration.</li>
+          </ul>
+        </div>
+
+        <h3>7.2 Off-by-one errors</h3>
+        <p>
+          An <strong>off-by-one error</strong> happens when your loop runs one time too many
+          or one time too few. This often comes from using <code>&lt;</code> instead of
+          <code>&lt;=</code>, or starting at 0 when you meant to start at 1.
+        </p>
+        <p>
+          Example (conceptual): the intention is to print numbers 1 to 5, but the program prints
+          only 1 to 4, or 0 to 5. Trace tables help catch these mistakes.
+        </p>
+
+        <!-- 8. COMPLEXITY -->
+        <h2 id="complexity">8. How Many Times Does the Loop Run?</h2>
+        <p>
+          When you see a loop, it is useful to ask:
+          <strong>“How many iterations will this take?”</strong>
+        </p>
+        <p>
+          For a loop like:
+        </p>
+
+        <pre class="code-block"><code>i = 1
+ while i &lt;= n:
+     # body
+     i = i + 1</code></pre>
+
+        <p>
+          the number of iterations grows roughly “with <code>n</code>”. If <code>n</code> doubles,
+          the number of iterations also doubles. This is an informal view of
+          <strong>time complexity</strong> – how the running time of a program grows as the size of
+          its input grows.
+        </p>
+
+        <div class="box box-idea">
+          <span class="box-title">Informal complexity</span>
+          We will not use formal complexity notation in this module, but you should notice
+          that a loop doing 10 steps is “lighter” than a loop doing 1,000,000 steps.
+        </div>
+
+        <!-- 9. RECAP -->
+        <h2 id="recap">9. Recap &amp; Self-check</h2>
+
+        <h3>9.1 Key ideas from Week 6</h3>
+        <ul>
+          <li>A <strong>loop</strong> repeats a block of code while a <strong>condition</strong> is true.</li>
+          <li>A <strong><code>while</code> loop</strong> checks the condition before each iteration.</li>
+          <li>Every useful loop has an <strong>initialisation</strong>, a <strong>condition</strong>, and an <strong>update</strong>.</li>
+          <li><strong>Counter-controlled</strong> and <strong>accumulator</strong> loops are common patterns.</li>
+          <li>Combining loops with <code>input()</code> allows for repeated user interaction.</li>
+          <li><strong>Infinite loops</strong> and <strong>off-by-one errors</strong> are common bugs you can find by tracing.</li>
+        </ul>
+
+        <h3>9.2 Quick concept quiz</h3>
+        <ol>
+          <li>
+            In your own words, what is an <strong>iteration</strong> of a loop?
+          </li>
+          <li>
+            Can a <code>while</code> loop run zero times? When does that happen?
+          </li>
+          <li>
+            For a loop that starts at <code>i = 1</code> and runs while <code>i &lt;= 10</code>,
+            how many iterations happen?
+          </li>
+          <li>
+            Describe a real-world situation that could be modelled by a
+            <strong>sentinel loop</strong>.
+          </li>
+        </ol>
+
+        <h3>9.3 Looking ahead</h3>
+        <p>
+          In the next lecture we will look at <strong><code>for</code> loops</strong>, which are
+          another way to write loops in Python. We will compare <code>while</code> and
+          <code>for</code> and see when each is more convenient.
+        </p>
+
+      </main>
+    </div>
+
+    <footer>
+      <p class="copyright"></p>
+      <div class="legal-notice"></div>
+    </footer>
+
+  </div>
+
+  <script src="../theme/footer.js"></script>
+  <script src="../theme/legal.js"></script>
+  <script src="../engine/engine.js"></script>
+  <script>
+    initPlayground('ex-1');
+    initPlayground('ex-2');
+    initPlayground('ex-3');
+    initPlayground('ex-4');
+
+    applyFooterText();
+    applyLegalNotice();
+  </script>
+</body>
+</html>
